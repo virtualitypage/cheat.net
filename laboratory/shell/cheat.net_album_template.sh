@@ -31,7 +31,7 @@ do
 cat <<EOF >> $2.txt
         <div class="post-card-list-item post-card">
           <div class="post-card-image2">
-            <a href="./img/$col1.JPG"><img width="343" height="254" src="./img/$col1.JPG" alt="$col1" srcset="./img/$col1.JPG 343w, ./img/$col1.JPG 640w, ./img/$col1.JPG 202w" sizes="(max-width: 343px) 100vw, 343px" /></a>
+            <a href="./img/$col1.JPG"><img width="343" height="254" src="./img/$col1.JPG" alt="$col1.JPG" srcset="./img/$col1.JPG 343w, ./img/$col1.JPG 640w, ./img/$col1.JPG 202w" sizes="(max-width: 343px) 100vw, 343px" /></a>
             <p class="st-catgroup itiran-category">
               <a download="./img/$col1.JPG"></a>
             </p>
