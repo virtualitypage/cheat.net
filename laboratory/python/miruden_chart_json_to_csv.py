@@ -16,8 +16,8 @@ def json_to_csv(json_file, csv_file):
     with open(csv_file, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
-    with open(csv_file, 'w', encoding='utf-8', newline='') as file:
-        file.writelines(lines[1:])
+    # with open(csv_file, 'w', encoding='utf-8', newline='') as file:
+    #     file.writelines(lines[1:])
 
     print(f"{json_file} -> {csv_file} ")
     print("operation completed.")
