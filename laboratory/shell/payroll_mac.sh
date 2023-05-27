@@ -13,7 +13,7 @@ if [ -z "$1" ]; then
 fi
 
 # date=`date '+%m_%d='`
-date=`date +\%Y\%d`
+date=`date +\%Y/\%m/\%d`
 # date=`echo -n ${date} | tr _ 月 | tr = 日`
 
 pay=$1
