@@ -7,7 +7,7 @@ csv_file="youtube.csv"
 json_file="youtube_results.json"
 
 # SlackのAPIトークンとチャンネル名
-slack_token="xoxb-5296363296913-5336985565586-hWuYDuZ9hlaRfmigzoFQSZDJ"
+slack_token=""
 channel="#youtube-valid"
 
 # CSVファイルからデータを読み込んでJSONファイルに変換する関数

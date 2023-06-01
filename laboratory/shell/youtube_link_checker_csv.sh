@@ -7,7 +7,7 @@ csv_file="youtube.csv"
 output_file="youtube_results.csv"
 
 # SlackのAPIトークンとチャンネル名
-slack_token="xoxb-5296363296913-5336985565586-hWuYDuZ9hlaRfmigzoFQSZDJ"
+slack_token=""
 channel="#youtube-valid"
 
 # CSVファイルの存在チェック
