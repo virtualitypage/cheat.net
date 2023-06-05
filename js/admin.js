@@ -38,7 +38,8 @@ function showSearch() {
 
 function notifications() {
   let date = new Date();
-  alert(date.toLocaleDateString() + "現在、最新情報はありません");
+  // alert(date.toLocaleDateString() + "現在、最新情報はありません");
+  alert("Upload Linkに「ニコニコ動画」フィールドをリリース予定");
 }
 
 function authentication(){
