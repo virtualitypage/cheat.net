@@ -14,7 +14,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-7MY5P9TV7J');
     </script>
   </head>
@@ -194,25 +193,39 @@
       <br>
       <p style="font-weight: bold;">・WSL(Windows Subsystem for Linux)導入手順</p>
       <br>
-      <p>１.以下をPCにダウンロードする。<a style="text-decoration: underline; color: blue;" href="https://github.com/yuk7/CentWSL/releases/download/8.1.1911.0/CentOS8.zip">https://github.com/~CentOS8.zip</a>からダウンロードする。<br>　"rootfs.tar.gz"を<a  style="text-decoration: underline; color: blue;" href="https://www.7-zip.org/a/7z2201-x64.exe">7-zip</a>で解凍して"rootfs.tar"を取り出す</p>
+      <br>
+      <p>１.アプリ"コマンド プロンプト"を起動して以下のコマンドを実行、その後PCを再起動する</p>
+      <br>
+      <br>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --install -d Ubuntu</b></p>
+      <br>
+      <br>
+      <p>２.以下をPCにダウンロードする。<a style="text-decoration: underline; color: blue;" href="https://github.com/yuk7/CentWSL/releases/download/8.1.1911.0/CentOS8.zip">https://github.com/~CentOS8.zip</a>からダウンロードする。<br>　"rootfs.tar.gz"を<a  style="text-decoration: underline; color: blue;" href="https://www.7-zip.org/a/7z2201-x64.exe">7-zip</a>で解凍して"rootfs.tar"を取り出す</p>
+      <br>
       <br>
       <p>　- CentOS8 (CentOS8.zipを解凍したフォルダ)</p>
       <p>　- rootfs.tar (CentOS8.zipに内包されているrootfs.tar.gzを解凍したファイル)</p>
       <p>　- <a style="text-decoration: underline; color: blue;" href="../batchfile/CentOS8_install.bat" download="CentOS8_install.bat" class="btn-play">CentOS8_install.bat</a> (手順３のコマンドを実行するバッチファイル。C:\Users\XXXXX 配下に置く)</p>
       <br>
-      <p>２.アプリ"エクスプローラー"のアドレス欄に以下のファイルパスを入力してダウンロードしたものを配置する(XXXXXの部分はWindowsログイン時のユーザー名)</p>
+      <br>
+      <p>３.アプリ"エクスプローラー"のアドレス欄に以下のファイルパスを入力してダウンロードしたものを配置する(XXXXXの部分はWindowsログイン時のユーザー名)</p>
+      <br>
       <br>
       <p>　- CentOS8　→　C:\Users\XXXXX\AppData\Local\Packages　※AppDataは隠しファイルであるため「表示」→「隠しファイル」にチェックする</p>
       <p>　- rootfs.tar　→　C:\Users\XXXXX</p>
       <p>　- CentOS8_install.bat　→　C:\Users\XXXXX</p>
       <br>
-      <p>３.アプリ"コマンド プロンプト"を起動して以下のコマンドを実行する。または C:\Users\XXXXX 配下に置いた<a href="../batchfile/CentOS8_install.zip" class="btn-play">CentOS8_install.bat</a>をダブルクリックで実行する。</p>
+      <br>
+      <p>４.アプリ"コマンド プロンプト"を起動して以下のコマンドを実行する。または C:\Users\XXXXX 配下に置いた<a href="../batchfile/CentOS8_install.zip" class="btn-play">CentOS8_install.bat</a>をダブルクリックで実行する。</p>
+      <br>
       <br>
       <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --import CentOS8 C:\Users\XXXXX\AppData\Local\Packages\CentOS8 C:\Users\XXXXX\rootfs.tar --version 2</b></p>
       <br>
+      <br>
       <p>　※"CentOS8_install.bat"が正しく実行された場合、４～７までの手順は不要。また、Ubuntu等既存のWSL環境がある場合に実行する</p>
       <br>
-      <p>４.ディストリビューションの一覧とバージョン情報を確認する</p>
+      <br>
+      <p>５.ディストリビューションの一覧とバージョン情報を確認する</p>
       <br>
       <br>
       <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -l -v</b></p>
@@ -234,19 +247,27 @@
         </tr>
       </table>
       <br>
-      <p>５.wslのCentOS8を起動する(-d CentOS8とするのは、他のディストリビューションがあるため)</p>
+      <br>
+      <p>６. WSL の CentOS8 を起動する(-d CentOS8 とするのは、他のディストリビューションがあるため)</p>
+      <br>
       <br>
       <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -d CentOS8</b>　//wslのCentOS8を起動。ほかのディストリビューションがある場合に-dオプションを使用</p>
       <br>
-      <p>６.プロンプト(左側の表示)が以下のように変わっていたら成功。"logout"でwslから抜ける</p>
+      <br>
+      <p>７.プロンプト(左側の表示)が以下のように変わっていたら成功。"logout"でwslから抜ける</p>
+      <br>
       <br>
       <p>　[root@DESKTOP-XXXXXXX XXXXX]# <b style="font-weight: bold;">logout</b></p>
       <br>
-      <p>７.ディストリビューション(オペレーティングシステム)を"CentOS8"に変更する</p>
+      <br>
+      <p>８.ディストリビューション(オペレーティングシステム)を"CentOS8"に変更する</p>
+      <br>
       <br>
       <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -s CentOS8</b></p>
       <br>
-      <p>８.ディストリビューションが"CentOS8"に変更されているか確認する</p>
+      <br>
+      <p>９.ディストリビューションが"CentOS8"に変更されているか確認する</p>
+      <br>
       <br>
       <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -l -v</b></p>
       <table class="wsl_table">
@@ -267,20 +288,46 @@
         </tr>
       </table>
       <br>
-      <p>９.おまけ(ディストリビューションを削除する)</p>
+      <br>
+      <p>１０.おまけ(ディストリビューションを削除する)</p>
+      <br>
       <br>
       <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --unregister Ubuntu</b></p>
       <br>
-      <p>１０.WSL起動コマンド</p>
+      <br>
+      <p>１１. WSL 起動コマンド</p>
+      <br>
       <br>
       <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl</b></p>
       <br>
       <br>
+      <p>１２. WSL に必要なパッケージをインストールするために<a style="text-decoration: underline; color: blue;" href="../shell/wsl_CentOS8_setting.sh" download="wsl_CentOS8_setting.sh" class="btn-play">wsl_CentOS8_setting.sh</a>をダウンロードする</p>
+      <br>
+      <br>
+      <p>１３. wsl_CentOS8_setting.sh を CentOS8 の /usr/local/bin 配下に入れて、以下のコマンドを順番に実行する</p>
+      <br>
+      <br>
+      <p>　[root@DESKTOP-XXXXXXX ~]# <b style="font-weight: bold;">cd /usr/local/bin</b></p>
+      <br>
+      <p>　[root@DESKTOP-XXXXXXX bin]# <b style="font-weight: bold;">chmod 755 wsl_CentOS8_setting.sh</b></p>
+      <br>
+      <p>　[root@DESKTOP-XXXXXXX bin]# <b style="font-weight: bold;">wsl_CentOS8_setting.sh</b></p>
+      <br>
+      <br>
+      <p>※ wsl_CentOS8_setting.sh の処理は数分掛かる。画面に以下の文字が表示されたらインストール完了</p>
+      <br>
+      <p>　Complete!</p>
+      <p>　attention: bc which sudo wget make installed!</p>
+      <br>
+      <br>
       <p style="font-weight: bold;">・WSL(CentOS8)をアンインストールする場合</p>
+      <br>
       <br>
       <p>１.以下をPCにダウンロードして指定のファイルパスに配置する。</p>
       <br>
+      <br>
       <p>　- <a style="text-decoration: underline; color: blue;" href="../batchfile/CentOS8_uninstall.bat" download="CentOS8_uninstall.bat" class="btn-play">CentOS8_uninstall.bat</a>　→　C:\Users\XXXXX</p>
+      <br>
       <br>
       <p>２.CentOS8_uninstall.batをダブルクリックして実行する</p>
       <br>
