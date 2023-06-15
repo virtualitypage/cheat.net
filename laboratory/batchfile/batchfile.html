@@ -220,9 +220,22 @@
       <p class="usage">Usage: Windows上のpython関連ファイル(C:\Users\XXXXX\AppData\Local\Programs\Python\*)を削除するバッチファイル。 ※これを使用する前にpython.exeでUninstallをクリック。C:\Users\XXXXX配下に置いてダブルクリックすることで実行可能</p></b>
       <br>
       <br>
-      <br>
       <p class="sub_title"><b>Mac で使用可能な command ファイル</b></p>
       <hr>
+      <br>
+      <details>
+        <summary>"XXXXX.command"は、開発元が未確認のため開けません。<br>と表示された時の対応方法</summary>
+          システム環境設定 > セキュリティとプライバシー > "ダウンロードしたアプリケーションの実行許可:" にて「このまま開く」をクリック
+          <br>
+          <br>
+          「ファイル"XXXXX.command"は、適切なアクセス権限がないために実行できません。」と表示された場合は、ターミナル上で以下のコマンドを実行する。
+          <br>
+          <br>
+          cd Downloads/
+          <br>
+          <br>
+          chmod u+x XXXXX.command　※XXXXXは対象のファイル名
+      </details>
       <br>
       <br>
       <a class="btn_Batchfile" href="./expenses_to_csv.command" download="expenses_to_csv.command" role="button"><b>expenses_to_csv.command</b></a>

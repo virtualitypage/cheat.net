@@ -720,3 +720,56 @@ a.btn_Batchfile:hover {
     color: #fff;
   }
 }
+
+/* =========================================================
+details
+========================================================= */
+
+details {
+  display: flex;
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 4px;
+  padding: 0.5em 0.5em 0;
+}
+summary {
+  text-align: center;
+  font-weight: bold;
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+  color: rgb(0, 0, 0);
+  font-size: 11px;
+}
+details[open] {
+  padding: 0.5em;
+  color: rgb(0, 0, 0);
+  font-size: 11px;
+}
+details[open] summary {
+  border-bottom: 1px solid rgb(0, 0, 0);
+  margin-bottom: 0.5em;
+}
+@media screen and (min-width: 769px) {
+  details {
+    display: flex;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 4px;
+    padding: 0.5em 0.5em 0;
+  }
+  summary {
+    text-align: center;
+    font-weight: bold;
+    margin: -0.5em -0.5em 0;
+    padding: 0.5em;
+    color: rgb(0, 0, 0);
+    font-size: 15px;
+  }
+  details[open] {
+    padding: 0.5em;
+    color: rgb(0, 0, 0);
+    font-size: 15px;
+  }
+  details[open] summary {
+    border-bottom: 1px solid rgb(0, 0, 0);
+    margin-bottom: 0.5em;
+  }
+}
