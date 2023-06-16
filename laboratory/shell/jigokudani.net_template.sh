@@ -25,7 +25,7 @@ fi
 
 CSV_FILE="$1"
 
-while IFS=, read -r col1 col2
+while IFS=, read -r col1 col2 || [[ -n $col1 ]];
 do
 # col1, col2 は CSV ファイルの列のヘッダーまたはデータ
 cat <<EOF >> $2.txt

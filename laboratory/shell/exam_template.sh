@@ -1,10 +1,10 @@
-
 #!/bin/bash
 
 this=`basename $0`
 
 function usage {
   echo "csvファイルからデータを抽出してタグに代入する、プライベートwebサイト'exam'編集用スクリプト"
+  echo "注意: exam_template_assist.shで生成したcsvファイルを使うこと"
   echo "入力方法: $this [csvファイルパス] [出力ファイル名] [cssファイル名] [jsファイル名] [バックリンク] [dlファイル名]"
   echo "実行環境がWSLの場合、csvファイルパスを/home/XXX.csvの形にする"
   exit 1
@@ -88,8 +88,7 @@ EOF
 count=0
 
 # col1, col2 は CSV ファイルの列のヘッダーまたはデータ
-while IFS=, read -r col1 col2 col3 col4 col5 col6;
-do
+while IFS=, read -r col1 col2 col3 col4 col5 col6 _ || [[ -n $col1 ]]; do
 
 count=`echo "$count+1" | bc`
 
@@ -104,9 +103,9 @@ cat <<EOF >> $2.txt
         <a>d. $col5</a>
         <a>e. $col6</a>
       </page>
-    <div class="button">
-      <input type="button" class="btn btn-info btn-sm" value=" 正解を表示 " onclick="changeColor('target');" />
-    </div>
+      <div class="button">
+        <input type="button" class="btn btn-info btn-sm" value=" 正解を表示 " onclick="changeColor('target');" />
+      </div>
 EOF
 # 変数"$col3"の値が0である場合
 else

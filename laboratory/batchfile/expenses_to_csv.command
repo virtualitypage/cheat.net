@@ -1,6 +1,6 @@
 #!/bin/bash
 
-current_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+current_dir=$(cd "$(dirname "$0")" && pwd)
 FILE="収支記録_読込用.txt"
 
 function create_config () {
