@@ -1,6 +1,6 @@
 #!/bin/bash
 
-this=$(basename "$0")
+this=`basename $0`
 
 function usage {
   echo "exam_template.shのためのcsv作成スクリプト"
@@ -37,7 +37,7 @@ while IFS= read -r line || [[ -n $line ]];
 do
   # 先頭と末尾の空白をトリムする
   trimmed_line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-  
+
   # 空行の場合もCSVの空行として出力する
   if [ -z "$trimmed_line" ]; then
     echo >> "$output_file"
