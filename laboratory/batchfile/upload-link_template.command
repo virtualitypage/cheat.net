@@ -12,15 +12,12 @@ tiktok_txt="tiktok.txt"
 twitter_txt="twitter.txt"
 niko2_txt="nikoniko.txt"
 
-count=0
-
 function create_code_youtube () {
-while IFS=, read -r col1 col2
+count=0
+while IFS=, read -r col1 col2 || [[ -n "$col2" ]]
 do
-
-count=`echo "$count+1" | bc`
-
-cat << EOF >> ${current_dir}/${youtube_txt}
+count=$(echo "$count + 1" | bc)
+cat << EOF >> "${current_dir}/${youtube_txt}"
           <tr>
             <th class="number" scope="row">$count</th>
             <td>
@@ -34,9 +31,9 @@ done < "${current_dir}/${youtube_csv}"
 }
 
 function create_code_tiktok () {
-while IFS=, read -r col1 col2
+count=0
+while IFS=, read -r col1 col2 || [[ -n "$col2" ]]
 do
-
 count=`echo "$count+1" | bc`
 
 cat << EOF >> ${current_dir}/${tiktok_txt}
@@ -53,9 +50,9 @@ done < "${current_dir}/${tiktok_csv}"
 }
 
 function create_code_twitter () {
-while IFS=, read -r col1 col2
+count=0
+while IFS=, read -r col1 col2 || [[ -n "$col2" ]]
 do
-
 count=`echo "$count+1" | bc`
 
 cat << EOF >> ${current_dir}/${twitter_txt}
@@ -72,79 +69,9 @@ done < "${current_dir}/${twitter_csv}"
 }
 
 function create_code_niko2 () {
-while IFS=, read -r col1 col2
+count=0
+while IFS=, read -r col1 col2 || [[ -n "$col2" ]]
 do
-
-count=`echo "$count+1" | bc`
-
-cat << EOF >> ${current_dir}/${niko2_txt}
-          <tr>
-            <th class="number" scope="row">$count</th>
-            <td>
-              <a href="$col1">
-                $col2
-              </a>
-            </td>
-          </tr>
-EOF
-done < "${current_dir}/${niko2_csv}"
-}
-
-function create_code_all () {
-while IFS=, read -r col1 col2
-do
-
-count=`echo "$count+1" | bc`
-
-cat << EOF >> ${current_dir}/${youtube_txt}
-          <tr>
-            <th class="number" scope="row">$count</th>
-            <td>
-              <a href="$col1">
-                $col2
-              </a>
-            </td>
-          </tr>
-EOF
-done < "${current_dir}/${youtube_csv}"
-
-while IFS=, read -r col1 col2
-do
-
-count=`echo "$count+1" | bc`
-
-cat << EOF >> ${current_dir}/${tiktok_txt}
-          <tr>
-            <th class="number" scope="row">$count</th>
-            <td>
-              <a href="$col1">
-                $col2
-              </a>
-            </td>
-          </tr>
-EOF
-done < "${current_dir}/${tiktok_csv}"
-
-while IFS=, read -r col1 col2
-do
-
-count=`echo "$count+1" | bc`
-
-cat << EOF >> ${current_dir}/${twitter_txt}
-          <tr>
-            <th class="number" scope="row">$count</th>
-            <td>
-              <a href="$col1">
-                $col2
-              </a>
-            </td>
-          </tr>
-EOF
-done < "${current_dir}/${twitter_csv}"
-
-while IFS=, read -r col1 col2
-do
-
 count=`echo "$count+1" | bc`
 
 cat << EOF >> ${current_dir}/${niko2_txt}
@@ -173,41 +100,51 @@ function echo_tmp () {
   exit 1
 }
 
-function echo_tmp2 () {
+function echo_tmp_youtube () {
   echo "HTMLコード生成が完了しました。"
-  echo "ファイルは${current_dir}に保存されています。"
-  echo "注意: 他のファイルも処理する場合は今生成したファイルを別の場所に移動して下さい。"
+  echo "${youtube_txt}は${current_dir}に保存されています。"
   echo ""
-  exit 0
+}
+
+function echo_tmp_tiktok () {
+  echo "HTMLコード生成が完了しました。"
+  echo "${tiktok_txt}は${current_dir}に保存されています。"
+  echo ""
+}
+
+function echo_tmp_twitter () {
+  echo "HTMLコード生成が完了しました。"
+  echo "${twitter_txt}は${current_dir}に保存されています。"
+  echo ""
+}
+
+function echo_tmp_niko2 () {
+  echo "HTMLコード生成が完了しました。"
+  echo "${niko2_txt}は${current_dir}に保存されています。"
+  echo ""
 }
 
 if [ -f "${current_dir}/${youtube_csv}" ]; then
-  if [ ! -f "${current_dir}/${tiktok_csv}" ] && [ ! -f "${current_dir}/${twitter_csv}" ] && [ ! -f "${current_dir}/${niko2_csv}" ]; then
-    create_code_youtube
-    echo_tmp2
-  fi
+  create_code_youtube
+  echo_tmp_youtube
+else
+  exit 1
 fi
 if [ -f "${current_dir}/${tiktok_csv}" ]; then
-  if [ ! -f "${current_dir}/${youtube_csv}" ] && [ ! -f "${current_dir}/${twitter_csv}" ] && [ ! -f "${current_dir}/${niko2_csv}" ]; then
-    create_code_tiktok
-    echo_tmp2
-  fi
+  create_code_tiktok
+  echo_tmp_tiktok
+else
+  exit 1
 fi
 if [ -f "${current_dir}/${twitter_csv}" ]; then
-  if [ ! -f "${current_dir}/${youtube_csv}" ] && [ ! -f "${current_dir}/${tiktok_csv}" ] && [ ! -f "${current_dir}/${niko2_csv}" ]; then
-    create_code_twitter
-    echo_tmp2
-  fi
+  create_code_twitter
+  echo_tmp_twitter
+else
+  exit 1
 fi
 if [ -f "${current_dir}/${niko2_csv}" ]; then
-  if [ ! -f "${current_dir}/${youtube_csv}" ] && [ ! -f "${current_dir}/${tiktok_csv}" ] && [ ! -f "${current_dir}/${twitter_csv}" ]; then
-    create_code_niko2
-    echo_tmp2
-  fi
-fi
-if [ -f "${current_dir}/${youtube_csv}" ] && [ -f "${current_dir}/${tiktok_csv}" ] && [ -f "${current_dir}/${twitter_csv}" ] && [ -f "${current_dir}/${niko2_csv}" ]; then
-  create_code_all
-  echo_tmp2
+  create_code_niko2
+  echo_tmp_niko2
 else
-  echo_tmp
+  exit 1
 fi
