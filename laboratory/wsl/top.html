@@ -2,11 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Python</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../../css/header.css">
-    <link rel="stylesheet" href="../../css/reset.min.css">
-    <link rel="stylesheet" href="../../css/style.css">
+    <title>WSL(Windows Subsystem for Linux)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../css/reset.min.css" />
+    <link rel="stylesheet" href="../../css/header.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="./css/style.css" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7MY5P9TV7J"></script>
     <script>
@@ -20,7 +21,7 @@
     <header class="site-header">
       <div class="site-header__wrapper">
         <div class="site-header__start">
-          <a href="../automatic_laboratory" class="brand">CHEAT</a>
+          <a href="../top" class="brand">CHEAT</a>
         </div>
         <div class="site-header__middle">
           <nav class="nav">
@@ -56,7 +57,7 @@
                 </a>
               </li>
               <li class="nav__item">
-                <a href="./python">
+                <a href="./top">
                   <svg
                     viewBox="0 0 24 24"
                     width="24px"
@@ -83,7 +84,7 @@
                 </a>
               </li>
               <li class="nav__item">
-                <a href="../../upload-link/top">
+                <a href="../../upload-link/app">
                   <svg
                     viewBox="0 0 24 24"
                     width="24px"
@@ -190,94 +191,145 @@
     </header>
     <main>
       <br>
-      <br>
-      <p class="sub_title"><b>MacOS のターミナルや Windows のコマンドプロンプトで使用可能な Python スクリプト</b></p>
-      <hr>
+      <p style="font-weight: bold;">・WSL(Windows Subsystem for Linux)導入手順</p>
       <br>
       <br>
-      <a class="btn_Python" href="./chmod755.py" download="chmod755.py" role="button"><b>chmod755.py</b></a>
-      <br>
-      <p class="usage">Usage: 指定したディレクトリ内の全ファイルにアクセス権限(読み取り・書き込み・実行)を付与するPythonファイル ※/downloadに"chmod"というフォルダを作成、その中に権限付与したいファイルを入れる</p>
+      <p>１.アプリ"コマンド プロンプト"を起動して以下のコマンドを実行、その後PCを再起動する</p>
       <br>
       <br>
-      <a class="btn_Python" href="./csv_to_json.py" download="csv_to_json.py" role="button"><b>csv_to_json.py</b></a>
-      <br>
-      <p class="usage">Usage: カレントディレクトリ内の全csvファイルをjsonファイルに変換するPythonファイル ※csvファイルの1行目にはjsonのキー値を入れること</p>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --install -d Ubuntu</b></p>
       <br>
       <br>
-      <a class="btn_Python" href="./csv_to_txt.py" download="csv_to_txt.py" role="button"><b>csv_to_txt.py</b></a>
-      <br>
-      <p class="usage">Usage: カレントディレクトリ内の全csvファイルをtxtファイルに変換するPythonファイル ※csvファイルの1行目にはjsonのキー値を入れないこと</p>
+      <p>２.以下をPCにダウンロードする。<a style="text-decoration: underline; color: blue;" href="https://github.com/yuk7/CentWSL/releases/download/8.1.1911.0/CentOS8.zip">https://github.com/~CentOS8.zip</a>からダウンロードする。<br>　"rootfs.tar.gz"を<a  style="text-decoration: underline; color: blue;" href="https://www.7-zip.org/a/7z2201-x64.exe">7-zip</a>で解凍して"rootfs.tar"を取り出す</p>
       <br>
       <br>
-      <a class="btn_Python" href="./folder_path.py" download="folder_path.py" role="button"><b>folder_path.py</b></a>
-      <br>
-      <p class="usage">Usage: 指定したディレクトリ内のフォルダ構成をファイルに出力するPythonファイル(MacOS環境用) ※/User/XXXXに"フォルダ"というフォルダを配置することで使用可能</p>
-      <br>
-      <br>
-      <a class="btn_Python" href="./folder_path_win10.py" download="folder_path_win10.py" role="button"><b>folder_path_win10.py</b></a>
-      <br>
-      <p class="usage">Usage: 指定したディレクトリ内のフォルダ構成をファイルに出力するPythonファイル(Windows環境用) ※/User/XXXXに"フォルダ"というフォルダを配置することで使用可能</p>
+      <p>　- CentOS8 (CentOS8.zipを解凍したフォルダ)</p>
+      <p>　- rootfs.tar (CentOS8.zipに内包されているrootfs.tar.gzを解凍したファイル)</p>
+      <p>　- <a style="text-decoration: underline; color: blue;" href="../batchfile/CentOS8_install.bat" download="CentOS8_install.bat" class="btn-play">CentOS8_install.bat</a> (手順３のコマンドを実行するバッチファイル。C:\Users\XXXXX 配下に置く)</p>
       <br>
       <br>
-      <a class="btn_Python" href="./miruden_chart_csv_to_json.py" download="miruden_chart_csv_to_json.py" role="button"><b>miruden_chart_csv_to_json.py</b></a>
-      <br>
-      <p class="usage">Usage: "電気料金表.csv"を"電気料金データ.json"に変換するPythonファイル</p>
+      <p>３.アプリ"エクスプローラー"のアドレス欄に以下のファイルパスを入力してダウンロードしたものを配置する(XXXXXの部分はWindowsログイン時のユーザー名)</p>
       <br>
       <br>
-      <a class="btn_Python" href="./miruden_chart_json_to_csv.py" download="miruden_chart_json_to_csv.py" role="button"><b>miruden_chart_json_to_csv.py</b></a>
-      <br>
-      <p class="usage">Usage: "電気料金データ.json"を"電気料金表.csv"に変換するPythonファイル</p>
-      <br>
-      <br>
-      <a class="btn_Python" href="./mv_volumes.py" download="mv_volumes.py" role="button"><b>mv_volumes.py</b></a>
-      <br>
-      <p class="usage">Usage: 外部ディスクのデータを別のディスクにコピーするPythonファイル(MacOS環境用)</p>
+      <p>　- CentOS8　→　C:\Users\XXXXX\AppData\Local\Packages　※AppDataは隠しファイルであるため「表示」→「隠しファイル」にチェックする</p>
+      <p>　- rootfs.tar　→　C:\Users\XXXXX</p>
+      <p>　- CentOS8_install.bat　→　C:\Users\XXXXX</p>
       <br>
       <br>
-      <a class="btn_Python" href="./mv_volumes_win10.py" download="mv_volumes_win10.py" role="button"><b>mv_volumes_win10.py</b></a>
-      <br>
-      <p class="usage">Usage: 外部ディスクのデータを別のディスクにコピーするPythonファイル(Windows環境用)</p>
+      <p>４.アプリ"コマンド プロンプト"を起動して以下のコマンドを実行する。または C:\Users\XXXXX 配下に置いた<a href="../batchfile/CentOS8_install.zip" class="btn-play">CentOS8_install.bat</a>をダブルクリックで実行する。</p>
       <br>
       <br>
-      <a class="btn_Python" href="./output_csv.py" download="output_csv.py" role="button"><b>output_csv.py</b></a>
-      <br>
-      <p class="usage">Usage: テキストの内容をcsvに出力するPythonファイル(MacOS環境用)(XXX_template.shで使用するcsvを作成する) ※/User/XXXX/Desktop/input.txt が読み込み対象</p>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --import CentOS8 C:\Users\XXXXX\AppData\Local\Packages\CentOS8 C:\Users\XXXXX\rootfs.tar --version 2</b></p>
       <br>
       <br>
-      <a class="btn_Python" href="./output_csv_win10.py" download="output_csv_win10.py" role="button"><b>output_csv_win10.py</b></a>
-      <br>
-      <p class="usage">Usage: テキストの内容をcsvに出力するPythonファイル(Windows環境用)(XXX_template.shで使用するcsvを作成する) ※/User/XXXX/input.txt が読み込み対象</p>
+      <p>　※"CentOS8_install.bat"が正しく実行された場合、４～７までの手順は不要。また、Ubuntu等既存のWSL環境がある場合に実行する</p>
       <br>
       <br>
-      <a class="btn_Python" href="./pdf_read.py" download="pdf_read.py" role="button"><b>pdf_read.py</b></a>
-      <br>
-      <p class="usage">Usage: PDFに記載されているテキストをファイルに出力するPythonファイル(MacOS環境用) ※/Desktopに"PDF.pdf"というファイルを配置することで使用可能</p>
+      <p>５.ディストリビューションの一覧とバージョン情報を確認する</p>
       <br>
       <br>
-      <a class="btn_Python" href="./pdf_read_win10.py" download="pdf_read_win10.py" role="button"><b>pdf_read_win10.py</b></a>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -l -v</b></p>
+      <table>
+        <tr>
+          <td>　　NAME</td>
+          <td>　　STATE</td>
+          <td>　　VERSION</td>
+        </tr>
+        <tr>
+          <td>　 * Ubuntu</td>
+          <td>　　Stopped</td>
+          <td>　　2</td>
+        </tr>
+        <tr>
+          <td>　　CentOS8</td>
+          <td>　　Stopped</td>
+          <td>　　2</td>
+        </tr>
+      </table>
       <br>
-      <p class="usage">Usage: PDFに記載されているテキストをファイルに出力するPythonファイル(Windows環境用) ※/User/XXXX/に"PDF.pdf"というファイルを配置することで使用可能</p>
+      <br>
+      <p>６. WSL の CentOS8 を起動する(-d CentOS8 とするのは、他のディストリビューションがあるため)</p>
       <br>
       <br>
-      <a class="btn_Python" href="./submitter.py" download="submitter.py" role="button"><b>submitter.py</b></a>
-      <br>
-      <p class="usage">Usage: GUI上のプルダウンメニューを操作して選択した内容をファイルに出力する汎用Pythonファイル(MacOS、Windows両対応) ※ファイルは/User/XXXX/に保存される</p>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -d CentOS8</b>　//wslのCentOS8を起動。ほかのディストリビューションがある場合に-dオプションを使用</p>
       <br>
       <br>
-      <a class="btn_Python" href="./text_to_json-title_url.py" download="text_to_json-title_url.py" role="button"><b>text_to_json-title_url.py</b></a>
-      <br>
-      <p class="usage">Usage: カレントディレクトリ内の全テキストファイルをjsonとcsvファイルに変換するPythonファイル ※キー値は"TEXT"と"URL"の2つが指定されている</p>
+      <p>７.プロンプト(左側の表示)が以下のように変わっていたら成功。"logout"でwslから抜ける</p>
       <br>
       <br>
-      <a class="btn_Python" href="./users_path.py" download="users_path.py" role="button"><b>users_path.py</b></a>
-      <br>
-      <p class="usage">Usage: Usersディレクトリ内のフォルダ構成をファイルに出力するPythonファイル(MacOS環境用)</p>
+      <p>　[root@DESKTOP-XXXXXXX XXXXX]# <b style="font-weight: bold;">logout</b></p>
       <br>
       <br>
-      <a class="btn_Python" href="./users_path_win10.py" download="users_path_win10.py" role="button"><b>users_path_win10.py</b></a>
+      <p>８.ディストリビューション(オペレーティングシステム)を"CentOS8"に変更する</p>
       <br>
-      <p class="usage">Usage: Usersディレクトリ内のフォルダ構成をファイルに出力するPythonファイル(Windows環境用)</p>
+      <br>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -s CentOS8</b></p>
+      <br>
+      <br>
+      <p>９.ディストリビューションが"CentOS8"に変更されているか確認する</p>
+      <br>
+      <br>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -l -v</b></p>
+      <table class="wsl_table">
+        <tr>
+          <td>　　NAME</td>
+          <td>　　STATE</td>
+          <td>　　VERSION</td>
+        </tr>
+        <tr>
+          <td>　 * CentOS8</td>
+          <td>　　Stopped</td>
+          <td>　　2</td>
+        </tr>
+        <tr>
+          <td>　　Ubuntu</td>
+          <td>　　Stopped</td>
+          <td>　　2</td>
+        </tr>
+      </table>
+      <br>
+      <br>
+      <p>１０.おまけ(ディストリビューションを削除する)</p>
+      <br>
+      <br>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --unregister Ubuntu</b></p>
+      <br>
+      <br>
+      <p>１１. WSL 起動コマンド</p>
+      <br>
+      <br>
+      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl</b></p>
+      <br>
+      <br>
+      <p>１２. WSL に必要なパッケージをインストールするために<a style="text-decoration: underline; color: blue;" href="../shell/wsl_CentOS8_setting.sh" download="wsl_CentOS8_setting.sh" class="btn-play">wsl_CentOS8_setting.sh</a>をダウンロードする</p>
+      <br>
+      <br>
+      <p>１３. wsl_CentOS8_setting.sh を CentOS8 の /usr/local/bin 配下に入れて、以下のコマンドを順番に実行する</p>
+      <br>
+      <br>
+      <p>　[root@DESKTOP-XXXXXXX ~]# <b style="font-weight: bold;">cd /usr/local/bin</b></p>
+      <br>
+      <p>　[root@DESKTOP-XXXXXXX bin]# <b style="font-weight: bold;">chmod 755 wsl_CentOS8_setting.sh</b></p>
+      <br>
+      <p>　[root@DESKTOP-XXXXXXX bin]# <b style="font-weight: bold;">wsl_CentOS8_setting.sh</b></p>
+      <br>
+      <br>
+      <p>※ wsl_CentOS8_setting.sh の処理は数分掛かる。画面に以下の文字が表示されたらインストール完了</p>
+      <br>
+      <p>　Complete!</p>
+      <p>　attention: bc which sudo wget make installed!</p>
+      <br>
+      <br>
+      <p style="font-weight: bold;">・WSL(CentOS8)をアンインストールする場合</p>
+      <br>
+      <br>
+      <p>１.以下をPCにダウンロードして指定のファイルパスに配置する。</p>
+      <br>
+      <br>
+      <p>　- <a style="text-decoration: underline; color: blue;" href="../batchfile/CentOS8_uninstall.bat" download="CentOS8_uninstall.bat" class="btn-play">CentOS8_uninstall.bat</a>　→　C:\Users\XXXXX</p>
+      <br>
+      <br>
+      <p>２.CentOS8_uninstall.batをダブルクリックして実行する</p>
       <br>
       <br>
     </main>
@@ -296,8 +348,7 @@
   }
 
   main {
-    width: 90%;
-    max-width: 1000px;
+    width: 95%;
     margin: auto;
   }
 

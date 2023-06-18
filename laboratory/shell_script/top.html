@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Batchfile／command</title>
+    <title>Shell</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/reset.min.css">
@@ -20,7 +20,7 @@
     <header class="site-header">
       <div class="site-header__wrapper">
         <div class="site-header__start">
-          <a href="../automatic_laboratory" class="brand">CHEAT</a>
+          <a href="../top" class="brand">CHEAT</a>
         </div>
         <div class="site-header__middle">
           <nav class="nav">
@@ -56,7 +56,7 @@
                 </a>
               </li>
               <li class="nav__item">
-                <a href="./batchfile">
+                <a href="./top">
                   <svg
                     viewBox="0 0 24 24"
                     width="24px"
@@ -83,7 +83,7 @@
                 </a>
               </li>
               <li class="nav__item">
-                <a href="../../upload-link/top">
+                <a href="../../upload-link/app">
                   <svg
                     viewBox="0 0 24 24"
                     width="24px"
@@ -191,106 +191,118 @@
     <main>
       <br>
       <br>
-      <p class="sub_title"><b>Windows のコマンドプロンプトで使用可能な batch ファイル</b></p>
+      <p class="sub_title"><b>MacOS のターミナルや WSL 上で使用可能なシェルスクリプト</b></p>
       <hr>
       <br>
       <br>
-      <a class="btn_Batchfile" href="./CentOS8_install.bat" download="CentOS8_install.bat" role="button"><b>CentOS8_install.bat</b></a>
+      <a class="btn_Shell" href="./cheat.net_album_template.sh" download="cheat.net_album_template.sh" role="button"><b>cheat.net_album_template.sh</b></a>
       <br>
-      <p class="usage">Usage: WSL(CentOS8)をインストールするバッチファイル。WSL導入手順を基に各ファイルを適切に配置しておくこと</p>
-      <br>
-      <br>
-      <a class="btn_Batchfile" href="./CentOS8_uninstall.bat" download="CentOS8_uninstall.bat" role="button"><b>CentOS8_uninstall.bat</b></a>
-      <br>
-      <p class="usage">Usage: WSL(CentOS8)をアンインストールするバッチファイル。</p>
+      <p class="usage">Usage: csvファイルからデータを抽出してタグに代入する、プライベートwebサイト'cheat.net'のアルバム編集用スクリプト</p>
       <br>
       <br>
-      <a class="btn_Batchfile" href="./python_install.bat" download="python_install.bat" role="button"><b>python_install.bat</b></a>
+      <a class="btn_Shell" href="./cooking_data.sh" download="cooking_data.sh" role="button"><b>cooking_data.sh</b></a>
       <br>
-      <p class="usage">Usage: python.exeをダウンロードするバッチファイル。python.exeを開いて"Add python.exe to PATH"にチェックを入れたうえで、Install Nowをクリック。 ※C:\Users\XXXXX配下に置いてダブルクリックすることで実行可能</p></b>
-      <br>
-      <br>
-      <a class="btn_Batchfile" href="./python_library_install.bat" download="python_library_install.bat" role="button"><b>python_library_install.bat</b></a>
-      <br>
-      <p class="usage">Usage: pythonで使用されるライブラリをインストールするバッチファイル。C:\Users\XXXXX配下に置いてダブルクリックすることで実行可能</p>
+      <p class="usage">Usage: 過去の料理記録から調理に必要なデータを生成するスクリプト</p>
       <br>
       <br>
-      <a class="btn_Batchfile" href="./python_uninstall.bat" download="python_uninstall.bat" role="button"><b>python_uninstall.bat</b></a>
+      <a class="btn_Shell" href="./exam_template_assist.sh" download="exam_template_assist.sh" role="button"><b>exam_template_assist.sh</b></a>
       <br>
-      <p class="usage">Usage: Windows上のpython関連ファイル(C:\Users\XXXXX\AppData\Local\Programs\Python\*)を削除するバッチファイル。 ※これを使用する前にpython.exeでUninstallをクリック。C:\Users\XXXXX配下に置いてダブルクリックすることで実行可能</p></b>
-      <br>
-      <br>
-      <p class="sub_title"><b>Mac で使用可能な command ファイル</b></p>
-      <hr>
-      <br>
-      <details>
-        <summary>"XXXXX.command"は、開発元が未確認のため開けません。<br>と表示された時の対応方法</summary>
-          システム環境設定 > セキュリティとプライバシー > "ダウンロードしたアプリケーションの実行許可:" にて「このまま開く」をクリック
-          <br>
-          <br>
-          「ファイル"XXXXX.command"は、適切なアクセス権限がないために実行できません。」と表示された場合は、ターミナル上で以下のコマンドを実行する。
-          <br>
-          <br>
-          cd Downloads/
-          <br>
-          <br>
-          chmod u+x XXXXX.command　※XXXXXは対象のファイル名
-      </details>
+      <p class="usage">Usage: exam_template.shのためのcsv作成スクリプト</p>
       <br>
       <br>
-      <a class="btn_Batchfile" href="./chmod755.command" download="chmod755.command" role="button"><b>chmod755.command</b></a>
+      <a class="btn_Shell" href="./exam_template.sh" download="exam_template.sh" role="button"><b>exam_template.sh</b></a>
       <br>
-      <p class="usage">Usage: 作成されたディレクトリ内の全ファイルに権限(読込・書込・実行)を付与するcommandファイル。chmod755.pyの実質上位互換。ダブルクリックすることで実行可能</p>
-      <br>
-      <br>
-      <a class="btn_Batchfile" href="./exam_template.command" download="exam_template.command" role="button"><b>exam_template.command</b></a>
-      <br>
-      <p class="usage">Usage: テキストファイル作成からデータ読み込み処理、最終的にhtmlのコードに変換するcommandファイル。exam_template.shの実質上位互換。ダブルクリックすることで実行可能</p>
+      <p class="usage">Usage: csvファイルからデータを抽出してタグに代入する、プライベートwebサイト'exam'編集用スクリプト</p>
       <br>
       <br>
-      <a class="btn_Batchfile" href="./expenses_to_csv.command" download="expenses_to_csv.command" role="button"><b>expenses_to_csv.command</b></a>
+      <a class="btn_Shell" href="./expenses_to_csv.sh" download="expenses_to_csv.sh" role="button"><b>expenses_to_csv.sh</b></a>
       <br>
-      <p class="usage">Usage: 作成されたファイルを読み込んで収支計算処理を行いcsvに変換するcommandファイル。expenses_to_csv.shの実質上位互換。ダブルクリックすることで実行可能</p>
-      <br>
-      <br>
-      <a class="btn_Batchfile" href="./jigokudani.net_template.command" download="jigokudani.net_template.command" role="button"><b>jigokudani.net_template.command</b></a>
-      <br>
-      <p class="usage">Usage: 作成されたファイルを読み込んでjigokudanu.net用のhtmlのコードを作るcommandファイル。jigokudani.net_template.shの実質上位互換。ダブルクリックすることで実行可能</p>
+      <p class="usage">Usage: テキストのデータにある数値を計算してcsvに計算結果を書き出すスクリプト</p>
       <br>
       <br>
-      <a class="btn_Batchfile" href="./payroll.command" download="payroll.command" role="button"><b>payroll.command</b></a>
+      <a class="btn_Shell" href="./html_temp.sh" download="html_temp.sh" role="button"><b>html_temp.sh</b></a>
       <br>
-      <p class="usage">Usage: 作成されたファイルを読み込んで計算と集計処理を行うcommandファイル。payroll_mac.shの実質上位互換。ダブルクリックすることで実行可能</p>
+      <p class="usage">Usage: webサイトのソースコードテンプレートを作成するスクリプト</p>
       <br>
       <br>
-      <a class="btn_Batchfile" href="./upload-link_template.command" download="upload-link_template.command" role="button"><b>upload-link_template.command</b></a>
+      <a class="btn_Shell" href="./jigokudani.net_template.sh" download="jigokudani.net_template.sh" role="button"><b>jigokudani.net_template.sh</b></a>
       <br>
-      <p class="usage">Usage: csvファイルを読み込んでHTMLコードを作るcommandファイル。upload-link_template.shの実質上位互換。ダブルクリックすることで実行可能</p>
+      <p class="usage">Usage: csvファイルからデータを抽出してタグに代入する、プライベートwebサイト'jigokudani.net'編集用スクリプト</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./moving.sh" download="moving.sh" role="button"><b>moving.sh</b></a>
+      <br>
+      <p class="usage">Usage: フォルダ内の全ファイルを指定したフォルダに移動するスクリプト</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./payroll_mac.sh" download="payroll_mac.sh" role="button"><b>payroll_mac.sh</b></a>
+      <br>
+      <p class="usage">Usage: アルバイト明細の自動計算処理を実行するスクリプト(MacOS環境用)</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./payroll_win.sh" download="payroll_win.sh" role="button"><b>payroll_win.sh</b></a>
+      <br>
+      <p class="usage">Usage: アルバイト明細の自動計算処理を実行するスクリプト(Windows環境用)</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./python3.11.3_macOS.sh" download="python3.11.3_macOS.sh" role="button"><b>python3.11.3_macOS.sh</b></a>
+      <br>
+      <p class="usage">Usage: インタープリタ型の高水準汎用プログラミング言語 'Python' の導入・削除を行うスクリプト(MacOS環境用)</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./quiz_generator.sh" download="quiz_generator.sh" role="button"><b>quiz_generator.sh</b></a>
+      <br>
+      <p class="usage">Usage: csvファイルからデータを抽出する、テキストで問題を作るwebサイト'https://quizgenerator.net'用スクリプト</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./shell_exam.sh" download="shell_exam.sh" role="button"><b>shell_exam.sh</b></a>
+      <br>
+      <p class="usage">Usage: シェルスクリプトを作成するための基本情報をファイルに出力するスクリプト</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./upload-link_template.sh" download="upload-link_template.sh" role="button"><b>upload-link_template.sh</b></a>
+      <br>
+      <p class="usage">Usage: csvファイルからデータを抽出してタグに代入する、プライベートwebサイト'upload-link'編集用スクリプト</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./wsl_CentOS8_setting.sh" download="wsl_CentOS8_setting.sh" role="button"><b>wsl_CentOS8_setting.sh</b></a>
+      <br>
+      <p class="usage">Usage: wsl(CentOS8)インストール後、必要なパッケージをインストールするためのスクリプト</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./youtube_link_checker_csv.sh" download="youtube_link_checker_csv.sh" role="button"><b>youtube_link_checker_csv.sh</b></a>
+      <br>
+      <p class="usage">Usage: youtubeの動画リンクの使用可否を判定し、結果をcsvに書き出すスクリプト(slackにファイルを転送する)</p>
+      <br>
+      <br>
+      <a class="btn_Shell" href="./youtube_link_checker_json.sh" download="youtube_link_checker_json.sh" role="button"><b>youtube_link_checker_json.sh</b></a>
+      <br>
+      <p class="usage">Usage: youtubeの動画リンクの使用可否を判定し、結果をjsonファイルに書き出すスクリプト(slackにファイルを転送する)</p>
       <br>
       <br>
     </main>
-    <footer class="automatic_laboratory">
-      <p class="automatic_laboratory">☆ cheat.net</p>
+    <footer>
+      <p class="footer">☆ cheat.net</p>
     </footer>
     <script src="../../js/admin.js"></script>
   </body>
 </html>
 
 <style>
-  body {
-    font-family: system-ui, sans-serif;
-    overflow-x: hidden;
-    margin: 0;
-  }
+body {
+  font-family: system-ui, sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+}
 
-  main {
-    width: 90%;
-    max-width: 1000px;
-    margin: auto;
-  }
+main {
+  width: 90%;
+  max-width: 1000px;
+  margin: auto;
+}
 
-  footer {
-    width: 100%;
-    height: 30px;
-  }
+footer {
+  width: 100%;
+  height: 30px;
+}
 </style>

@@ -5,12 +5,12 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 youtube_csv="youtube.csv"
 tiktok_csv="tiktok.csv"
 twitter_csv="twitter.csv"
-niko2_csv="nikoniko.csv"
+nicovideo_csv="nicovideo.csv"
 
 youtube_txt="youtube.txt"
 tiktok_txt="tiktok.txt"
 twitter_txt="twitter.txt"
-niko2_txt="nikoniko.txt"
+nicovideo_txt="nicovideo.txt"
 
 function create_code_youtube () {
 count=0
@@ -68,13 +68,13 @@ EOF
 done < "${current_dir}/${twitter_csv}"
 }
 
-function create_code_niko2 () {
+function create_code_nicovideo () {
 count=0
 while IFS=, read -r col1 col2 || [[ -n "$col2" ]]
 do
 count=`echo "$count+1" | bc`
 
-cat << EOF >> ${current_dir}/${niko2_txt}
+cat << EOF >> ${current_dir}/${nicovideo_txt}
           <tr>
             <th class="number" scope="row">$count</th>
             <td>
@@ -84,7 +84,7 @@ cat << EOF >> ${current_dir}/${niko2_txt}
             </td>
           </tr>
 EOF
-done < "${current_dir}/${niko2_csv}"
+done < "${current_dir}/${nicovideo_csv}"
 }
 
 function echo_tmp () {
@@ -118,33 +118,28 @@ function echo_tmp_twitter () {
   echo ""
 }
 
-function echo_tmp_niko2 () {
+function echo_tmp_nicovideo () {
   echo "HTMLコード生成が完了しました。"
-  echo "${niko2_txt}は${current_dir}に保存されています。"
+  echo "${nicovideo_txt}は${current_dir}に保存されています。"
   echo ""
 }
 
 if [ -f "${current_dir}/${youtube_csv}" ]; then
   create_code_youtube
   echo_tmp_youtube
-else
-  exit 1
 fi
+
 if [ -f "${current_dir}/${tiktok_csv}" ]; then
   create_code_tiktok
   echo_tmp_tiktok
-else
-  exit 1
 fi
+
 if [ -f "${current_dir}/${twitter_csv}" ]; then
   create_code_twitter
   echo_tmp_twitter
-else
-  exit 1
 fi
-if [ -f "${current_dir}/${niko2_csv}" ]; then
-  create_code_niko2
-  echo_tmp_niko2
-else
-  exit 1
+
+if [ -f "${current_dir}/${nicovideo_csv}" ]; then
+  create_code_nicovideo
+  echo_tmp_nicovideo
 fi

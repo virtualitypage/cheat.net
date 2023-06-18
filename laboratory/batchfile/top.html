@@ -2,12 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>WSL(Windows Subsystem for Linux)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="../../css/reset.min.css" />
-    <link rel="stylesheet" href="../../css/header.css" />
-    <link rel="stylesheet" href="../../css/style.css" />
-    <link rel="stylesheet" href="./css/style.css" />
+    <title>Batchfile／command</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/reset.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7MY5P9TV7J"></script>
     <script>
@@ -57,7 +56,7 @@
                 </a>
               </li>
               <li class="nav__item">
-                <a href="./wsl">
+                <a href="./top">
                   <svg
                     viewBox="0 0 24 24"
                     width="24px"
@@ -84,7 +83,7 @@
                 </a>
               </li>
               <li class="nav__item">
-                <a href="../../upload-link/top">
+                <a href="../../upload-link/app">
                   <svg
                     viewBox="0 0 24 24"
                     width="24px"
@@ -191,150 +190,87 @@
     </header>
     <main>
       <br>
-      <p style="font-weight: bold;">・WSL(Windows Subsystem for Linux)導入手順</p>
       <br>
+      <p class="sub_title"><b>Windows のコマンドプロンプトで使用可能な batch ファイル</b></p>
+      <hr>
       <br>
-      <p>１.アプリ"コマンド プロンプト"を起動して以下のコマンドを実行、その後PCを再起動する</p>
       <br>
+      <a class="btn_Batchfile" href="./CentOS8_install.bat" download="CentOS8_install.bat" role="button"><b>CentOS8_install.bat</b></a>
       <br>
-      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --install -d Ubuntu</b></p>
+      <p class="usage">Usage: WSL(CentOS8)をインストールするバッチファイル。WSL導入手順を基に各ファイルを適切に配置しておくこと</p>
       <br>
       <br>
-      <p>２.以下をPCにダウンロードする。<a style="text-decoration: underline; color: blue;" href="https://github.com/yuk7/CentWSL/releases/download/8.1.1911.0/CentOS8.zip">https://github.com/~CentOS8.zip</a>からダウンロードする。<br>　"rootfs.tar.gz"を<a  style="text-decoration: underline; color: blue;" href="https://www.7-zip.org/a/7z2201-x64.exe">7-zip</a>で解凍して"rootfs.tar"を取り出す</p>
+      <a class="btn_Batchfile" href="./CentOS8_uninstall.bat" download="CentOS8_uninstall.bat" role="button"><b>CentOS8_uninstall.bat</b></a>
       <br>
+      <p class="usage">Usage: WSL(CentOS8)をアンインストールするバッチファイル。</p>
       <br>
-      <p>　- CentOS8 (CentOS8.zipを解凍したフォルダ)</p>
-      <p>　- rootfs.tar (CentOS8.zipに内包されているrootfs.tar.gzを解凍したファイル)</p>
-      <p>　- <a style="text-decoration: underline; color: blue;" href="../batchfile/CentOS8_install.bat" download="CentOS8_install.bat" class="btn-play">CentOS8_install.bat</a> (手順３のコマンドを実行するバッチファイル。C:\Users\XXXXX 配下に置く)</p>
       <br>
+      <a class="btn_Batchfile" href="./python_install.bat" download="python_install.bat" role="button"><b>python_install.bat</b></a>
       <br>
-      <p>３.アプリ"エクスプローラー"のアドレス欄に以下のファイルパスを入力してダウンロードしたものを配置する(XXXXXの部分はWindowsログイン時のユーザー名)</p>
+      <p class="usage">Usage: python.exeをダウンロードするバッチファイル。python.exeを開いて"Add python.exe to PATH"にチェックを入れたうえで、Install Nowをクリック。 ※C:\Users\XXXXX配下に置いてダブルクリックすることで実行可能</p></b>
       <br>
       <br>
-      <p>　- CentOS8　→　C:\Users\XXXXX\AppData\Local\Packages　※AppDataは隠しファイルであるため「表示」→「隠しファイル」にチェックする</p>
-      <p>　- rootfs.tar　→　C:\Users\XXXXX</p>
-      <p>　- CentOS8_install.bat　→　C:\Users\XXXXX</p>
+      <a class="btn_Batchfile" href="./python_library_install.bat" download="python_library_install.bat" role="button"><b>python_library_install.bat</b></a>
       <br>
+      <p class="usage">Usage: pythonで使用されるライブラリをインストールするバッチファイル。C:\Users\XXXXX配下に置いてダブルクリックすることで実行可能</p>
       <br>
-      <p>４.アプリ"コマンド プロンプト"を起動して以下のコマンドを実行する。または C:\Users\XXXXX 配下に置いた<a href="../batchfile/CentOS8_install.zip" class="btn-play">CentOS8_install.bat</a>をダブルクリックで実行する。</p>
       <br>
+      <a class="btn_Batchfile" href="./python_uninstall.bat" download="python_uninstall.bat" role="button"><b>python_uninstall.bat</b></a>
       <br>
-      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --import CentOS8 C:\Users\XXXXX\AppData\Local\Packages\CentOS8 C:\Users\XXXXX\rootfs.tar --version 2</b></p>
+      <p class="usage">Usage: Windows上のpython関連ファイル(C:\Users\XXXXX\AppData\Local\Programs\Python\*)を削除するバッチファイル。 ※これを使用する前にpython.exeでUninstallをクリック。C:\Users\XXXXX配下に置いてダブルクリックすることで実行可能</p></b>
       <br>
       <br>
-      <p>　※"CentOS8_install.bat"が正しく実行された場合、４～７までの手順は不要。また、Ubuntu等既存のWSL環境がある場合に実行する</p>
+      <p class="sub_title"><b>Mac で使用可能な command ファイル</b></p>
+      <hr>
       <br>
+      <details>
+        <summary>"XXXXX.command"は、開発元が未確認のため開けません。<br>と表示された時の対応方法</summary>
+          システム環境設定 > セキュリティとプライバシー > "ダウンロードしたアプリケーションの実行許可:" にて「このまま開く」をクリック
+          <br>
+          <br>
+          「ファイル"XXXXX.command"は、適切なアクセス権限がないために実行できません。」と表示された場合は、ターミナル上で以下のコマンドを実行する。
+          <br>
+          <br>
+          cd Downloads/
+          <br>
+          <br>
+          chmod u+x XXXXX.command　※XXXXXは対象のファイル名
+      </details>
       <br>
-      <p>５.ディストリビューションの一覧とバージョン情報を確認する</p>
       <br>
+      <a class="btn_Batchfile" href="./chmod755.command" download="chmod755.command" role="button"><b>chmod755.command</b></a>
       <br>
-      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -l -v</b></p>
-      <table>
-        <tr>
-          <td>　　NAME</td>
-          <td>　　STATE</td>
-          <td>　　VERSION</td>
-        </tr>
-        <tr>
-          <td>　 * Ubuntu</td>
-          <td>　　Stopped</td>
-          <td>　　2</td>
-        </tr>
-        <tr>
-          <td>　　CentOS8</td>
-          <td>　　Stopped</td>
-          <td>　　2</td>
-        </tr>
-      </table>
+      <p class="usage">Usage: 作成されたディレクトリ内の全ファイルに権限(読込・書込・実行)を付与するcommandファイル。chmod755.pyの実質上位互換。ダブルクリックすることで実行可能</p>
       <br>
       <br>
-      <p>６. WSL の CentOS8 を起動する(-d CentOS8 とするのは、他のディストリビューションがあるため)</p>
+      <a class="btn_Batchfile" href="./exam_template.command" download="exam_template.command" role="button"><b>exam_template.command</b></a>
       <br>
+      <p class="usage">Usage: テキストファイル作成からデータ読み込み処理、最終的にhtmlのコードに変換するcommandファイル。exam_template.shの実質上位互換。ダブルクリックすることで実行可能</p>
       <br>
-      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -d CentOS8</b>　//wslのCentOS8を起動。ほかのディストリビューションがある場合に-dオプションを使用</p>
       <br>
+      <a class="btn_Batchfile" href="./expenses_to_csv.command" download="expenses_to_csv.command" role="button"><b>expenses_to_csv.command</b></a>
       <br>
-      <p>７.プロンプト(左側の表示)が以下のように変わっていたら成功。"logout"でwslから抜ける</p>
+      <p class="usage">Usage: 作成されたファイルを読み込んで収支計算処理を行いcsvに変換するcommandファイル。expenses_to_csv.shの実質上位互換。ダブルクリックすることで実行可能</p>
       <br>
       <br>
-      <p>　[root@DESKTOP-XXXXXXX XXXXX]# <b style="font-weight: bold;">logout</b></p>
+      <a class="btn_Batchfile" href="./jigokudani.net_template.command" download="jigokudani.net_template.command" role="button"><b>jigokudani.net_template.command</b></a>
       <br>
+      <p class="usage">Usage: 作成されたファイルを読み込んでjigokudanu.net用のhtmlのコードを作るcommandファイル。jigokudani.net_template.shの実質上位互換。ダブルクリックすることで実行可能</p>
       <br>
-      <p>８.ディストリビューション(オペレーティングシステム)を"CentOS8"に変更する</p>
       <br>
+      <a class="btn_Batchfile" href="./payroll.command" download="payroll.command" role="button"><b>payroll.command</b></a>
       <br>
-      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -s CentOS8</b></p>
+      <p class="usage">Usage: 作成されたファイルを読み込んで計算と集計処理を行うcommandファイル。payroll_mac.shの実質上位互換。ダブルクリックすることで実行可能</p>
       <br>
       <br>
-      <p>９.ディストリビューションが"CentOS8"に変更されているか確認する</p>
+      <a class="btn_Batchfile" href="./upload-link_template.command" download="upload-link_template.command" role="button"><b>upload-link_template.command</b></a>
       <br>
-      <br>
-      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl -l -v</b></p>
-      <table class="wsl_table">
-        <tr>
-          <td>　　NAME</td>
-          <td>　　STATE</td>
-          <td>　　VERSION</td>
-        </tr>
-        <tr>
-          <td>　 * CentOS8</td>
-          <td>　　Stopped</td>
-          <td>　　2</td>
-        </tr>
-        <tr>
-          <td>　　Ubuntu</td>
-          <td>　　Stopped</td>
-          <td>　　2</td>
-        </tr>
-      </table>
-      <br>
-      <br>
-      <p>１０.おまけ(ディストリビューションを削除する)</p>
-      <br>
-      <br>
-      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl --unregister Ubuntu</b></p>
-      <br>
-      <br>
-      <p>１１. WSL 起動コマンド</p>
-      <br>
-      <br>
-      <p>　C:\Users\XXXXX><b style="font-weight: bold;">wsl</b></p>
-      <br>
-      <br>
-      <p>１２. WSL に必要なパッケージをインストールするために<a style="text-decoration: underline; color: blue;" href="../shell/wsl_CentOS8_setting.sh" download="wsl_CentOS8_setting.sh" class="btn-play">wsl_CentOS8_setting.sh</a>をダウンロードする</p>
-      <br>
-      <br>
-      <p>１３. wsl_CentOS8_setting.sh を CentOS8 の /usr/local/bin 配下に入れて、以下のコマンドを順番に実行する</p>
-      <br>
-      <br>
-      <p>　[root@DESKTOP-XXXXXXX ~]# <b style="font-weight: bold;">cd /usr/local/bin</b></p>
-      <br>
-      <p>　[root@DESKTOP-XXXXXXX bin]# <b style="font-weight: bold;">chmod 755 wsl_CentOS8_setting.sh</b></p>
-      <br>
-      <p>　[root@DESKTOP-XXXXXXX bin]# <b style="font-weight: bold;">wsl_CentOS8_setting.sh</b></p>
-      <br>
-      <br>
-      <p>※ wsl_CentOS8_setting.sh の処理は数分掛かる。画面に以下の文字が表示されたらインストール完了</p>
-      <br>
-      <p>　Complete!</p>
-      <p>　attention: bc which sudo wget make installed!</p>
-      <br>
-      <br>
-      <p style="font-weight: bold;">・WSL(CentOS8)をアンインストールする場合</p>
-      <br>
-      <br>
-      <p>１.以下をPCにダウンロードして指定のファイルパスに配置する。</p>
-      <br>
-      <br>
-      <p>　- <a style="text-decoration: underline; color: blue;" href="../batchfile/CentOS8_uninstall.bat" download="CentOS8_uninstall.bat" class="btn-play">CentOS8_uninstall.bat</a>　→　C:\Users\XXXXX</p>
-      <br>
-      <br>
-      <p>２.CentOS8_uninstall.batをダブルクリックして実行する</p>
+      <p class="usage">Usage: csvファイルを読み込んでHTMLコードを作るcommandファイル。upload-link_template.shの実質上位互換。ダブルクリックすることで実行可能</p>
       <br>
       <br>
     </main>
-    <footer>
-      <p class="footer">☆ cheat.net</p>
+    <footer class="automatic_laboratory">
+      <p class="automatic_laboratory">☆ cheat.net</p>
     </footer>
     <script src="../../js/admin.js"></script>
   </body>
@@ -348,7 +284,8 @@
   }
 
   main {
-    width: 95%;
+    width: 90%;
+    max-width: 1000px;
     margin: auto;
   }
 
