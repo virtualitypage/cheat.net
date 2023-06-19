@@ -1,176 +1,22 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-FILE="アルバイト明細_読込用.txt"
+csv="アルバイト明細_読込用.csv"
 
-function create_config () {
-cat << EOF > ${current_dir}/${FILE}
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-
-date=
-pay=
-time=
-time_hm=
-EOF
+function create_csv () {
+  for ((i=1; i<=20; i++))
+  do
+    for ((j=1; j<=3; j++))
+    do
+      echo -n "," >> "${current_dir}/${csv}"
+    done
+    echo -e "\n" >> "${current_dir}/${csv}"
+  done
 }
 
-source "${current_dir}/${FILE}"
-
-month=`date +%m月`
-OUT_FILE="アルバイト明細.txt"
-
-function processPayroll () {
-result=$(echo "scale=0; $pay * $time" | bc)
-cat << EOF >> "${current_dir}/${month} ${OUT_FILE}.txt"
-・$date
-  時給: $pay
-  時間: $time_hm
-  ¥$result
-
-EOF
-}
-
-while IFS= read -r line; do
-  if [[ $line == "date="* ]]; then
-    date=${line#date=}
-  elif [[ $line == "pay="* ]]; then
-    pay=${line#pay=}
-  elif [[ $line == "time="* ]]; then
-    time=${line#time=}
-  elif [[ $line == "time_hm="* ]]; then
-    time_hm=${line#time_hm=}
-  elif [[ $line == "" ]]; then
-    # 空行の場合、処理を実行して次のセットの変数をリセットする
-    processPayroll
-    date=
-    pay=
-    time=
-    time_hm=
-  fi
-done < "${current_dir}/${FILE}"
-
-if [ -f "${current_dir}/${FILE}" ]; then
-  if [[ -z $date || -z $pay || -z $time || -z $time_hm ]]; then
-    echo "変数の代入が必要な項目が存在しません。設定ファイルを修正してください。"
-    echo "不適切な行を除いて処理を終了しました。"
-    echo ""
-    echo "これ以上記入する必要がない場合は適切に行を削除してください。"
-    echo "行を削除して再度実行した時、以下のエラーが出た場合はファイルを再度作成することをおすすめします。"
-    echo ""
-    echo "  (standard_in) 1: illegal character:"
-    echo ""
-    exit 1
-  fi
-elif [ -f "${current_dir}/${FILE}" ]; then
-  processPayroll
-  echo "計算が完了しました。ファイルは$(cd $(dirname $0) && pwd)に保存されています。"
-elif [ ! -f "${current_dir}/${FILE}" ]; then
-  create_config
-  echo "読込用ファイルがありません。$(cd $(dirname $0) && pwd)に${FILE}を作成しました。"
-  echo "以下の入力方法に従って、必要なものを記入してください。"
-  echo "注意: =との間に空白を空けず、=に続けて文字や数値を入れること"
-  echo ""
-  echo "date=     出勤当日の日時(例: mm月dd日)"
-  echo "pay=      時給(例: 1000円)"
-  echo "time=     労働時間(例: 6時間の場合6、6時間半の場合は6.5)"
-  echo "time_hm=  労働時間に単位を追加(例: 6h 又は 6h5m)"
-  echo ""
-  exit 1
-fi
+month=$(date +%m月)
+month=${month#0}
+txt_file="アルバイト明細.txt"
 
 function computeMonthSum () {
   total_result=0
@@ -180,18 +26,47 @@ function computeMonthSum () {
       value=${line#"¥"}
       total_result=$((total_result + value))
     fi
-  done < "${current_dir}/${month} ${OUT_FILE}.txt"
-  echo "合計額 ¥$total_result" >> "${current_dir}/${month} ${OUT_FILE}.txt"
+  done < "${current_dir}/${month} ${txt_file}"
+  echo "合計額 ¥$total_result" >> "${current_dir}/${month} ${txt_file}"
 }
 
 day29="29日"
 day30="30日"
 day31="31日"
 
-if [[ $date =~ $day29 || $date =~ $day30 || $date =~ $day31 ]]; then
+function processPayroll () {
+  local month_end_detected=false  # 月末を検知したかどうかのフラグ
+  while IFS=, read -r col1 col2 col3 col4 || [[ -n $col4 ]];
+  do
+    if ! [[ $col2 =~ ^[0-9]+$ ]] || ! [[ $col3 =~ ^[0-9]+\.?[0-9]*$ ]]; then
+      echo "エラー: 時給または労働時間が正しくありません。"
+      exit 1
+    fi
+    result=$(echo "scale=0; $col2 * $col3" | bc)
+    printf "・%s\n  時給: %s円\n  時間: %s\n  ¥%s\n\n" "$col1" "$col2" "$col4" "$result" >> "${current_dir}/${month} ${txt_file}"
+    if [[ $col1 =~ $day29 || $col1 =~ $day30 || $col1 =~ $day31 ]]; then
+      if ! $month_end_detected; then
+        echo "月末を検知、集計処理を開始します。"
+        computeMonthSum
+        month_end_detected=true
+        continue
+      fi
+    fi
+  done < "${current_dir}/${csv}"
+}
+
+if [ -f "${current_dir}/${csv}" ]; then
+  processPayroll
+  echo "計算が完了しました。ファイルは$(cd $(dirname $0) && pwd)に保存されています。"
+elif [ ! -f "${current_dir}/${csv}" ]; then
+  create_csv
+  echo "読込用ファイルがありません。$(cd $(dirname $0) && pwd)に${csv}を作成しました。"
+  echo "以下の入力方法に従って、必要なものを記入してください。"
   echo ""
-  echo "月末を検知、集計処理を完了しました。"
-  computeMonthSum
-else
+  echo "1列目 -> 出勤当日の日時(例: mm月dd日)"
+  echo "2列目 -> 時給(例: 1000円)"
+  echo "3列目 -> 労働時間(例: 6時間の場合6、6時間半の場合は6.5)"
+  echo "4列目 -> 労働時間に単位を追加(例: 6h 又は 6h5m)"
   echo ""
+  exit 1
 fi

@@ -2,7 +2,7 @@
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
 code_txt="XXXXX_code.txt"
-csv="convert_html.csv"
+csv="create_about-page.csv"
 
 function create_csv () {
   for ((i=1; i<=20; i++))
@@ -15,17 +15,37 @@ function create_csv () {
   done
 }
 
+function handle_error () {
+  echo "csvの一列目または二列目にオプションが指定されていません。"
+  echo "以下の入力方法に従って、必要なものを記入してください。"
+  echo "※csvの一列目にはオプション(title/img/info/food/drink/site_name)を入力します。"
+  echo ""
+  echo "title,img,タイトル,画像のファイルパス,画像の名前"
+  echo "info,住所,電話番号,営業時間,定休日"
+  echo "food,品名,100円"
+  echo "food,品名,200円"
+  echo "drink,品名,100円"
+  echo "drink,品名,200円"
+  echo "site_name,サイト名"
+  echo ""
+  echo "処理を終了します。"
+  echo ""
+  exit 1
+}
+
 function create_code () {
 
-  title="タイトルを入れて下さい"
-  img="必要に応じて画像を設定して下さい"
-  site_name="サイト名を入れて下さい"
+title="title"
+img="img"
 
+while IFS=, read -r col1 col2 col3 col4 col5 || [[ -n $col5 ]];
+do
+if [ "$col1" = "$title" ] && [ "$col2" = "$img" ]; then
 cat << EOF >> "${current_dir}/${code_txt}"
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <title>${title}</title>
+    <title>${col3}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../css/about.css">
@@ -35,7 +55,7 @@ cat << EOF >> "${current_dir}/${code_txt}"
   <header class="site-header">
     <div class="site-header__wrapper">
       <div class="site-header__start">
-        <a href=""><img class="logo" src="${img}" alt="${img}"></a>
+        <a href=""><img class="logo" src="${col4}" alt="${col5}"></a>
       </div>
       <div class="site-header__middle">
         <nav class="nav">
@@ -67,7 +87,7 @@ cat << EOF >> "${current_dir}/${code_txt}"
     <main>
       <script src="../js/main.js"></script>
       <div class="img">
-        <img src="${img}" alt="${img}">
+        <img src="${col4}" alt="${col5}">
       </div>
       <div class="info">
         <p style="text-decoration: underline;"></p>
@@ -78,6 +98,10 @@ cat << EOF >> "${current_dir}/${code_txt}"
               <p class="ja">施設情報</p>
             </div>
 EOF
+else
+  handle_error
+fi
+done < "${current_dir}/${csv}"
 
 info="info"
 
@@ -126,6 +150,8 @@ cat << EOF >> ${current_dir}/${code_txt}
               <div class="head">フード</div>
               <dl class="data-list">
 EOF
+else
+  handle_error
 fi
 done < "${current_dir}/${csv}"
 
@@ -162,9 +188,16 @@ cat << EOF >> ${current_dir}/${code_txt}
                   <dd>${col2}</dd>
                 </div>
 EOF
+else
+  handle_error
 fi
 done < "${current_dir}/${csv}"
 
+site_name="site_name"
+
+while IFS=, read -r col1 col2 || [[ -n $col2 ]];
+do
+if [ "$col1" = "$site_name" ]; then
 cat << EOF >> ${current_dir}/${code_txt}
               </dl>
               <br>
@@ -172,7 +205,7 @@ cat << EOF >> ${current_dir}/${code_txt}
             </div>
           </div>
           <footer>
-            <div class="copy">☆ 2023 ${site_name}</div>
+            <div class="copy">☆ 2023 ${col2}</div>
           </footer>
         </div>
       </div>
@@ -180,6 +213,10 @@ cat << EOF >> ${current_dir}/${code_txt}
   </body>
 </html>
 EOF
+else
+  handle_error
+fi
+done < "${current_dir}/${csv}"
 }
 
 if [ -f "${current_dir}/${csv}" ]; then
@@ -190,13 +227,15 @@ elif [ ! -f "${current_dir}/${csv}" ]; then
   create_csv
   echo "読込用csvがありません。$(cd $(dirname $0) && pwd)に${csv}を作成しました。"
   echo "以下の入力方法に従って、必要なものを記入してください。"
-  echo "※csvの一列目にはオプション文字(info/food/drink)を入力します。"
+  echo "※csvの一列目にはオプション(title/img/info/food/drink/site_name)を入力します。"
   echo ""
+  echo "title,img,タイトル,画像のファイルパス,画像の名前"
   echo "info,住所,電話番号,営業時間,定休日"
   echo "food,品名,100円"
   echo "food,品名,200円"
   echo "drink,品名,100円"
   echo "drink,品名,200円"
+  echo "site_name,サイト名"
   echo ""
   exit 1
 else

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-csv="jigokudani.net_code_read_only.csv"
+csv="create_jigokudani.net_about.csv"
+code_txt="jigokudani.net_code.txt"
 
 function create_csv () {
   for ((i=1; i<=10; i++))
@@ -13,12 +14,9 @@ function create_csv () {
 
 function create_code () {
 
-code_txt="jigokudani.net_code.txt"
-
-while IFS=, read -r col1 col2 || [[ -n $col1 ]];
+while IFS=, read -r col1 col2 || [[ -n $col2 ]];
 do
-# col1, col2 は CSV ファイルの列のヘッダーまたはデータ
-cat <<EOF >> "${current_dir}/${code_txt}"
+cat << EOF >> "${current_dir}/${code_txt}"
                 <div class="bundle2">
                   <dt>$col2</dt>
                   <dd>$col1</dd>
