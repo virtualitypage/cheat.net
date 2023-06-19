@@ -5,6 +5,9 @@ code_txt="XXXXX_code.txt"
 csv="create_about-page.csv"
 
 function create_csv () {
+  echo "title,img" >> "${current_dir}/${csv}"
+  echo "info" >> "${current_dir}/${csv}"
+  echo "food" >> "${current_dir}/${csv}"
   for ((i=1; i<=20; i++))
   do
     for ((j=1; j<=4; j++))
@@ -30,7 +33,6 @@ function handle_error () {
   echo ""
   echo "処理を終了します。"
   echo ""
-  exit 1
 }
 
 function create_code () {
@@ -98,8 +100,8 @@ cat << EOF >> "${current_dir}/${code_txt}"
               <p class="ja">施設情報</p>
             </div>
 EOF
-else
-  handle_error
+# else
+#   handle_error
 fi
 done < "${current_dir}/${csv}"
 
@@ -150,8 +152,8 @@ cat << EOF >> ${current_dir}/${code_txt}
               <div class="head">フード</div>
               <dl class="data-list">
 EOF
-else
-  handle_error
+# else
+#   handle_error
 fi
 done < "${current_dir}/${csv}"
 
@@ -188,8 +190,8 @@ cat << EOF >> ${current_dir}/${code_txt}
                   <dd>${col2}</dd>
                 </div>
 EOF
-else
-  handle_error
+# else
+#   handle_error
 fi
 done < "${current_dir}/${csv}"
 
@@ -213,8 +215,8 @@ cat << EOF >> ${current_dir}/${code_txt}
   </body>
 </html>
 EOF
-else
-  handle_error
+# else
+#   handle_error
 fi
 done < "${current_dir}/${csv}"
 }
