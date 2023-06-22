@@ -8,6 +8,8 @@ function create_csv () {
   echo "title,img" >> "${current_dir}/${csv}"
   echo "info" >> "${current_dir}/${csv}"
   echo "food" >> "${current_dir}/${csv}"
+  echo "drink" >> "${current_dir}/${csv}"
+  echo "site_name" >> "${current_dir}/${csv}"
   for ((i=1; i<=20; i++))
   do
     for ((j=1; j<=4; j++))
@@ -24,7 +26,7 @@ function handle_error () {
   echo "※csvの一列目にはオプション(title/img/info/food/drink/site_name)を入力します。"
   echo ""
   echo "title,img,タイトル,画像のファイルパス,画像の名前"
-  echo "info,住所,電話番号,営業時間,定休日"
+  echo "info,住所,電話番号,営業時間,定休日,予約可否"
   echo "food,品名,100円"
   echo "food,品名,200円"
   echo "drink,品名,100円"
@@ -92,7 +94,7 @@ cat << EOF >> "${current_dir}/${code_txt}"
         <img src="${col4}" alt="${col5}">
       </div>
       <div class="info">
-        <p style="text-decoration: underline;"></p>
+        <p style="text-decoration: underline;">${col3}</p>
         <div class="info-block block" id="information">
           <div class="information">
             <div class="info-title">
@@ -107,7 +109,7 @@ done < "${current_dir}/${csv}"
 
 info="info"
 
-while IFS=, read -r col1 col2 col3 col4 col5 || [[ -n $col5 ]];
+while IFS=, read -r col1 col2 col3 col4 col5 col6 || [[ -n $col6 ]];
 do
 if [ "$col1" = "$info" ]; then
 cat << EOF >> ${current_dir}/${code_txt}
@@ -136,6 +138,12 @@ cat << EOF >> ${current_dir}/${code_txt}
                   <dt>定休日</dt>
                   <dd>
                     <span class="txt">${col5}</span>
+                  </dd>
+                </div>
+                <div class="bundle">
+                  <dt>予約可否</dt>
+                  <dd>
+                    <span class="txt">${col6}</span>
                   </dd>
                 </div>
               </dl>
@@ -232,7 +240,7 @@ elif [ ! -f "${current_dir}/${csv}" ]; then
   echo "※csvの一列目にはオプション(title/img/info/food/drink/site_name)を入力します。"
   echo ""
   echo "title,img,タイトル,画像のファイルパス,画像の名前"
-  echo "info,住所,電話番号,営業時間,定休日"
+  echo "info,住所,電話番号,営業時間,定休日,予約可否"
   echo "food,品名,100円"
   echo "food,品名,200円"
   echo "drink,品名,100円"
