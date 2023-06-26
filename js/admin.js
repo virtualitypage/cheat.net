@@ -39,7 +39,8 @@ function showSearch() {
 function notifications() {
   let date = new Date();
   // alert(date.toLocaleDateString() + "現在、最新情報はありません");
-  alert("Upload Linkに「ニコニコ動画」フィールドをリリース予定");
+  // alert("Upload Linkに「ニコニコ動画」フィールドをリリース予定");
+  alert("Archiveに家電製品の取扱説明書(PDF)を追加中");
 }
 
 function authentication(){
