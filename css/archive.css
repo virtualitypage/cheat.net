@@ -160,10 +160,10 @@ infoArea
 }
 
 @media screen and (max-width: 768px) {
-  .footer-absolute {
+  .footer-relative {
     display: flex;
     justify-content: center;
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 30px;
     background-color: #03ffcd;
@@ -176,10 +176,10 @@ infoArea
 }
 
 @media screen and (min-width: 769px) {
-  .footer-absolute {
+  .footer-relative {
     display: flex;
     justify-content: center;
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 50px;
     background-color: #03ffcd;
