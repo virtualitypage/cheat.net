@@ -275,7 +275,7 @@ header img { /* 画像の親要素 */
     height: auto;
   }
   .flex .left-content {
-    margin: 0 0 0 20px;
+    margin: 0 0 0 100px;
     padding: 0;
   }
   .flex .title {
@@ -352,7 +352,7 @@ hr {
   }
   .flex2 .left-content {
     padding: 0;
-    margin-right: 30px;
+    margin-right: 100px;
   }
   .flex2 .title {
     margin: 0;
