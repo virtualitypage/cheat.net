@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>mv_google_drive.command</title>
+  </head>
+  <body class="static">
+    <div id="output">
+      <div id="css-box" class="active">
+        <code data-lang="css" id="actual-css-code" class="cm-s-default">
+          <pre>
+            <code>
+<span class="memo">#!/bin/bash</span>
+
+<span class="value">today</span><span class="white">=</span><span class="string">$(</span><span class="command">date</span> <span class="string">'+%Y-%m-%d')</span>
+<span class="value">today_string</span><span class="white">=</span><span class="string">$(</span><span class="command">date</span> <span class="string">'+%Y年%-m月%-d日')</span>
+
+<span class="value">dirs</span><span class="white">=</span><span class="string">"/Volumes/HDCL-UT/*"</span>
+<span class="value">src_volume</span><span class="white">=</span><span class="string">"/Volumes/HDCL-UT"</span>
+<span class="value">src_volume_path</span><span class="white">=</span><span class="string">"/Volumes/HDCL-UT/</span><span class="value">$today</span><span class="string">"</span>
+
+<span class="value">HDD</span><span class="white">=</span><span class="string">"HDCL-UT"</span>
+<span class="value">dst_volume</span><span class="white">=</span><span class="string">"</span><span class="value">$HOME</span><span class="string">/Library/CloudStorage/GoogleDrive-ganbanlife@gmail.com/.shortcut-targets-by-id/1mZyi1kb7Iepj2zVvRgVo_BGJAmlC8GKY/共有フォルダ/動画用フォルダ"</span>
+<span class="value">disk_free</span><span class="white">=</span><span class="string">"diskFree.log"</span>
+<span class="value">archive</span><span class="white">=</span><span class="string">"/Volumes/HDCL-UT/archive"</span>
+<span class="value">logfile</span><span class="white">=</span><span class="value">$dst_volume</span><span class="string">/mv_google_drive_"</span><span class="value">$today</span><span class="string">".log</span>
+
+<span class="value">mp4_files</span><span class="white">=</span><span class="yellow">()</span>
+<span class="value">mov_files</span><span class="white">=</span><span class="yellow">()</span>
+<span class="value">avi_files</span><span class="white">=</span><span class="yellow">()</span>
+<span class="value">files_found_mp4</span><span class="white">=</span><span class="option">false</span>
+<span class="value">files_found_mov</span><span class="white">=</span><span class="option">false</span>
+<span class="value">files_found_avi</span><span class="white">=</span><span class="option">false</span>
+
+<span class="value">ascii</span><span class="white">=</span><span class="string">$(</span>
+  <span class="command">cat</span> <span class="white">&lt;&lt;</span> <span class="string">EOF</span>
+<span class="string">    ####     #      #  ######  #      #  ######  #  ##    #    #####</span>
+<span class="string">   #    ##   #      #  #       #      #  #       #  ###   #   ##    #</span>
+<span class="string">  #      #   #      #  #       #      #  #       #  # #   #  ##      </span>
+<span class="string">  #      ##  #      #  #       #      #  #       #  #  #  #  #       </span>
+<span class="string">  #      ##  #      #  ######  #      #  ######  #  #  ## #  #    ####</span>
+<span class="string">  #      ##  #      #  #       #      #  #       #  #   # #  #       #</span>
+<span class="string">  ##  #  #   #      #  #       #      #  #       #  #    ##  ##      #</span>
+<span class="string">   ##  ###    #    #   #        #    #   #       #  #    ##   ##   ##</span>
+<span class="string">    ######     ####    ######    ####    ######  #  #     ##   #####</span>
+<span class="string">EOF</span>
+<span class="string">)</span>
+
+<span class="option">function</span> <span class="command">progress_bar</span> <span class="yellow">() {</span>
+  <span class="command">echo</span>
+  <span class="purple">for</span> <span class="value">i</span> <span class="purple">in {</span><span class="command">1..50<span class="purple">}</span><span class="white">;</span> <span class="purple">do</span>
+    <span class="value">arrow</span><span class="white">=</span><span class="string">"\e[1;34m==&gt;\e[0m"</span>
+    <span class="command">sleep</span> <span class="integer">0.005</span>
+    <span class="value">progress_bar<span class="white">=</span><span class="string">"$(</span><span class="command">yes</span> <span class="string">"#"</span> <span class="white">|</span> <span class="command">head</span> <span class="option">-n</span> <span class="string">"${</span><span class="value">i</span><span class="string">}"</span> <span class="white">|</span> <span class="command">tr</span> <span class="option">-d</span> <span class="string">'\n')"</span>
+    <span class="command">printf</span> <span class="string">"\r</span><span class="value">$arrow</span> <span class="string">\e[1;32mrm [%3d/100] %s" $((i</span> <span class="white">*</span> <span class="integer">2</span><span class="string">)) "${</span><span class="value">progress_bar</span><span class="string">}"</span>
+  <span class="purple">done</span>
+  <span class="command">printf</span> <span class="string">"\n"</span>
+  <span class="command">echo</span>
+<span class="yellow">}</span>
+
+<span class="option">function</span> <span class="command">file_exists</span> <span class="yellow">() {</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33mWARNING: 重複するフォルダ名は指定できません</span> <span class="back_slash">\"</span><span class="string">mkdir</span><span class="back_slash">\"</span><span class="string">\033[0m"</span>
+  <span class="command">rsync_clone_folder</span>
+<span class="yellow">}</span>
+
+<span class="option">function</span> <span class="command">stream_editor</span> <span class="yellow">() {</span>
+  <span class="command">sed</span> <span class="option">-i</span> <span class="string">'' 's/\[1;31m//g' "</span><span class="value">$logfile</span><span class="string">"</span>
+  <span class="command">sed</span> <span class="option">-i</span> <span class="string">'' 's/\[1;32m//g' "</span><span class="value">$logfile</span><span class="string">"</span>
+  <span class="command">sed</span> <span class="option">-i</span> <span class="string">'' 's/\[1;33m//g' "</span><span class="value">$logfile</span><span class="string">"</span>
+  <span class="command">sed</span> <span class="option">-i</span> <span class="string">'' 's/\[1;34m//g' "</span><span class="value">$logfile</span><span class="string">"</span>
+  <span class="command">sed</span> <span class="option">-i</span> <span class="string">'' 's/\[1;35m//g' "</span><span class="value">$logfile</span><span class="string">"</span>
+  <span class="command">sed</span> <span class="option">-i</span> <span class="string">'' 's/\[1;36m//g' "</span><span class="value">$logfile</span><span class="string">"</span>
+  <span class="command">sed</span> <span class="option">-i</span> <span class="string">'' 's/\[0m//g' "</span><span class="value">$logfile</span><span class="string">"</span>
+  <span class="command">sed</span> <span class="option">-i</span> <span class="string">'' 's/building file list ... /building file list .../g' "</span><span class="value">$logfile</span><span class="string">"</span>
+<span class="yellow">}</span>
+
+<span class="option">function</span> <span class="command">end_point</span> <span class="yellow">() {</span>
+  <span class="value">message</span><span class="white">=</span><span class="string">$(</span>
+    <span class="command">cat</span> <span class="white">&lt;&lt;</span> <span class="string">EOF</span>
+<span class="string">logout</span>
+
+<span class="string">Saving session...</span>
+<span class="string">...copying shared history...</span>
+<span class="string">...saving history...truncating history files...</span>
+<span class="string">...completed.</span>
+
+<span class="string">[プロセスが完了しました]</span>
+<span class="string">EOF</span>
+  <span class="string">)</span>
+  <span class="value">message</span><span class="white">=</span><span class="string">$(</span><span class="command">perl</span> <span class="option">-pe</span> <span class="string">'chomp if eof'</span> <span class="white">&lt;&lt;&lt;</span> <span class="string">"</span><span class="value">$message</span><span class="string">")</span>
+  <span class="command">echo</span> <span class="string">"</span><span class="value">$message</span><span class="string">"</span> <span class="white">|</span> <span class="command">perl</span> <span class="option">-pe</span> <span class="string">'chomp if eof'</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$logfile</span><span class="string">"</span>
+<span class="yellow">}</span>
+
+<span class="option">function</span> <span class="command">rsync_clone_folder</span> <span class="yellow">() {</span>
+  <span class="purple">if</span> <span class="purple">[</span> <span class="white">! -d</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="purple">]</span> <span class="white">&&</span> <span class="purple">[</span> <span class="white">-e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO:</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">は転送用フォルダ名として指定される必要があります。不正なファイルを</span> <span class="value">$archive</span> <span class="string">に移送します\033[0m"</span>
+    <span class="command">mkdir</span> <span class="value">$src_volume</span><span class="string">/archive</span>
+    <span class="command">echo</span> <span class="string">"mv -v</span> <span class="value">$src_volume_path $archive</span><span class="string">"</span>
+    <span class="command">mv</span> <span class="option">-v</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="value">$archive</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">を作成中...\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"mkdir -v</span> <span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">mkdir</span> <span class="option">-v</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">ls</span> <span class="option">-ld</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="memo"># ディレクトリのみ表示</span>
+  <span class="purple">elif</span> <span class="purple">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">を作成中...\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"mkdir -v</span> <span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">mkdir</span> <span class="option">-v</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">ls</span> <span class="option">-ld</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="memo"># ディレクトリのみ表示</span>
+  <span class="purple">elif</span> <span class="purple">[</span> <span class="white">-d</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">を確認中...\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"ls -ld</span> <span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">ls</span> <span class="option">-ld</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="memo"># ディレクトリのみ表示</span>
+  <span class="purple">fi</span>
+
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mHDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から以下のフォルダが検出されました\033[0m"</span>
+  <span class="purple">for</span> <span class="value">d</span> <span class="purple">in</span> <span class="value">$dirs</span><span class="white">;</span> <span class="purple">do</span>
+    <span class="value">dirname</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$d</span><span class="string">")</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36m&gt;</span> <span class="value">$dirname</span><span class="string">\033[0m"</span>
+    <span class="command">sleep</span> <span class="integer">0.05</span>
+  <span class="purple">done</span>
+  <span class="command">echo</span>
+
+  <span class="value">file_limit</span><span class="white">=</span><span class="integer">48</span> <span class="memo"># ファイル数の制限</span>
+  <span class="value">file_count</span><span class="white">=</span><span class="integer">0</span>  <span class="memo"># ファイル数のカウント</span>
+
+  <span class="value">rm_file_limit</span><span class="white">=</span><span class="integer">48</span>
+  <span class="value">rm_file_count</span><span class="white">=</span><span class="integer">0</span>
+
+  <span class="purple">while</span> <span class="command">true</span><span class="white">;</span> <span class="purple">do</span>
+    <span class="command">read</span> <span class="option">-p</span> <span class="string">"複製したいフォルダの名前を入力して下さい: " directory</span>
+    <span class="command">echo</span> <span class="string">"複製したいフォルダの名前を入力して下さい:</span> <span class="value">$directory</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$logfile</span><span class="string">"</span>
+    <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$directory</span><span class="string">"</span> <span class="white">==</span> <span class="string">"</span><span class="value">$today</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33mWARNING: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">は複製できません。他のフォルダ名を入力してください\033[0m"</span>
+      <span class="command">echo</span>
+      <span class="purple">continue</span>
+    <span class="purple">elif</span> <span class="purple">[</span> <span class="white">! -d</span> <span class="value">$src_volume</span><span class="white">/</span><span class="string">"</span><span class="value">$directory</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33mWARNING: </span><span class="back_slash">\"</span><span class="value">$directory</span><span class="back_slash">\"</span> <span class="string">というフォルダは存在しないか複製できません。他のフォルダ名を入力してください\033[0m"</span>
+      <span class="command">echo</span>
+      <span class="purple">continue</span>
+    <span class="purple">elif</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$directory</span><span class="string">"</span> <span class="purple">]<span class="white">;</span> <span class="purple">then</span>
+      <span class="command">cd</span> <span class="value">$src_volume</span> <span class="white">||</span> <span class="command">exit</span>
+      <span class="command">mkdir</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$directory</span><span class="string">"_TF</span> <span class="white">2&gt;</span><span class="string">/dev/null</span> <span class="white">||</span> <span class="command">file_exists</span>
+      <span class="command">echo</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 複製された一時フォルダ</span> <span class="back_slash">\"</span><span class="string">${</span><span class="value">directory</span><span class="string">}_TF</span><span class="back_slash">\"</span> <span class="string">に動画ファイルを転送しています…\033[0m"</span>
+      <span class="command">echo</span> <span class="string">"rsync --archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory</span><span class="string">/<span class="option">*</span> <span class="value">$src_volume</span><span class="string">/${</span><span class="value">directory</span><span class="static">}_TF"</span>
+      <span class="command">rsync</span> <span class="option">--archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$directory</span><span class="string">"/</span><span class="option">*</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$directory</span><span class="string">"_TF</span>
+      <span class="command">echo</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 一時フォルダ</span> <span class="back_slash">\"</span><span class="string">${</span><span class="value">directory</span><span class="string">}_TF</span><span class="back_slash">\"</span> <span class="string">から転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">に動画ファイルを転送しています…\033[0m"</span>
+      <span class="command">echo</span> <span class="string">"rsync --archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/${</span><span class="value">directory</span><span class="string">}_TF/</span><span class="option">*</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">"</span>
+      <span class="purple">for</span> <span class="value">file</span> <span class="purple">in</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory</span><span class="string">"</span><span class="white">_TF/*;</span> <span class="purple">do</span> <span class="memo"># 送信対象のファイルをループで処理</span>
+        <span class="command">rsync</span> <span class="option">--archive --human-readable --progress</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">"</span>
+        <span class="purple">(</span><span class="option">(</span><span class="white">file_count++</span><span class="option">)</span><span class="purple">)</span>                         <span class="memo"># 送信対象のファイル数をインクリメント</span>
+        <span class="purple">if</span> <span class="purple">[</span> <span class="value">$file_count</span> <span class="white">-ge</span> <span class="value">$file_limit</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span> <span class="memo"># 送信対象のファイル数が制限に達したらループを終了</span>
+          <span class="purple">break</span>
+        <span class="purple">fi</span>
+      <span class="purple">done</span>
+      <span class="command">echo</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 一時フォルダ</span> <span class="back_slash">\"</span><span class="string">${</span><span class="value">directory</span><span class="string">}_TF</span><span class="back_slash">\"</span> <span class="string">から動画ファイルを削除しています…\033[0m"</span>
+      <span class="memo"># read -p "一時フォルダ ${directory}_TF から動画ファイルを削除します。よろしいですか？(\"yes\"で削除): " yesno</span>
+      <span class="memo"># if [ "$yesno" = "yes" ]; then</span>
+      <span class="command">echo</span> <span class="string">"rm</span> <span class="value">$src_volume</span><span class="string">/${</span><span class="value">directory</span><span class="string">}_TF/*"</span>
+      <span class="command">progress_bar</span>
+      <span class="purple">for</span> <span class="value">file</span> <span class="purple">in</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory</span><span class="string">"</span><span class="white">_TF/*;</span> <span class="purple">do</span> <span class="memo"># 削除対象のファイルをループで処理</span>
+        <span class="command">rm</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span>
+        <span class="purple">(</span><span class="option">(</span><span class="white">rm_file_count++</span><span class="option">)</span><span class="purple">)</span>                            <span class="memo"># 削除対象のファイル数をインクリメント</span>
+        <span class="purple">if</span> <span class="purple">[</span> <span class="value">$rm_file_count</span> <span class="white">-ge</span> <span class="value">$rm_file_limit</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span> <span class="memo"># 削除対象のファイル数が制限に達したらループを終了</span>
+          <span class="purple">break</span>
+        <span class="purple">fi</span>
+      <span class="purple">done</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: 一時フォルダ</span> <span class="back_slash">\"</span><span class="string">${</span><span class="value">directory</span><span class="string">}_TF</span><span class="back_slash">\"</span> <span class="string">から動画ファイルを削除しました\033[0m"</span>
+      <span class="memo"># fi</span>
+      <span class="command">echo</span>
+      <span class="purple">break</span>
+    <span class="purple">elif [</span> <span class="white">-z</span> <span class="string">"</span><span class="value">$directory</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;31mERROR: 指定されたディレクトリは存在しません\033[0m"</span>
+      <span class="command">echo</span>
+      <span class="purple">continue</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span>
+  <span class="command">stream_editor</span>
+<span class="yellow">}</span>
+
+<span class="option">function</span> <span class="command">automator_rsync_google_drive</span> <span class="yellow">() {</span>
+  <span class="command">exec</span> <span class="white">&gt;</span> <span class="string">&gt;(</span><span class="command">tee</span> <span class="option">-a</span> <span class="string">"</span><span class="value">$logfile</span><span class="string">")</span>
+  <span class="value">file_limit</span><span class="white">=</span><span class="integer">48</span> <span class="memo"># ファイル数の制限</span>
+  <span class="value">file_count</span><span class="white">=</span><span class="integer">0</span>  <span class="memo"># ファイル数のカウント</span>
+
+  <span class="value">rm_file_limit</span><span class="white">=</span><span class="integer">48</span>
+  <span class="value">rm_file_count</span><span class="white">=</span><span class="integer">0</span>
+
+  <span class="value">directory_TF</span><span class="white">=</span><span class="string">$(</span><span class="command">find</span> <span class="value">$src_volume</span> <span class="option">-type</span> <span class="string">d</span> <span class="option">-iname</span> <span class="string">'*_TF'</span> <span class="white">2&gt;</span><span class="string">/dev/null)</span>
+  <span class="value">directory_TF</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$directory_TF</span><span class="string">")</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 一時フォルダ</span> <span class="back_slash">\"</span><span class="value">$directory_TF</span><span class="back_slash">\"</span> <span class="string">から転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">に動画ファイルを転送しています…\033[0m"</span>
+  <span class="command">echo</span> <span class="string">"rsync --archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">/*</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">"</span>
+  <span class="purple">for</span> <span class="value">file</span> <span class="purple">in</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">"</span><span class="white">/*;</span> <span class="purple">do</span> <span class="memo"># 送信対象のファイルをループで処理</span>
+    <span class="command">rsync</span> <span class="option">--archive --human-readable --progress</span> <span class="string">"</span><span class="value">$file</span><span class="string">" "</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">"</span>
+    <span class="purple">(</span><span class="option">(</span><span class="white">file_count++</span><span class="option">)</span><span class="purple">)</span>                           <span class="memo"># 送信対象のファイル数をインクリメント</span>
+    <span class="purple">if [</span> <span class="value">$file_count</span> <span class="white">-ge</span> <span class="string">"</span><span class="value">$file_limit</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span> <span class="memo"># 送信対象のファイル数が制限に達したらループを終了</span>
+      <span class="purple">break</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 一時フォルダ</span> <span class="back_slash">\"</span><span class="value">$directory_TF</span><span class="back_slash">\"</span> <span class="string">から動画ファイルを削除しています…\033[0m"</span>
+  <span class="memo"># read -p "一時フォルダ ${directory}_TF から動画ファイルを削除します。よろしいですか？(\"yes\"で削除): " yesno</span>
+  <span class="memo"># if [ "$yesno" = "yes" ]; then</span>
+  <span class="command">echo</span> <span class="string">"rm</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">/*"</span>
+  <span class="command">progress_bar</span>
+  <span class="purple">for</span> <span class="value">file</span> <span class="purple">in</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">"</span><span class="white">/*;</span> <span class="purple">do</span> <span class="memo"># 削除対象のファイルをループで処理</span>
+    <span class="command">rm</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span>
+    <span class="purple">(</span><span class="option">(</span><span class="white">rm_file_count++</span><span class="option">)</span><span class="purple">)</span>                              <span class="memo"># 削除対象のファイル数をインクリメント</span>
+    <span class="purple">if</span> <span class="purple">[</span> <span class="value">$rm_file_count</span> <span class="white">-ge</span> <span class="string">"</span><span class="value">$rm_file_limit</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span> <span class="memo"># 削除対象のファイル数が制限に達したらループを終了</span>
+      <span class="purple">break</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: 一時フォルダ</span> <span class="back_slash">\"</span><span class="value">$directory_TF</span><span class="back_slash">\"</span> <span class="string">から動画ファイルを削除しました\033[0m"</span>
+  <span class="memo"># fi</span>
+  <span class="command">echo</span>
+  <span class="command">cd</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">"</span> <span class="white">||</span> <span class="command">exit</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">にて動画ファイルを検索しています…\033[0m"</span>
+  <span class="purple">for</span> <span class="value">file</span> <span class="purple">in</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span><span class="white">/*;</span> <span class="purple">do</span>
+    <span class="purple">if</span> <span class="purple">[</span> <span class="white">-f</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="value">mp4_search_result</span><span class="white">=</span><span class="string">$(</span><span class="command">find</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="option">-type</span> <span class="string">f</span> <span class="option">-iname</span> <span class="string">'*.mp4'</span> <span class="white">2&gt;</span><span class="string">/dev/null)</span> <span class="memo"># .mp4 ファイルを検索(大文字小文字を区別しない)</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">-n</span> <span class="string">"</span><span class="value">$mp4_search_result</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="value">mp4_files</span><span class="white">+=</span><span class="purple">(</span><span class="string">"</span><span class="value">$mp4_search_result</span><span class="string">"</span><span class="purple">)</span>
+        <span class="value">files_found_mp4</span><span class="white">=</span><span class="option">true</span>
+        <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mfiles found: $(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mp4_search_result</span><span class="string">")\033[0m"</span>
+        <span class="command">sleep</span> <span class="integer">0.05</span>
+      <span class="purple">fi</span>
+      <span class="value">mov_search_result</span><span class="white">=</span><span class="string">$(</span><span class="command">find</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="option">-type</span> <span class="string">f</span> <span class="option">-iname</span> <span class="string">'*.mov'</span> <span class="white">2&gt;</span><span class="string">/dev/null)</span> <span class="memo"># .mov ファイルを検索(大文字小文字を区別しない)</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">-n</span> <span class="string">"</span><span class="value">$mov_search_result</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="value">mov_files</span><span class="white">+=</span><span class="purple">(</span><span class="string">"</span><span class="value">$mov_search_result</span><span class="string">"</span><span class="purple">)</span>
+        <span class="value">files_found_mov</span><span class="white">=</span><span class="option">true</span>
+        <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mfiles found: $(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mov_search_result</span><span class="string">")\033[0m"</span>
+        <span class="command">sleep</span> <span class="integer">0.05</span>
+      <span class="purple">fi</span>
+      <span class="value">avi_search_result</span><span class="white">=</span><span class="string">$(</span><span class="command">find</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="option">-type</span> <span class="string">f</span> <span class="option">-iname</span> <span class="string">'*.avi'</span> <span class="white">2&gt;</span><span class="string">/dev/null)</span> <span class="memo"># .avi ファイルを検索(大文字小文字を区別しない)</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">-n</span> <span class="string">"</span><span class="value">$avi_search_result</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="value">avi_files</span><span class="white">+=</span><span class="purple">(</span><span class="string">"</span><span class="value">$avi_search_result</span><span class="string">"</span><span class="purple">)</span>
+        <span class="value">files_found_avi</span><span class="white">=</span><span class="option">true</span>
+        <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mfiles found: $(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$avi_search_result</span><span class="string">")\033[0m"</span>
+        <span class="command">sleep</span> <span class="integer">0.05</span>
+      <span class="purple">fi</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span>
+  <span class="command">echo</span>
+
+  <span class="value">date_dir</span><span class="white">=</span><span class="string">$(</span><span class="command">stat</span> <span class="option">-f</span> <span class="string">"%Sm"</span> <span class="option">-t</span> <span class="string">"%Y-%-m-%-d"</span> <span class="value">$src_volume_path</span><span class="string">)</span>
+  <span class="value">txt_file</span><span class="white">=</span><span class="string">"</span><span class="value">$date_dir</span> <span class="string">status.txt"</span>
+  date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" "$src_volume_path")
+  txt_file="$date_dir status.txt"
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$files_found_mp4</span><span class="string">"</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="value">first_file</span><span class="white">=</span><span class="option">true</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 動画ファイル(mp4)のステータスを取得しています…\033[0m"</span>
+    <span class="purple">for</span> <span class="value">mp4_file</span> <span class="purple">in</span> <span class="string">"${</span><span class="value">mp4_files</span><span class="string">[@]}"</span><span class="white">;</span> <span class="purple">do</span>
+      <span class="value">mp4_file</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mp4_file</span><span class="string">")</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span><span class="white">/</span><span class="string">"</span><span class="value">$mp4_file</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="purple">continue</span>
+      <span class="purple">fi</span>
+      <span class="value">mp4_stat</span><span class="white">=</span><span class="string">$(</span><span class="command">stat</span> <span class="option">-f</span> <span class="string">"%Sm"</span> <span class="option">-t</span> <span class="string">"%Y年%m月%d日 %H:%M" "</span><span class="value">$src_volume</span><span class="string">"/"</span><span class="value">$today</span><span class="string">"/"</span><span class="value">$mp4_file</span><span class="string">")</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mACQUIRE:</span> <span class="back_slash">\"</span><span class="value">$mp4_file</span> <span class="string">-&gt;</span> <span class="value">$mp4_stat</span><span class="back_slash">\"</span> <span class="white">&gt;&gt;</span> <span class="value">$txt_file</span><span class="string">\033[0m"</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="value">$first_file</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mp4_file</span><span class="string">") -&gt;</span> <span class="value">$mp4_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+        <span class="value">first_file</span><span class="white">=</span><span class="option">false</span>
+      <span class="purple">else</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mp4_file</span><span class="string">") -&gt;</span> <span class="value">$mp4_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+      <span class="purple">fi</span>
+    <span class="purple">done</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$files_found_mov</span><span class="string">"</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="value">first_file</span><span class="white">=</span><span class="option">true</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 動画ファイル(mov)のステータスを取得しています…\033[0m"</span>
+    <span class="purple">for</span> <span class="value">mov_file</span> <span class="purple">in</span> <span class="string">"${</span><span class="value">mov_files</span><span class="string">[@]}"</span><span class="white">;</span> <span class="purple">do</span>
+      <span class="value">mov_file</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mov_file</span><span class="string">")</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span><span class="white">/</span><span class="string">"</span><span class="value">$mov_file</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="purple">continue</span>
+      <span class="purple">fi</span>
+      <span class="value">mov_stat</span><span class="white">=</span><span class="string">$(</span><span class="command">stat</span> <span class="option">-f</span> <span class="string">"%Sm"</span> <span class="option">-t</span> <span class="string">"%Y年%m月%d日 %H:%M" "</span><span class="value">$src_volume</span><span class="string">"/"</span><span class="value">$today</span><span class="string">"/"</span><span class="value">$mov_file</span><span class="string">")</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mACQUIRE:</span> <span class="back_slash">\"</span><span class="value">$mov_file</span> <span class="string">-&gt;</span> <span class="value">$mov_stat</span><span class="back_slash">\"</span> <span class="white">&gt;&gt;</span> <span class="value">$txt_file</span><span class="string">\033[0m"</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="value">$first_file</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mov_file</span><span class="string">") -&gt;</span> <span class="value">$mov_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+        <span class="value">first_file</span><span class="white">=</span><span class="option">false</span>
+      <span class="purple">else</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mov_file</span><span class="string">") -&gt;</span> <span class="value">$mov_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+      <span class="purple">fi</span>
+    <span class="purple">done</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$files_found_avi</span><span class="string">"</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="value">first_file</span><span class="white">=</span><span class="option">true</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 動画ファイル(avi)のステータスを取得しています…\033[0m"</span>
+    <span class="purple">for</span> <span class="value">avi_file</span> <span class="purple">in</span> <span class="string">"${</span><span class="value">avi_files</span><span class="string">[@]}"</span><span class="white">;</span> <span class="purple">do</span>
+      <span class="value">avi_file</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$avi_file</span><span class="string">")</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span><span class="white">/</span><span class="string">"</span><span class="value">$avi_file</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="purple">continue</span>
+      <span class="purple">fi</span>
+      <span class="value">avi_stat</span><span class="white">=</span><span class="string">$(</span><span class="command">stat</span> <span class="option">-f</span> <span class="string">"%Sm"</span> <span class="option">-t</span> <span class="string">"%Y年%m月%d日 %H:%M" "</span><span class="value">$src_volume</span><span class="string">"/"</span><span class="value">$today</span><span class="string">"/"</span><span class="value">$avi_file</span><span class="string">")</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mACQUIRE:</span> <span class="back_slash">\"</span><span class="value">$avi_file</span> <span class="string">-&gt;</span> <span class="value">$avi_stat</span><span class="back_slash">\"</span> <span class="white">&gt;&gt;</span> <span class="value">$txt_file</span><span class="string">\033[0m"</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="value">$first_file</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$avi_file</span><span class="string">") -&gt;</span> <span class="value">$avi_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+        <span class="value">first_file</span><span class="white">=</span><span class="option">false</span>
+      <span class="purple">else</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$avi_file</span><span class="string">") -&gt;</span> <span class="value">$avi_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+      <span class="purple">fi</span>
+    <span class="purple">done</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="value">disk_limit</span><span class="white">=</span><span class="string">"19532000"</span> <span class="memo"># duからすれば10GB</span>
+  <span class="value">disk_usage</span><span class="white">=</span><span class="string">$(</span><span class="command">du</span> <span class="option">-s</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="white">|</span> <span class="command">cut</span> <span class="option">-f1</span><span class="string">)</span>
+  <span class="value">urandom</span><span class="white">=</span><span class="string">$(</span><span class="command">cat</span> <span class="string">/dev/urandom</span> <span class="white">|</span> <span class="value">LC_CTYPE</span><span class="white">=</span><span class="string">C</span> <span class="command">tr</span> <span class="option">-dc</span> <span class="string">'0-9'</span> <span class="white">|</span> <span class="command">fold</span> <span class="option">-w</span> <span class="integer">5</span> <span class="white">|</span> <span class="command">head</span> <span class="option">-n</span> <span class="integer">1</span> <span class="white">|</span> <span class="command">sort</span> <span class="white">|</span> <span class="command">uniq</span><span class="string">)</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$disk_usage</span><span class="string">"</span> <span class="white">-gt</span> <span class="value">$disk_limit</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33m#####################################################\033[0m"</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33m# WARNING: 転送量がディスク許容量(10GB)を超えました #\033[0m"</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33m#####################################################\033[0m"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用のフォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">を圧縮しています…\033[0m"</span>
+    <span class="command">cd</span> <span class="value">$src_volume</span> <span class="white">2&gt;</span><span class="string">/dev/null</span> <span class="white">||</span> <span class="command">exit</span>
+    <span class="command">echo</span> <span class="string">"zip -r</span> <span class="string">${</span><span class="value">today</span><span class="string">}_</span><span class="value">$urandom</span><span class="string">.zip</span> <span class="value">$today</span><span class="string">/"</span>
+    <span class="command">zip</span> <span class="option">-r</span> <span class="string">"</span><span class="value">$today</span><span class="string">"_"</span><span class="value">$urandom</span><span class="string">".zip "</span><span class="value">$today</span><span class="string">/"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO:</span> <span class="back_slash">\"</span><span class="string">${</span><span class="value">today</span><span class="string">}_</span><span class="value">$urandom</span><span class="string">.zip</span><span class="back_slash">\"</span> <span class="string">を .../動画用フォルダに転送しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"rsync --archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">.zip</span> <span class="value">$dst_volume</span><span class="string">"</span>
+    <span class="command">rsync</span> <span class="option">--archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">".zip "</span><span class="value">$dst_volume</span><span class="string">"</span>
+    <span class="command">echo</span>
+  <span class="purple">else</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用のフォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">を圧縮しています…\033[0m"</span>
+    <span class="command">cd</span> <span class="value">$src_volume</span> <span class="white">2&gt;</span><span class="string">/dev/null</span> <span class="white">||</span> <span class="command">exit</span>
+    <span class="command">echo</span> <span class="string">"zip -r</span> <span class="string">${</span><span class="value">today</span><span class="string">}_</span><span class="value">$urandom</span><span class="string">.zip</span> <span class="value">$today</span><span class="string">/"</span>
+    <span class="command">zip</span> <span class="option">-r</span> <span class="string">"</span><span class="value">$today</span><span class="string">"_"</span><span class="value">$urandom</span><span class="string">".zip "</span><span class="value">$today</span><span class="string">/"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO:</span> <span class="back_slash">\"</span><span class="string">${</span><span class="value">today</span><span class="string">}_</span><span class="value">$urandom</span><span class="string">.zip</span><span class="back_slash">\"</span> <span class="string">を .../動画用フォルダに転送しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"rsync --archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">.zip</span> <span class="value">$dst_volume</span><span class="string">"</span>
+    <span class="command">rsync</span> <span class="option">--archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">".zip "</span><span class="value">$dst_volume</span><span class="string">"</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">から動画ファイルを削除しています…\033[0m"</span>
+  <span class="command">echo</span> <span class="string">"rm</span> <span class="value">$src_volume_path</span><span class="string">/*"</span>
+  <span class="command">progress_bar</span>
+  <span class="command">rm</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"/</span><span class="option">*</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">から動画ファイルを削除しました\033[0m"</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mALL SUCCESSFUL: 動画ファイルの転送処理とステータス取得処理が正常に終了しました\033[0m"</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32m</span><span class="value">$src_volume_path</span> <span class="string">配下のファイルは .../動画用フォルダに格納されています\033[0m"</span>
+  <span class="command">echo</span>
+  <span class="purple">if</span> <span class="purple">[</span> <span class="white">-e</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/${</span><span class="value">today</span><span class="string">}_</span><span class="value">$urandom</span><span class="string">.zip"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から</span> <span class="back_slash">\"</span><span class="string">${</span><span class="value">today</span><span class="string">}_</span><span class="value">$urandom</span><span class="string">.zip</span><span class="back_slash">\"</span> <span class="string">を削除しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"rm -v</span> <span class="value">$src_volume</span><span class="string">/</span><span class="string">${</span><span class="value">today</span><span class="string">}_</span><span class="value">$urandom</span><span class="string">.zip"</span>
+    <span class="command">rm</span> <span class="option">-v</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">"_"</span><span class="value">$urandom</span><span class="string">".zip</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から</span> <span class="back_slash">\"</span><span class="string">${</span><span class="value">today</span><span class="string">}_</span><span class="value">$urandom</span><span class="string">.zip</span><span class="back_slash">\"</span> <span class="string">を削除しました\033[0m"</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="white">-z</span> <span class="string">"$(</span><span class="command">ls</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="white">2&gt;</span><span class="string">/dev/null)"</span> <span class="purple">]</span> <span class="white">&&</span> <span class="purple">[</span> <span class="white">-z</span> <span class="string">"$(</span><span class="command">ls</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">"</span> <span class="white">2&gt;</span><span class="string">/dev/null)"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">と一時フォルダ</span> <span class="back_slash">\"</span><span class="value">$directory_TF</span><span class="back_slash">\"</span> <span class="string">を削除しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"rmdir -v</span> <span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">rmdir</span> <span class="option">-v</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="string">"rmdir -v</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">"</span>
+    <span class="command">rmdir</span> <span class="option">-v</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$directory</span><span class="string">"_TF</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">と一時フォルダ</span> <span class="back_slash">\"</span><span class="value">$directory_TF</span><span class="back_slash">\"</span> <span class="string">を削除しました\033[0m"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">のディスク容量を記録しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"・</span><span class="value">$today_string</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume<span class="string">"/"</span><span class="value">$disk_free</span><span class="string">"</span>
+    <span class="command">echo</span> <span class="string">"df -H</span> <span class="value">$src_volume</span> <span class="string">&gt;&gt;</span> <span class="value">$dst_volume</span><span class="string">/</span><span class="value">$disk_free</span><span class="string">"</span>
+    <span class="command">df</span> <span class="option">-H</span> <span class="value">$src_volume</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$disk_free</span>
+    <span class="command">echo</span> <span class="string">""</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$disk_free</span><span class="string">"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">のディスク容量を記録しました\033[0m"</span>
+    <span class="command">echo</span>
+    <span class="command">stream_editor</span>
+    <span class="command">end_point</span>
+  <span class="purple">elif</span> <span class="purple">[</span> <span class="white">-s</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="value">interval</span><span class="white">=</span><span class="string">$(</span><span class="command">date</span> <span class="option">-j</span> <span class="option">-v+10M</span> <span class="string">"+%H時%M分%S秒")</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;35mQUEUEING: Google ドライブの同期処理が終了するまで10分間待機します…\033[0m"</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;35m</span>          <span class="back_slash">\"</span><span class="value">$interval</span><span class="back_slash">\"</span> <span class="string">から処理を再開します\033[0m"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;35m</span><span class="value">$ascii</span><span class="string">\033[0m"</span>
+    <span class="command">stream_editor</span>
+    <span class="command">sleep</span> <span class="integer">600</span>
+    <span class="command">automator_rsync_google_drive</span>
+  <span class="purple">fi</span>
+<span class="yellow">}</span>
+
+<span class="option">function</span> <span class="command">mv_google_drive</span> <span class="yellow">() {</span>
+  <span class="command">exec</span> <span class="white">&gt;</span> <span class="string">&gt;(</span><span class="command">tee</span> <span class="option">-a</span> <span class="string">"</span><span class="value">$logfile</span><span class="string">")</span>
+  <span class="command">cd</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="white">||</span> <span class="command">exit</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">にて動画ファイルを検索しています…\033[0m"</span>
+  <span class="purple">for</span> <span class="value">file</span> <span class="purple">in</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span><span class="white">/*;</span> <span class="purple">do</span>
+    <span class="purple">if</span> <span class="purple">[</span> <span class="white">-f</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="value">mp4_search_result</span><span class="white">=</span><span class="string">$(</span><span class="command">find</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="option">-type</span> <span class="string">f</span> <span class="option">-iname</span> <span class="string">'*.mp4'</span> <span class="white">2&gt;</span><span class="string">/dev/null)</span> <span class="memo"># .mp4 ファイルを検索(大文字小文字を区別しない)</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">-n</span> <span class="string">"</span><span class="value">$mp4_search_result</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="value">mp4_files</span><span class="white">+=</span><span class="purple">(</span><span class="string">"</span><span class="value">$mp4_search_result</span><span class="string">"</span><span class="purple">)</span>
+        <span class="value">files_found_mp4</span><span class="white">=</span><span class="option">true</span>
+        <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mfiles found: $(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mp4_search_result</span><span class="string">")\033[0m"</span>
+        <span class="command">sleep</span> <span class="integer">0.05</span>
+      <span class="purple">fi</span>
+      <span class="value">mov_search_result</span><span class="white">=</span><span class="string">$(</span><span class="command">find</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="option">-type</span> <span class="string">f</span> <span class="option">-iname</span> <span class="string">'*.mov'</span> <span class="white">2&gt;</span><span class="string">/dev/null)</span> <span class="memo"># .mov ファイルを検索(大文字小文字を区別しない)</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">-n</span> <span class="string">"</span><span class="value">$mov_search_result</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="value">mov_files</span><span class="white">+=</span><span class="purple">(</span><span class="string">"</span><span class="value">$mov_search_result</span><span class="string">"</span><span class="purple">)</span>
+        <span class="value">files_found_mov</span><span class="white">=</span><span class="option">true</span>
+        <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mfiles found: $(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mov_search_result</span><span class="string">")\033[0m"</span>
+        <span class="command">sleep</span> <span class="integer">0.05</span>
+      <span class="purple">fi</span>
+      <span class="value">avi_search_result</span><span class="white">=</span><span class="string">$(</span><span class="command">find</span> <span class="string">"</span><span class="value">$file</span><span class="string">"</span> <span class="option">-type</span> <span class="string">f</span> <span class="option">-iname</span> <span class="string">'*.avi'</span> <span class="white">2&gt;</span><span class="string">/dev/null)</span> <span class="memo"># .avi ファイルを検索(大文字小文字を区別しない)</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">-n</span> <span class="string">"</span><span class="value">$avi_search_result</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="value">avi_files</span><span class="white">+=</span><span class="purple">(</span><span class="string">"</span><span class="value">$avi_search_result</span><span class="string">"</span><span class="purple">)</span>
+        <span class="value">files_found_avi</span><span class="white">=</span><span class="option">true</span>
+        <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mfiles found: $(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$avi_search_result</span><span class="string">")\033[0m"</span>
+        <span class="command">sleep</span> <span class="integer">0.05</span>
+      <span class="purple">fi</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span>
+  <span class="command">echo</span>
+
+  <span class="value">txt_file</span><span class="white">=</span><span class="string">"</span><span class="value">$today</span> <span class="string">status.txt"</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$files_found_mp4</span><span class="string">"</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="value">first_file</span><span class="white">=</span><span class="option">true</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 動画ファイル(mp4)のステータスを取得しています…\033[0m"</span>
+    <span class="purple">for</span> <span class="value">mp4_file</span> <span class="purple">in</span> <span class="string">"${</span><span class="value">mp4_files</span><span class="string">[@]}"</span><span class="white">;</span> <span class="purple">do</span>
+      <span class="value">mp4_file</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mp4_file</span><span class="string">")</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span><span class="white">/</span><span class="string">"</span><span class="value">$mp4_file</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="purple">continue</span>
+      <span class="purple">fi</span>
+      <span class="value">mp4_stat</span><span class="white">=</span><span class="string">$(</span><span class="command">stat</span> <span class="option">-f</span> <span class="string">"%Sm"</span> <span class="option">-t</span> <span class="string">"%Y年%m月%d日 %H:%M"</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">"/"</span><span class="value">$mp4_file</span><span class="string">")</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mACQUIRE:</span> <span class="back_slash">\"</span><span class="value">$mp4_file</span> <span class="string">-&gt;</span> <span class="value">$mp4_stat</span><span class="back_slash">\"</span> <span class="string">&gt;&gt;</span> <span class="value">$txt_file</span><span class="string">\033[0m"</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="value">$first_file</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mp4_file</span><span class="string">") -&gt;</span> <span class="value">$mp4_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+        <span class="value">first_file</span><span class="white">=</span><span class="option">false</span>
+      <span class="purple">else</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mp4_file</span><span class="string">") -&gt;</span> <span class="value">$mp4_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+      <span class="purple">fi</span>
+    <span class="purple">done</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$files_found_mov</span><span class="string">"</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="value">first_file</span><span class="white">=</span><span class="option">true</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 動画ファイル(mov)のステータスを取得しています…\033[0m"</span>
+    <span class="purple">for</span> <span class="value">mov_file</span> <span class="purple">in</span> <span class="string">"${</span><span class="value">mov_files</span><span class="string">[@]}"</span><span class="white">;</span> <span class="purple">do</span>
+      <span class="value">mov_file</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mov_file</span><span class="string">")</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span><span class="white">/</span><span class="string">"</span><span class="value">$mov_file</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="purple">continue</span>
+      <span class="purple">fi</span>
+      <span class="value">mov_stat</span><span class="white">=</span><span class="string">$(</span><span class="command">stat</span> <span class="option">-f</span> <span class="string">"%Sm"</span> <span class="option">-t</span> <span class="string">"%Y年%m月%d日 %H:%M"</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">"/"</span><span class="value">$mov_file</span><span class="string">")</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mACQUIRE:</span> <span class="back_slash">\"</span><span class="value">$mov_file</span> <span class="string">-&gt;</span> <span class="value">$mov_stat</span><span class="back_slash">\"</span> <span class="string">&gt;&gt;</span> <span class="value">$txt_file</span><span class="string">\033[0m"</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="value">$first_file</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mov_file</span><span class="string">") -&gt;</span> <span class="value">$mov_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+        <span class="value">first_file</span><span class="white">=</span><span class="option">false</span>
+      <span class="purple">else</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$mov_file</span><span class="string">") -&gt;</span> <span class="value">$mov_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+      <span class="purple">fi</span>
+    <span class="purple">done</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$files_found_avi</span><span class="string">"</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="value">first_file</span><span class="white">=</span><span class="option">true</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 動画ファイル(avi)のステータスを取得しています…\033[0m"</span>
+    <span class="purple">for</span> <span class="value">avi_file</span> <span class="purple">in</span> <span class="string">"${</span><span class="value">avi_files</span><span class="string">[@]}"</span><span class="white">;</span> <span class="purple">do</span>
+      <span class="value">avi_file</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$avi_file</span><span class="string">")</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span><span class="white">/</span><span class="string">"</span><span class="value">$avi_file</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="purple">continue</span>
+      <span class="purple">fi</span>
+      <span class="value">avi_stat</span><span class="white">=</span><span class="string">$(</span><span class="command">stat</span> <span class="option">-f</span> <span class="string">"%Sm"</span> <span class="option">-t</span> <span class="string">"%Y年%m月%d日 %H:%M"</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">"/"</span><span class="value">$avi_file</span><span class="string">")</span>
+      <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mACQUIRE:</span> <span class="back_slash">\"</span><span class="value">$avi_file</span> <span class="string">-&gt;</span> <span class="value">$avi_stat</span><span class="back_slash">\"</span> <span class="string">&gt;&gt;</span> <span class="value">$txt_file</span><span class="string">\033[0m"</span>
+      <span class="purple">if</span> <span class="purple">[</span> <span class="value">$first_file</span> <span class="white">=</span> <span class="option">true</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$avi_file</span><span class="string">") -&gt;</span> <span class="value">$avi_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+        <span class="value">first_file</span><span class="white">=</span><span class="option">false</span>
+      <span class="purple">else</span>
+        <span class="command">echo</span> <span class="string">"$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$avi_file</span><span class="string">") -&gt;</span> <span class="value">$avi_stat</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$txt_file</span><span class="string">"</span>
+      <span class="purple">fi</span>
+    <span class="purple">done</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="value">disk_limit</span><span class="white">=</span><span class="string">"19532000"</span> <span class="memo"># duからすれば10GB</span>
+  <span class="value">disk_usage</span><span class="white">=</span><span class="string">$(</span><span class="command">du</span> <span class="option">-s</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="white">|</span> <span class="command">cut</span> <span class="option">-f1</span><span class="string">)</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$disk_usage</span><span class="string">"</span> <span class="white">-gt</span> <span class="value">$disk_limit</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33m#####################################################\033[0m"</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33m# WARNING: 転送量がディスク許容量(10GB)を超えました #\033[0m"</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33m#####################################################\033[0m"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用のフォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">を圧縮しています…\033[0m"</span>
+    <span class="command">cd</span> <span class="value">$src_volume</span> <span class="white">2&gt;</span><span class="string">/dev/null</span> <span class="white">||</span> <span class="command">exit</span>
+    <span class="command">echo</span> <span class="string">"zip -r</span> <span class="value">$today</span><span class="string">.zip</span> <span class="value">$today</span><span class="string">/"</span>
+    <span class="command">zip</span> <span class="option">-r</span> <span class="string">"</span><span class="value">$today</span><span class="string">".zip "</span><span class="value">$today</span><span class="string">/"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO:</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="string">.zip</span><span class="back_slash">\"</span> <span class="string">を .../動画用フォルダに転送しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"rsync --archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">.zip</span> <span class="value">$dst_volume</span><span class="string">"</span>
+    <span class="command">rsync</span> <span class="option">--archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">".zip "</span><span class="value">$dst_volume</span><span class="string">"</span>
+    <span class="command">echo</span>
+  <span class="purple">else</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用のフォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">を圧縮しています…\033[0m"</span>
+    <span class="command">cd</span> <span class="value">$src_volume</span> <span class="white">2&gt;</span><span class="string">/dev/null</span> <span class="white">||</span> <span class="command">exit</span>
+    <span class="command">echo</span> <span class="string">"zip -r</span> <span class="value">$today</span><span class="string">.zip</span> <span class="value">$today</span><span class="string">/"</span>
+    <span class="command">zip</span> <span class="option">-r</span> <span class="string">"</span><span class="value">$today</span><span class="string">".zip "</span><span class="value">$today</span><span class="string">/"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO:</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="string">.zip</span><span class="back_slash">\"</span> <span class="string">を .../動画用フォルダに転送しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"rsync --archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">.zip</span> <span class="value">$dst_volume</span><span class="string">"</span>
+    <span class="command">rsync</span> <span class="option">--archive --human-readable --progress</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">".zip "</span><span class="value">$dst_volume</span><span class="string">"</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">から動画ファイルを削除しています…\033[0m"</span>
+  <span class="command">echo</span> <span class="string">"rm</span> <span class="value">$src_volume_path</span><span class="string">/*"</span>
+  <span class="command">progress_bar</span>
+  <span class="command">rm</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"/</span><span class="option">*</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: 転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">から動画ファイルを削除しました\033[0m"</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mALL SUCCESSFUL: 動画ファイルの転送処理とステータス取得処理が正常に終了しました\033[0m"</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32m</span><span class="value">$src_volume_path</span> <span class="string">配下のファイルは .../動画用フォルダに格納されています\033[0m"</span>
+  <span class="command">echo</span>
+  <span class="purple">if</span> <span class="purple">[</span> <span class="white">-e</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">.zip"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="string">.zip</span><span class="back_slash">\"</span> <span class="string">を削除しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"rm -v</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$today</span><span class="string">.zip"</span>
+    <span class="command">rm</span> <span class="option">-v</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$today</span><span class="string">".zip</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="string">.zip</span><span class="back_slash">\"</span> <span class="string">を削除しました\033[0m"</span>
+    <span class="command">echo</span>
+  <span class="purple">fi</span>
+
+  <span class="value">directory_TF</span><span class="white">=</span><span class="string">$(</span><span class="command">find</span> <span class="value">$src_volume</span> <span class="option">-type</span> <span class="string">d</span> <span class="option">-iname</span> <span class="string">'*_TF'</span> <span class="white">2&gt;</span><span class="string">/dev/null)</span>
+  <span class="value">directory_TF</span><span class="white">=</span><span class="string">$(</span><span class="command">basename</span> <span class="string">"</span><span class="value">$directory_TF</span><span class="string">")</span>
+
+  <span class="purple">if</span> <span class="purple">[</span> <span class="white">-z</span> <span class="string">"$(</span><span class="command">ls</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="white">2&gt;</span><span class="string">/dev/null)"</span> <span class="purple">]</span> <span class="white">&&</span> <span class="purple">[</span> <span class="white">-z</span> <span class="string">"$(</span><span class="command">ls</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">"</span> <span class="white">2&gt;</span><span class="string">/dev/null)"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">と一時フォルダ</span> <span class="back_slash">\"</span><span class="value">$directory_TF</span><span class="back_slash">\"</span> <span class="string">を削除しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"rmdir -v</span> <span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">rmdir</span> <span class="option">-v</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="string">"rmdir -v</span> <span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">"</span>
+    <span class="command">rmdir</span> <span class="option">-v</span> <span class="value">$src_volume</span><span class="string">/"</span><span class="value">$directory</span><span class="string">"_TF</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">から転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">と一時フォルダ</span> <span class="back_slash">\"</span><span class="value">$directory_TF</span><span class="back_slash">\"</span> <span class="string">を削除しました\033[0m"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;36mINFO: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">のディスク容量を記録しています…\033[0m"</span>
+    <span class="command">echo</span> <span class="string">"・</span><span class="value">$today_string</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume<span class="string">"/"</span><span class="value">$disk_free</span><span class="string">"</span>
+    <span class="command">echo</span> <span class="string">"df -H</span> <span class="value">$src_volume</span> <span class="string">&gt;&gt;</span> <span class="value">$dst_volume</span><span class="string">/</span><span class="value">$disk_free</span><span class="string">"</span>
+    <span class="command">df</span> <span class="option">-H</span> <span class="value">$src_volume</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$disk_free</span><span class="string">"</span>
+    <span class="command">echo</span> <span class="string">""</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"/"</span><span class="value">$disk_free</span><span class="string">"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">のディスク容量を記録しました\033[0m"</span>
+    <span class="command">echo</span>
+    <span class="command">stream_editor</span>
+    <span class="command">end_point</span>
+  <span class="purple">elif</span> <span class="purple">[</span> <span class="white">-s</span> <span class="string">"</span><span class="value">$src_volume</span><span class="string">/</span><span class="value">$directory_TF</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="value">interval</span><span class="white">=</span><span class="string">$(</span><span class="command">date</span> <span class="option">-j</span> <span class="option">-v+10M</span> <span class="string">"+%H時%M分%S秒")</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;35mQUEUEING: Google ドライブの同期処理が終了するまで10分間待機します…\033[0m"</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;35m</span>          <span class="back_slash">\"</span><span class="value">$interval</span><span class="back_slash">\"</span> <span class="string">から処理を再開します\033[0m"</span>
+    <span class="command">echo</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;35m</span><span class="value">$ascii</span><span class="string">\033[0m"</span>
+    <span class="command">stream_editor</span>
+    <span class="command">sleep</span> <span class="integer">600</span>
+    <span class="command">automator_rsync_google_drive</span>
+  <span class="purple">fi</span>
+<span class="yellow">}</span>
+
+<span class="command">exec</span> <span class="white">&gt;</span> <span class="string">&gt;(</span><span class="command">tee</span> <span class="option">-a</span> <span class="string">"</span><span class="value">$logfile</span><span class="string">")</span>
+
+<span class="value">URL</span><span class="white">=</span><span class="string">"https://drive.google.com/drive/my-drive"</span>
+<span class="value">success</span><span class="white">=</span><span class="string">$(</span><span class="command">curl</span> <span class="option">-I</span> <span class="value">$URL</span> <span class="white">2&gt;</span><span class="string">/dev/null</span> <span class="white">|</span> <span class="command">head</span> <span class="option">-n</span> <span class="integer">1</span><span class="string">)</span>
+<span class="value">failure</span><span class="white">=</span><span class="string">$(</span><span class="command">curl</span> <span class="option">-I</span> <span class="value">$URL</span> <span class="white">2&gt;&1</span> <span class="white">|</span> <span class="command">grep</span> <span class="option">-o</span> <span class="string">"Could not resolve host")</span>
+
+<span class="purple">if</span> <span class="yellow">[</span> <span class="string">"</span><span class="value">$success</span><span class="string">"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS:</span> <span class="value">$success</span><span class="string">\033[0m"</span>
+<span class="purple">elif</span> <span class="yellow">[</span> <span class="string">"</span><span class="value">$failure</span><span class="string">"</span> <span class="white">==</span> <span class="string">"Could not resolve host"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;31mNETWORK ERROR: Google Drive にアクセスできませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"</span>
+  <span class="command">echo</span>
+  <span class="command">exit</span> <span class="integer">1</span>
+<span class="purple">fi</span>
+
+<span class="purple">if</span> <span class="yellow">[</span> <span class="white">-e</span> <span class="value">$src_volume</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mSUCCESS: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">は有効です。\033[0m"</span>
+<span class="purple">elif</span> <span class="yellow">[</span> <span class="white">! -e</span> <span class="value">$src_volume</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;31mERROR: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">が存在しません。ドライブがマウントされているか確認して再度実行してください。\033[0m"</span>
+  <span class="command">echo</span>
+  <span class="command">exit</span> <span class="integer">1</span>
+<span class="purple">elif</span> <span class="yellow">[</span> <span class="white">! -e</span> <span class="value">$src_volume</span> <span class="yellow">]</span> <span class="white">&&</span> <span class="yellow">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$dst_volume</span><span class="string">"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;31mERROR: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">と</span> <span class="value">$dst_volume</span> <span class="string">が存在しません。ドライブがマウントされているか確認して再度実行してください。\033[0m"</span>
+  <span class="command">echo</span>
+  <span class="command">exit</span> <span class="integer">1</span>
+<span class="purple">fi</span>
+
+<span class="purple">if</span> <span class="yellow">[</span> <span class="white">-d</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;31mERROR: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">に転送用の一時フォルダが存在しません。転送用の一時フォルダを作成・転送プロセスに移行します。\033[0m"</span>
+  <span class="command">rsync_clone_folder</span>
+  <span class="command">mv_google_drive</span>
+<span class="purple">elif</span> <span class="yellow">[</span> <span class="white">! -e</span> <span class="string">"</span><span class="value">$src_volume_path</span><span class="string">"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;31mERROR: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">に転送用フォルダ</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">が存在しません。転送用フォルダを作成・転送プロセスに移行します。\033[0m"</span>
+  <span class="command">rsync_clone_folder</span>
+  <span class="command">mv_google_drive</span>
+<span class="purple">else</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33mWARNING: HDD</span> <span class="back_slash">\"</span><span class="value">$HDD</span><span class="back_slash">\"</span> <span class="string">に</span> <span class="back_slash">\"</span><span class="value">$today</span><span class="back_slash">\"</span> <span class="string">という拡張子を持たない不正なファイルがあります。\033[0m"</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;33m         <span class="string">アーカイブ処理・転送用フォルダ作成・転送プロセスに移行します。\033[0m"</span>
+  <span class="command">rsync_clone_folder</span>
+  <span class="command">mv_google_drive</span>
+<span class="purple">fi</span>
+<style>
+  #html-box,#css-box,#js-box {
+    background: repeating-linear-gradient( to top,rgba(255,255,255,0.03) 0px 2px,transparent 2px 4px ),linear-gradient(to bottom,#200933 75%,#3d0b43)
+  }
+
+  #html-box::after,#css-box::after,#js-box::after {
+    content: '';
+    height: 50%;
+    width: 100%;
+    /* display: block; */
+    background-image: linear-gradient(90deg,rgba(252,25,154,.1) 1px,rgba(0,0,0,0) 1px),linear-gradient(0deg,rgba(252,25,154,.1) 1px,rgba(0,0,0,0) 1px);
+    background-position: bottom;
+    /* background-repeat: repeat; */
+    background-size: 20px 20px;
+    /* left: -25px; */
+    position: absolute;
+    /* pointer-events: none; */
+    bottom: 0;
+    transform: perspective(100px) rotateX(60deg);
+    z-index: 0
+  }
+
+  .value {
+    color: #3fefff
+  }
+  .option {
+    color: #005eff;
+  }
+  .string {
+    color: #c6804e;
+  }
+  .memo {
+    color: #008600;
+  }
+  .command {
+    color: #d5cb85;
+  }
+  .integer {
+    color: #c4ffb4;
+  }
+  .back_slash{
+    color: #e3df9d;
+  }
+  .yellow {
+    color: #fff570;
+  }
+  .purple {
+    color: #b869d7;
+  }
+  .white {
+    color: white
+  }
+
+  body.editor {
+    background: #131417
+  }
+
+  .box.box.box,.editor .top-boxes,body.project .editor-pane,body.project .editor {
+    background: #131417
+  }
+
+  .box.box.box pre,.editor .top-boxes pre,pre,body.project .editor-pane pre,body.project .editor pre {
+    color: #d5d7de
+  }
+
+  code[class] .value,code[class] {
+    color: #3fefff;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #3fefff,0 0 1px #3fefff;
+  }
+
+  code[class] .option,code[class] {
+    color: #005eff;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #005eff,0 0 2px #005eff;
+  }
+
+  code[class] .string,code[class] {
+    color: #c6804e;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #c6804e,0 0 1px #c6804e;
+  }
+
+  code[class] .memo,code[class] {
+    color: #008600;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #008600,0 0 2px #008600;
+  }
+
+  code[class] .command,code[class] {
+    color: #d5cb85;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #d5cb85,0 0 1px #d5cb85;
+  }
+
+  code[class] .integer,code[class] {
+    color: #c4ffb4;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #c4ffb4,0 0 2px #c4ffb4;
+  }
+
+  code[class] .back_slash,code[class] {
+    color: #e3df9d;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #e3df9d,0 0 10px #e3df9d;
+  }
+
+  code[class] .yellow,code[class] {
+    color: #fff570;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #fff570,0 0 2px #fff570;
+  }
+
+  code[class] .purple,code[class] {
+    color: #b869d7;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #b869d7,0 0 2px #b869d7;
+  }
+
+  code[class] .white,code[class] {
+    color: white;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px white,0 0 2px white;
+  }
+
+  * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  html,body {
+    height: 100%;
+  }
+
+  .embed-line-highlight {
+    background: rgba(212,214,223,.2)
+  }
+
+  #output {
+    /* height: calc(100% - 50px - 30px); */
+    height: calc(100%);
+  }
+
+  #output pre {
+    font-size: 10px;
+    white-space: pre-wrap;
+    line-height: 1.35;
+    -moz-tab-size: 2;
+    -o-tab-size: 2;
+    tab-size: 2;
+    max-width: 100vw
+  }
+
+  #output pre code {
+    font-family: var(--cp-font-family-monospace)
+  }
+
+  body.static #output pre,#output.static pre {
+    width: 100%;
+    padding: 20px
+  }
+
+  #output pre,#output iframe {
+    scrollbar-color: rgba(0,0,0,.5) transparent;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch
+  }
+
+  #html-box.active,#css-box.active,#js-box.active,#result-box.active {
+    display: block;
+    height: 100%
+  }
+
+  :root {
+    background: var(--cp-bg);
+    color: var(--cp-color);
+    --cp-button-default-bg: var(--cp-button-bg);
+    --cp-button-default-color: var(--cp-button-color);
+    --cp-sidebar-width: 180px;
+    --cp-header-height: 65px;
+    --cp-header-height-small: 53px;
+    --cp-control-bar-height: 29px;
+    --cp-control-bar-space-between: 1.5rem;
+    --cp-font-family: 'Lato', 'Lucida Grande', 'Lucida Sans Unicode', Tahoma, Sans-Serif;
+    --cp-font-family-header: 'Telefon Black', Sans-Serif;
+    --cp-font-family-header-alt: 'Telefon', Sans-Serif;
+    --cp-font-family-monospace: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    --cp-font-family-editor: var(--cp-font-family-monospace);
+    --cp-button-icon: currentColor;
+    --cp-button-border-width: 3px;
+    --cp-button-border-radius: 4px;
+    --cp-button-margin-block: 1px;
+    --cp-button-margin-inline: 10px;
+    --cp-button-padding-inline: 16px;
+    --cp-button-padding-block: 10px;
+    --cp-pen-radius: 5px;
+    --cp-pen-logo-size: 30px;
+    --cp-pen-header-spacing: calc(var(--cp-pen-sidebar-spacing) * 1.5);
+    --cp-pen-sidebar-width: 60px;
+    --cp-pen-sidebar-icon-size: 26px;
+    --cp-pen-sidebar-spacing: 6px;
+    --cp-pen-sidebar-minimal-width: 6px;
+    --cp-pen-panel-spacing: 0.7rem;
+    --cp-pen-bar-height: 45px
+  }
+
+  @media(max-width: 1100px) {
+    :root {
+        --cp-pen-sidebar-width: 50px;
+        --cp-pen-sidebar-spacing: 4px;
+        --cp-pen-sidebar-icon-size: 24px;
+        --cp-pen-sidebar-minimal-width: 6px;
+        --cp-pen-panel-spacing: 0.6rem
+    }
+  }
+
+  * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  html,body {
+    height: 100%;
+  }
+
+  .embed-line-highlight {
+    background: rgba(212,214,223,.2)
+  }
+</style>

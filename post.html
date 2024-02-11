@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <header>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <title>Post</title>
+      <meta charset="utf-8">
+      <meta name="description" content="">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+    </header>
+  </head>
+  <body>
+  </body>
+</html>
+
+<script>
+/*
+* Config
+*/
+var file_name = 'post.html';
+var parameter_key = 'post_id';
+
+/*
+* Env
+*/
+var path_name = window.location.pathname;
+var query_string = window.location.search;
+var base_dir = path_name.split(file_name)[0];
+
+/*
+* Process
+* (Rewrite URL using historyAPI)
+*/
+var match_condition = new RegExp(parameter_key + '=[a-z0-9-_]+$');
+if (parameter = query_string.match(match_condition))
+{
+  parameter_value = parameter[0].split('=')[1];
+  history.replaceState(null, null, base_dir + file_name.replace('.html', '/') + parameter_value);
+  document.title = parameter_value + ' | Github Pages Rewrite';
+}
+</script>

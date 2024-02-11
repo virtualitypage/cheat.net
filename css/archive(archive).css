@@ -1,0 +1,192 @@
+/* =========================================================
+main
+========================================================= */
+
+main {
+  display: block;
+  /*IE*/
+}
+.main-contents {
+  padding-top: 0px;
+  /* padding-left: 5%;
+  padding-right: 5%; */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  align-content: center;
+  flex-wrap: wrap;
+}
+@media screen and (min-width: 769px) {
+  .main-contents {
+    padding-top: 10px;
+    padding-left: 3%;
+    padding-right: 3%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    align-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* =========================================================
+detailArea
+========================================================= */
+
+.detailArea {
+  width: 70%;
+  margin: 5% auto 10px;
+  text-align: center;
+}
+@media screen and (min-width: 769px) {
+  .detailArea {
+    width: 50%;
+    margin: -40px auto 20px;
+    padding: 70px 0 5px;
+    text-align: center;
+  }
+}
+
+details {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 0.5em 0.5em 0;
+}
+summary {
+  font-weight: bold;
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+  color: #000;
+  font-size: 15px;
+}
+details[open] {
+  padding: 0.5em;
+  color: #000;
+  font-size: 15px;
+}
+details[open] summary {
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 0.5em;
+}
+@media screen and (min-width: 769px) {
+  details {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 0.5em 0.5em 0;
+  }
+  summary {
+    font-weight: bold;
+    margin: -0.5em -0.5em 0;
+    padding: 0.5em;
+    color: #000;
+    font-size: 15px;
+  }
+  details[open] {
+    padding: 0.5em;
+    color: #000;
+    font-size: 15px;
+  }
+  details[open] summary {
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 0.5em;
+  }
+}
+
+/* =========================================================
+infoArea
+========================================================= */
+
+.infoArea {
+  margin: 5% auto 20px;
+  width: 80%;
+  color: #000;
+  font-size: 13px;
+}
+@media screen and (min-width: 769px) {
+  .infoArea {
+    margin: -40px auto 20px;
+    padding: 70px 0 5px;
+    width: 80%;
+    color: #000;
+    font-size: 20px;
+  }
+}
+
+.p {
+  font-weight: bold;
+  font-size: 15px;
+}
+.box_title {
+  display: inline-block;
+  background: #03ffcd;
+  padding: 5px 10px;
+  color: #000;
+}
+.box {
+  padding: 10px;
+  border: 2px solid #03ffcd;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+  height: 30%;
+}
+
+@media screen and (min-width: 769px) {
+  .p {
+    font-weight: bold;
+    font-size: 15px;
+  }
+  .box_title {
+    display: inline-block;
+    background: #03ffcd;
+    padding: 1px 10px;
+    color: #000;
+  }
+  .box {
+    padding: 10px;
+    border: 2px solid #03ffcd;
+    color: #000;
+    font-weight: bold;
+    font-size: 15px;
+    height: 30%;
+  }
+}
+
+.link {
+  text-decoration: underline;
+  color: #c252ff;
+}
+
+@media screen and (max-width: 768px) {
+  .footer-relative {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background-color: #03ffcd;
+    bottom: 0;
+    padding: 10px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .footer-relative {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background-color: #03ffcd;
+    bottom: 0;
+    padding: 17px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 15px;
+  }
+}

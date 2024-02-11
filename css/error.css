@@ -1,0 +1,237 @@
+*,:before,:after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+}
+
+body {
+  margin: 0;
+  line-height: inherit;
+}
+
+h2 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+button {
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+  text-transform: none;
+}
+
+button,[type=button] {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+}
+
+h2,p {
+  margin: 0;
+}
+
+.container {
+  margin: auto;
+  max-width: 100%;
+}
+
+.sry-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.margin-0 {
+  inset: 0;
+}
+
+.title-while {
+  margin-bottom: 2rem;
+}
+
+.msg-top {
+  margin-top: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.text-maxWidth28 {
+  max-width: 28rem;
+}
+
+.flex-col {
+  flex-direction: column;  /* 積み重なるように配置 */
+}
+
+.buttonCenter {
+  align-items: center;
+}
+
+.makeScrollable {
+  overflow-y: auto;
+}
+
+.overscroll-contain { /* スクロール領域の境界に達した時にブラウザーが何をするかの設定 */
+  overscroll-behavior: contain;
+}
+
+.roundedCorner {
+  border-radius: .25rem;
+}
+
+.bgColor {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
+.button-bgColor {
+  --tw-bg-opacity: 1;
+  background-color: rgb(3 255 205 / var(--tw-bg-opacity));
+}
+
+.bgColor-opacity {
+  --tw-bg-opacity: .5;
+}
+
+.innerMargin {
+  padding: 4rem;
+}
+
+.buttonMargin {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.outerMargin-top {
+  padding-top: 4rem;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.sryMsgSize {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.titleSize {
+  font-size: 8rem;
+  line-height: 1;
+}
+
+.fontExtrabold {
+  font-weight: 800;
+}
+
+.fontSemibold {
+  font-weight: 600;
+}
+
+.sryMsg {
+  --tw-text-opacity: 1;
+  color: rgb(243 244 246 / var(--tw-text-opacity));
+}
+
+.textColor {
+  --tw-text-opacity: 1;
+  color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
+.titleColor {
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.textColor-inversion {
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+
+
+@media (max-width: 640px) {
+  .sm\:outerMargin {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 42rem;
+  }
+
+  .sm\:outerMargin {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 48rem;
+  }
+
+  .md\:outerMargin {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .md\:sryMsgSize {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 64rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 72rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 72rem;
+  }
+}

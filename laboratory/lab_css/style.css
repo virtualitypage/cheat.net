@@ -1,0 +1,202 @@
+h1 {
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+/* フェードアップ */
+.fadeUp {
+  animation-name:fadeUp;
+  animation-duration:0.8s;
+  animation-fill-mode:forwards;
+  opacity: 0;
+}
+@keyframes fadeUp{
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 遅延時間*/
+.delay-time {
+  animation-delay: 0.1s;
+}
+.delay-time2 {
+  animation-delay: 0.15s;
+}
+.delay-time3 {
+  animation-delay: 0.2s;
+}
+.delay-time4 {
+  animation-delay: 0.25s;
+}
+.delay-time5 {
+  animation-delay: 0.3s;
+}
+
+#main-content, #sub-content {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+#content-wrapper {
+  overflow-x: scroll;
+  margin: 0 auto;
+}
+
+
+a.btn_WSL {
+	display: block;
+	text-align: center;
+	vertical-align: middle;
+	text-decoration: none;
+	width: 500px;
+	margin: auto;
+	padding: 1rem 4rem;
+	font-weight: bold;
+  font-size: 18px;
+	background: #000000;
+	border: 6px outset #252525;
+	color: #fff;
+	transition: 0.5s;
+}
+a.btn_WSL:hover {
+	background: #3f3f3f;
+	border: 6px outset #000000;
+	color: #fff;
+}
+
+
+a.btn_Shell {
+	display: block;
+	text-align: center;
+	vertical-align: middle;
+	text-decoration: none;
+	width: 500px;
+	margin: auto;
+	padding: 1rem 4rem;
+	font-weight: bold;
+  font-size: 18px;
+	background: #0ac100;
+	border: 6px outset #169f31;
+	color: #fff;
+	transition: 0.5s;
+}
+a.btn_Shell:hover {
+	background: #44f258;
+	border: 6px outset #0ac100;
+	color: #fff;
+}
+
+
+a.btn_Python {
+	display: block;
+	text-align: center;
+	vertical-align: middle;
+	text-decoration: none;
+	width: 500px;
+	margin: auto;
+	padding: 1rem 4rem;
+	font-weight: bold;
+  font-size: 18px;
+	background: #015dfc;
+	border: 6px outset #0037ae;
+	color: #fff;
+	transition: 0.5s;
+}
+a.btn_Python:hover {
+	background: #1e68fd;
+	border: 6px outset #015dfc;
+	color: #fff;
+}
+
+
+a.btn_Batchfile {
+	display: block;
+	text-align: center;
+	vertical-align: middle;
+	text-decoration: none;
+	width: 500px;
+	margin: auto;
+	padding: 1rem 4rem;
+	font-weight: bold;
+  font-size: 18px;
+	background: #5b6163;
+	border: 6px outset #717578;
+	color: #fff;
+	transition: 0.5s;
+}
+a.btn_Batchfile:hover {
+	background: #5e6365;
+	border: 6px outset #5b6163;
+	color: #fff;
+}
+
+@media screen and (max-width: 768px) {
+  .footer {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    background-color: #03ffcd;
+    bottom: 0;
+    padding: 9px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .footer {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    background-color: #03ffcd;
+    bottom: 0;
+    padding: 17px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .footer-nicovideo {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background-color: #03ffcd;
+    bottom: 0;
+    padding: 9px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .footer-nicovideo {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background-color: #03ffcd;
+    bottom: 0;
+    padding: 17px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 15px;
+  }
+}

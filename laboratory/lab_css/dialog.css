@@ -1,0 +1,299 @@
+/* CommandFileUpdate */
+
+#CommandFileUpdate {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#CommandFileUpdate p {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#CommandFileUpdate button {
+  margin: 10px;
+  padding: 8px;
+  font-size: 20px;
+  width: 300px;
+  height: 50px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  #CommandFileUpdate {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    background-color: #fff;
+    border: 2px solid #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  #CommandFileUpdate p {
+    margin-bottom: 15px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  #CommandFileUpdate button {
+    margin: 10px;
+    padding: 3px;
+    font-size: 16px;
+    width: 230px;
+    height: 35px;
+    font-weight: bold;
+  }
+}
+
+/* DevelopShellScript */
+
+#DevelopShellScript {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#DevelopShellScript p {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#DevelopShellScript button {
+  margin: 10px;
+  padding: 8px;
+  font-size: 20px;
+  width: 300px;
+  height: 50px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  #DevelopShellScript {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    background-color: #fff;
+    border: 2px solid #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  #DevelopShellScript p {
+    margin-bottom: 15px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  #DevelopShellScript button {
+    margin: 10px;
+    padding: 3px;
+    font-size: 16px;
+    width: 230px;
+    height: 35px;
+    font-weight: bold;
+  }
+}
+
+/* keepRecords */
+
+#keepRecords {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#keepRecords p {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#keepRecords button {
+  margin: 10px;
+  padding: 8px;
+  font-size: 20px;
+  width: 300px;
+  height: 50px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  #keepRecords {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    background-color: #fff;
+    border: 2px solid #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  #keepRecords p {
+    margin-bottom: 15px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  #keepRecords button {
+    margin: 10px;
+    padding: 3px;
+    font-size: 16px;
+    width: 230px;
+    height: 35px;
+    font-weight: bold;
+  }
+}
+
+/* uploadLink */
+
+#uploadLink {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#uploadLink p {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#uploadLink button {
+  margin: 10px;
+  padding: 8px;
+  font-size: 20px;
+  width: 300px;
+  height: 50px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  #uploadLink {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    background-color: #fff;
+    border: 2px solid #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  #uploadLink p {
+    margin-bottom: 15px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  #uploadLink button {
+    margin: 10px;
+    padding: 3px;
+    font-size: 16px;
+    width: 230px;
+    height: 35px;
+    font-weight: bold;
+  }
+}
+
+/*  */
+
+#custom-dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#custom-dialog p {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#custom-dialog button {
+  margin: 10px;
+  padding: 8px;
+  font-size: 20px;
+  width: 300px;
+  height: 50px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  #custom-dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    background-color: #fff;
+    border: 2px solid #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  #custom-dialog p {
+    margin-bottom: 15px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  #custom-dialog button {
+    margin: 10px;
+    padding: 3px;
+    font-size: 16px;
+    width: 230px;
+    height: 35px;
+    font-weight: bold;
+  }
+}

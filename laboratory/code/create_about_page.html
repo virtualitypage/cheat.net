@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>create_about_page.command</title>
+  </head>
+  <body class="static">
+    <div id="output">
+      <div id="css-box" class="active">
+        <code data-lang="css" id="actual-css-code" class="cm-s-default">
+          <pre>
+            <code>
+<span class="memo">#!/bin/bash</span>
+
+<span class="value">current_dir</span><span class="white">=</span><span class="string">$(</span><span class="command">cd</span> <span class="string">"$(</span><span class="command">dirname</span> <span class="string">"</span><span class="value">$0</span><span class="string">")" &&</span> <span class="command">pwd</span><span class="string">)</span>
+<span class="value">main_file</span><span class="white">=</span><span class="string">"XXXXX_code.txt"</span>
+<span class="value">sub_file</span><span class="white">=</span><span class="string">"create_about-page.csv"</span>
+
+<span class="option">function</span> <span class="command">create_csv</span> <span class="yellow">() {</span>
+  <span class="command">echo</span> <span class="string">"title,img"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+  <span class="command">echo</span> <span class="string">"info"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+  <span class="command">echo</span> <span class="string">"food"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+  <span class="command">echo</span> <span class="string">"drink"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+  <span class="command">echo</span> <span class="string">"site_name"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+  <span class="purple">for</span> <span class="purple">(</span><span class="option">(</span><span class="white">i =</span> <span class="integer">1</span><span class="white">;</span> <span class="white">i &lt;=</span> <span class="integer">20</span><span class="white">;</span> <span class="white">i++</span><span class="option">)</span><span class="purple">)</span><span class="white">;</span> <span class="purple">do</span>
+    <span class="purple">for</span> <span class="purple">(</span><span class="option">(</span><span class="white">j =</span> <span class="integer">1</span><span class="white">;</span> <span class="white">j &lt;=</span> <span class="integer">4</span><span class="white">;</span> <span class="white">j++</span><span class="option">)</span><span class="purple">)</span><span class="white">;</span> <span class="purple">do</span>
+      <span class="command">echo</span> <span class="option">-n</span> <span class="string">","</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+    <span class="purple">done</span>
+    <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\n"</span> <span class="white">&gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+  <span class="purple">done</span>
+<span class="yellow">}</span>
+
+<span class="option">function</span> <span class="string">handle_error</span> <span class="yellow">() {</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;31mERROR: csvの一列目または二列目にオプションが指定されていません。\033[0m"</span>
+  <span class="command">echo</span> <span class="string">"以下の入力方法に従って、必要なものを記入してください。"</span>
+  <span class="command">echo</span> <span class="string">"※csvの一列目にはオプション(title/img/info/food/drink/site_name)を入力します。"</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="string">"title,img,タイトル,画像のファイルパス,画像の名前"</span>
+  <span class="command">echo</span> <span class="string">"info,住所,電話番号,営業時間,定休日,予約可否"</span>
+  <span class="command">echo</span> <span class="string">"food,品名,100円"</span>
+  <span class="command">echo</span> <span class="string">"food,品名,200円"</span>
+  <span class="command">echo</span> <span class="string">"drink,品名,100円"</span>
+  <span class="command">echo</span> <span class="string">"drink,品名,200円"</span>
+  <span class="command">echo</span> <span class="string">"site_name,サイト名"</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="string">"処理を終了します。"</span>
+  <span class="command">echo</span>
+<span class="yellow">}</span>
+
+<span class="option">function</span> <span class="command">create_about_page</span> <span class="yellow">() {</span>
+
+  <span class="value">title</span><span class="white">=</span><span class="string">"title"</span>
+  <span class="value">img</span><span class="white">=</span><span class="string">"img"</span>
+
+  <span class="purple">while</span> <span class="value">IFS</span><span class="white">=</span><span class="string">,</span> <span class="command">read</span> <span class="option">-r</span> <span class="string">col1 col2 col3 col4 col5</span> <span class="white">||</span> <span class="purple">[</span><span class="option">[</span> <span class="white">-n</span> <span class="value">$col5</span> <span class="option">]</span><span class="purple">]</span><span class="white">;</span> <span class="purple">do</span>
+  <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$col1</span><span class="string">"</span> <span class="white">=</span> <span class="string">"</span><span class="value">$title</span><span class="string">"</span> <span class="purple">]</span> <span class="white">&&</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$col2</span><span class="string">"</span> <span class="white">=</span> <span class="string">"</span><span class="value">$img</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="command">cat</span> <span class="white">&lt;&lt; EOF &gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir<span class="string">/</span><span class="value">$main_file</span><span class="string">"</span>
+<span class="string">&lt;!DOCTYPE html&gt;</span>
+<span class="string">&lt;html lang="ja"&gt;</span>
+  <span class="string">&lt;head&gt;</span>
+    <span class="string">&lt;title&gt;</span><span class="value">$col3</span><span class="string">&lt;/title&gt;</span>
+    <span class="string">&lt;meta charset="utf-8"&gt;</span>
+    <span class="string">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+    <span class="string">&lt;link rel="stylesheet" type="text/css" href="../css/about.css"&gt;</span>
+    <span class="string">&lt;!-- Google tag (gtag.js) --&gt;</span>
+    <span class="string">&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-F00MC1WG8L"&gt;&lt;/script&gt;</span>
+    <span class="string">&lt;script&gt;</span>
+      <span class="string">window.dataLayer = window.dataLayer || [];</span>
+      <span class="string">function gtag(){dataLayer.push(arguments);}</span>
+      <span class="string">gtag('js', new Date());</span>
+      <span class="string">gtag('config', 'G-F00MC1WG8L');</span>
+    <span class="string">&lt;/script&gt;</span>
+  <span class="string">&lt;/head&gt;</span>
+  <span class="string">&lt;header class="site-header"&gt;</span>
+    <span class="string">&lt;div class="site-header__wrapper"&gt;</span>
+      <span class="string">&lt;div class="site-header__start"&gt;</span>
+        <span class="string">&lt;a href=""&gt;&lt;img class="logo" src="</span><span class="value">$col4</span><span class="string">"</span> <span class="string">alt="</span><span class="value">$col5</span><span class="string">"</span><span class="string">&gt;&lt;/a&gt;</span>
+      <span class="string">&lt;/div&gt;</span>
+      <span class="string">&lt;div class="site-header__middle"&gt;</span>
+        <span class="string">&lt;nav class="nav"&gt;</span>
+          <span class="string">&lt;button class="nav__toggle" aria-expanded="false" type="button" aria-haspopup="true" aria-label="menu"&gt;</span>
+            <span class="string">menu</span>
+          <span class="string">&lt;/button&gt;</span>
+          <span class="string">&lt;ul class="nav__wrapper"&gt;</span>
+            <span class="string">&lt;li class="nav__item"&gt;</span>
+              <span class="string">&lt;a href="../index"&gt;</span>
+                <span class="string">&lt;span2&gt;Home&lt;/span2&gt;</span>
+              <span class="string">&lt;/a&gt;</span>
+            <span class="string">&lt;/li&gt;</span>
+            <span class="string">&lt;li class="nav__item"&gt;</span>
+              <span class="string">&lt;a href="../about"&gt;</span>
+                <span class="string">&lt;span2&gt;About&lt;/span2&gt;</span>
+              <span class="string">&lt;/a&gt;</span>
+            <span class="string">&lt;/li&gt;</span>
+            <span class="string">&lt;li class="nav__item"&gt;</span>
+              <span class="string">&lt;a href="../site-map"&gt;</span>
+                <span class="string">&lt;span2&gt;Site map&lt;/span2&gt;</span>
+              <span class="string">&lt;/a&gt;</span>
+            <span class="string">&lt;/li&gt;</span>
+          <span class="string">&lt;/ul&gt;</span>
+        <span class="string">&lt;/nav&gt;</span>
+      <span class="string">&lt;/div&gt;</span>
+    <span class="string">&lt;/div&gt;</span>
+  <span class="string">&lt;/header&gt;</span>
+  <span class="string">&lt;body&gt;</span>
+    <span class="string">&lt;main&gt;</span>
+      <span class="string">&lt;script src="../js/main.js"&gt;&lt;/script&gt;</span>
+      <span class="string">&lt;div class="img"&gt;</span>
+        <span class="string">&lt;img src="</span><span class="value">$col4</span><span class="string">"</span> <span class="string">alt="</span><span class="value">$col5</span><span class="string">"&gt;</span>
+      <span class="string">&lt;/div&gt;</span>
+      <span class="string">&lt;div class="info"&gt;</span>
+        <span class="string">&lt;p style="text-decoration: underline;"&gt;</span><span class="value">$col3</span><span class="string">&lt;/p&gt;</span>
+        <span class="string">&lt;div class="info-block block" id="information"&gt;</span>
+          <span class="string">&lt;div class="information"&gt;</span>
+            <span class="string">&lt;div class="info-title"&gt;</span>
+              <span class="string">&lt;p class="en"&gt;Information&lt;/p&gt;</span>
+              <span class="string">&lt;p class="ja"&gt;施設情報&lt;/p&gt;</span>
+            <span class="string">&lt;/div&gt;</span>
+<span class="white">EOF</span>
+    <span class="memo"># else</span>
+    <span class="memo">#   handle_error</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span> <span class="white">&lt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+
+  <span class="value">info</span><span class="white">=</span><span class="string">"info"</span>
+
+  <span class="purple">while</span> <span class="value">IFS</span><span class="white">=</span><span class="string">,</span> <span class="command">read</span> <span class="option">-r</span> <span class="string">col1 col2 col3 col4 col5 col6</span> <span class="white">||</span> <span class="purple">[</span><span class="option">[</span> <span class="white">-n</span> <span class="value">$col6</span> <span class="option">]</span><span class="purple">]</span><span class="white">;</span> <span class="purple">do</span>
+    <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$col1</span><span class="string">"</span> <span class="white">=</span> <span class="string">"</span><span class="value">$info</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="command">cat</span> <span class="white">&lt;&lt; EOF &gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">"</span><span class="string">/</span><span class="value">$main_file</span>
+            <span class="string">&lt;div class="information-data"&gt;</span>
+              <span class="string">&lt;div class="head"&gt;&lt;/div&gt;</span>
+              <span class="string">&lt;dl class="data-list"&gt;</span>
+                <span class="string">&lt;div class="bundle"&gt;</span>
+                  <span class="string">&lt;dt&gt;住所&lt;/dt&gt;</span>
+                  <span class="string">&lt;dd&gt;</span>
+                    <span class="string">&lt;span class="txt"&gt;</span><span class="value">$col2</span><span class="string">&lt;/span&gt;</span>
+                  <span class="string">&lt;/dd&gt;</span>
+                <span class="string">&lt;/div&gt;</span>
+                <span class="string">&lt;div class="bundle"&gt;</span>
+                  <span class="string">&lt;dt&gt;電話番号&lt;/dt&gt;</span>
+                  <span class="string">&lt;dd&gt;</span>
+                    <span class="string">&lt;span class="txt"&gt;</span><span class="value">$col3</span><span class="string">&lt;/span&gt;</span>
+                  <span class="string">&lt;/dd&gt;</span>
+                <span class="string">&lt;/div&gt;</span>
+                <span class="string">&lt;div class="bundle"&gt;</span>
+                  <span class="string">&lt;dt&gt;営業時間&lt;/dt&gt;</span>
+                  <span class="string">&lt;dd&gt;</span>
+                    <span class="string">&lt;span class="txt"&gt;</span><span class="value">$col4</span><span class="string">&lt;/span&gt;</span>
+                  <span class="string">&lt;/dd&gt;</span>
+                <span class="string">&lt;/div&gt;</span>
+                <span class="string">&lt;div class="bundle"&gt;</span>
+                  <span class="string">&lt;dt&gt;定休日&lt;/dt&gt;</span>
+                  <span class="string">&lt;dd&gt;</span>
+                    <span class="string">&lt;span class="txt"&gt;</span><span class="value">$col5</span><span class="string">&lt;/span&gt;</span>
+                  <span class="string">&lt;/dd&gt;</span>
+                <span class="string">&lt;/div&gt;</span>
+                <span class="string">&lt;div</span> <span class="string">class="bundle"&gt;</span>
+                  <span class="string">&lt;dt&gt;予約可否&lt;/dt&gt;</span>
+                  <span class="string">&lt;dd&gt;</span>
+                    <span class="string">&lt;span class="txt"&gt;</span><span class="value">$col6</span><span class="string">&lt;/span&gt;</span>
+                  <span class="string">&lt;/dd&gt;</span>
+                <span class="string">&lt;/div&gt;</span>
+              <span class="string">&lt;/dl&gt;</span>
+            <span class="string">&lt;/div&gt;</span>
+          <span class="string">&lt;/div&gt;</span>
+        <span class="string">&lt;/div&gt;</span>
+        <span class="string">&lt;div class="info-block block"&gt;</span>
+          <span class="string">&lt;div class="information"&gt;</span>
+            <span class="string">&lt;div class="menu-title"&gt;</span>
+              <span class="string">&lt;p class="en"&gt;Menu list&lt;/p&gt;</span>
+              <span class="string">&lt;p class="ja"&gt;メニュー情報&lt;/p&gt;</span>
+            <span class="string">&lt;/div&gt;</span>
+            <span class="string">&lt;div class="information-data"&gt;</span>
+              <span class="string">&lt;div class="head"&gt;フード&lt;/div&gt;</span>
+              <span class="string">&lt;dl class="data-list"&gt;</span>
+<span class="white">EOF</span>
+    <span class="memo"># else</span>
+    <span class="memo">#   handle_error</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span> <span class="white">&lt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+
+  <span class="value">menu</span><span class="white">=</span><span class="string">"food"</span>
+
+  <span class="purple">while</span> <span class="value">IFS</span><span class="white">=</span><span class="string">,</span> <span class="command">read</span> <span class="option">-r</span> <span class="string">col1 col2 col3</span> <span class="white">||</span> <span class="purple">[</span><span class="option">[</span> <span class="white">-n</span> <span class="value">$col3</span> <span class="option">]</span><span class="purple">]</span><span class="white">;</span> <span class="purple">do</span>
+    <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$col1</span><span class="string">"</span> <span class="white">=</span> <span class="string">"</span><span class="value">$menu</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="command">cat</span> <span class="white">&lt;&lt; EOF &gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">"</span><span class="white">/</span><span class="value">$main_file</span>
+                <span class="string">&lt;div class="bundle2"&gt;</span>
+                  <span class="string">&lt;dt&gt;</span><span class="value">$col3</span><span class="string">&lt;/dt&gt;</span>
+                  <span class="string">&lt;dd&gt;</span><span class="value">$col2</span><span class="string">&lt;/dd&gt;</span>
+                <span class="string">&lt;/div&gt;</span>
+<span class="white">EOF</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span> <span class="white">&lt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+
+<span class="command">cat</span> <span class="white">&lt;&lt; EOF &gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">"</span><span class="white">/</span><span class="value">$main_file</span>
+              <span class="string">&lt;/dl&gt;</span>
+              <span class="string">&lt;br&gt;</span>
+              <span class="string">&lt;br&gt;</span>
+              <span class="string">&lt;div class="head"&gt;ドリンク&lt;/div&gt;</span>
+              <span class="string">&lt;dl class="data-list"&gt;</span>
+<span class="white">EOF</span>
+
+  <span class="value">drink</span><span class="white">=</span><span class="string">"drink"</span>
+
+  <span class="purple">while</span> <span class="value">IFS</span><span class="white">=</span><span class="string">,</span> <span class="command">read</span> <span class="option">-r</span> <span class="string">col1 col2 col3</span> <span class="white">||</span> <span class="purple">[</span><span class="option">[</span> <span class="white">-n</span> <span class="value">$col3</span> <span class="option">]</span><span class="purple">]</span><span class="white">;</span> <span class="purple">do</span>
+    <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$col1</span><span class="string">"</span> <span class="white">=</span> <span class="string">"</span><span class="value">$drink</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="command">cat</span> <span class="white">&lt;&lt; EOF &gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">"</span><span class="white">/</span><span class="value">$main_file</span>
+                <span class="string">&lt;div class="bundle2"&gt;</span>
+                  <span class="string">&lt;dt&gt;</span><span class="value">$col3</span><span class="string">&lt;/dt&gt;</span>
+                  <span class="string">&lt;dd&gt;</span><span class="value">$col2</span><span class="string">&lt;/dd&gt;</span>
+                <span class="string">&lt;/div&gt;</span>
+<span class="white">EOF</span>
+    <span class="memo"># else</span>
+    <span class="memo">#   handle_error</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span> <span class="white">&lt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+
+  <span class="value">site_name</span><span class="white">=</span><span class="string">"site_name"</span>
+
+  <span class="purple">while</span> <span class="value">IFS</span><span class="white">=</span><span class="string">,</span> <span class="command">read</span> <span class="option">-r</span> <span class="string">col1 col2</span> <span class="white">||</span> <span class="purple">[</span><span class="option">[</span> <span class="white">-n</span> <span class="value">$col2</span> <span class="option">]</span><span class="purple">]</span><span class="white">;</span> <span class="purple">do</span>
+    <span class="purple">if</span> <span class="purple">[</span> <span class="string">"</span><span class="value">$col1</span><span class="string">"</span> <span class="white">=</span> <span class="string">"</span><span class="value">$site_name</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+      <span class="command">cat</span> <span class="white">&lt;&lt; EOF &gt;&gt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">"</span><span class="white">/</span><span class="value">$main_file</span>
+              <span class="string">&lt;/dl&gt;</span>
+              <span class="string">&lt;br&gt;</span>
+              <span class="string">&lt;br&gt;</span>
+            <span class="string">&lt;/div&gt;</span>
+          <span class="string">&lt;/div&gt;</span>
+          <span class="string">&lt;footer&gt;</span>
+            <span class="string">&lt;div class="copy"&gt;☆ 2023</span> <span class="value">$col2</span><span class="string">&lt;/div&gt;</span>
+          <span class="string">&lt;/footer&gt;</span>
+        <span class="string">&lt;/div&gt;</span>
+      <span class="string">&lt;/div&gt;</span>
+    <span class="string">&lt;/main&gt;</span>
+  <span class="string">&lt;/body&gt;</span>
+<span class="string">&lt;/html&gt;</span>
+<span class="white">EOF</span>
+    <span class="memo"># else</span>
+    <span class="memo">#   handle_error</span>
+    <span class="purple">fi</span>
+  <span class="purple">done</span> <span class="white">&lt;</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span>
+<span class="yellow">}</span>
+
+<span class="purple">if</span> <span class="yellow">[</span> <span class="white">-f</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">create_about_page</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;32m</span><span class="value">$main_file</span> <span class="string">は</span> <span class="value">$current_dir</span> <span class="string">に格納されています。\033[0m"</span>
+  <span class="command">echo</span>
+<span class="purple">elif</span> <span class="yellow">[</span> <span class="white">! -f</span> <span class="string">"</span><span class="value">$current_dir</span><span class="string">/</span><span class="value">$sub_file</span><span class="string">"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">create_csv</span>
+  <span class="command">echo</span> <span class="option">-e</span> <span class="string">"\033[1;31mERROR: 読込用csvがありません。対象のファイルを</span> <span class="value">$current_dir</span> <span class="string">に生成します。\033[0m"</span>
+  <span class="command">echo</span> <span class="string">"以下の入力方法に従って、必要なものを記入してください。"</span>
+  <span class="command">echo</span> <span class="string">"※csvの一列目にはオプション(title/img/info/food/drink/site_name)を入力します。"</span>
+  <span class="command">echo</span>
+  <span class="command">echo</span> <span class="string">"title,img,タイトル,画像のファイルパス,画像の名前"</span>
+  <span class="command">echo</span> <span class="string">"info,住所,電話番号,営業時間,定休日,予約可否"</span>
+  <span class="command">echo</span> <span class="string">"food,品名,100円"</span>
+  <span class="command">echo</span> <span class="string">"food,品名,200円"</span>
+  <span class="command">echo</span> <span class="string">"drink,品名,100円"</span>
+  <span class="command">echo</span> <span class="string">"drink,品名,200円"</span>
+  <span class="command">echo</span> <span class="string">"site_name,サイト名"</span>
+  <span class="command">echo</span>
+  <span class="command">exit</span> <span class="integer">1</span>
+<span class="purple">else</span>
+  <span class="command">echo</span>
+<span class="purple">fi</span>
+
+<style>
+  #html-box,#css-box,#js-box {
+    background: repeating-linear-gradient( to top,rgba(255,255,255,0.03) 0px 2px,transparent 2px 4px ),linear-gradient(to bottom,#200933 75%,#3d0b43)
+  }
+
+  #html-box::after,#css-box::after,#js-box::after {
+    content: '';
+    height: 50%;
+    width: 100%;
+    /* display: block; */
+    background-image: linear-gradient(90deg,rgba(252,25,154,.1) 1px,rgba(0,0,0,0) 1px),linear-gradient(0deg,rgba(252,25,154,.1) 1px,rgba(0,0,0,0) 1px);
+    background-position: bottom;
+    /* background-repeat: repeat; */
+    background-size: 20px 20px;
+    /* left: -25px; */
+    position: absolute;
+    /* pointer-events: none; */
+    bottom: 0;
+    transform: perspective(100px) rotateX(60deg);
+    z-index: 0
+  }
+
+  .value {
+    color: #3fefff
+  }
+  .option {
+    color: #005eff;
+  }
+  .string {
+    color: #c6804e;
+  }
+  .memo {
+    color: #008600;
+  }
+  .command {
+    color: #d5cb85;
+  }
+  .integer {
+    color: #c4ffb4;
+  }
+  .back_slash{
+    color: #e3df9d;
+  }
+  .yellow {
+    color: #fff570;
+  }
+  .purple {
+    color: #b869d7;
+  }
+  .white {
+    color: white
+  }
+
+  body.editor {
+    background: #131417
+  }
+
+  .box.box.box,.editor .top-boxes,body.project .editor-pane,body.project .editor {
+    background: #131417
+  }
+
+  .box.box.box pre,.editor .top-boxes pre,pre,body.project .editor-pane pre,body.project .editor pre {
+    color: #d5d7de
+  }
+
+  code[class] .value,code[class] {
+    color: #3fefff;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #3fefff,0 0 1px #3fefff;
+  }
+
+  code[class] .option,code[class] {
+    color: #005eff;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #005eff,0 0 2px #005eff;
+  }
+
+  code[class] .string,code[class] {
+    color: #c6804e;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #c6804e,0 0 1px #c6804e;
+  }
+
+  code[class] .memo,code[class] {
+    color: #008600;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #008600,0 0 2px #008600;
+  }
+
+  code[class] .command,code[class] {
+    color: #d5cb85;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #d5cb85,0 0 1px #d5cb85;
+  }
+
+  code[class] .integer,code[class] {
+    color: #c4ffb4;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #c4ffb4,0 0 2px #c4ffb4;
+  }
+
+  code[class] .back_slash,code[class] {
+    color: #e3df9d;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #e3df9d,0 0 10px #e3df9d;
+  }
+
+  code[class] .yellow,code[class] {
+    color: #fff570;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #fff570,0 0 2px #fff570;
+  }
+
+  code[class] .purple,code[class] {
+    color: #b869d7;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #b869d7,0 0 2px #b869d7;
+  }
+
+  code[class] .white,code[class] {
+    color: white;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px white,0 0 2px white;
+  }
+
+  * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  html,body {
+    height: 100%;
+  }
+
+  .embed-line-highlight {
+    background: rgba(212,214,223,.2)
+  }
+
+  #output {
+    /* height: calc(100% - 50px - 30px); */
+    height: calc(100%);
+  }
+
+  #output pre {
+    font-size: 10px;
+    white-space: pre-wrap;
+    line-height: 1.35;
+    -moz-tab-size: 2;
+    -o-tab-size: 2;
+    tab-size: 2;
+    max-width: 100vw
+  }
+
+  #output pre code {
+    font-family: var(--cp-font-family-monospace)
+  }
+
+  body.static #output pre,#output.static pre {
+    width: 100%;
+    padding: 20px
+  }
+
+  #output pre,#output iframe {
+    scrollbar-color: rgba(0,0,0,.5) transparent;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch
+  }
+
+  #html-box.active,#css-box.active,#js-box.active,#result-box.active {
+    display: block;
+    height: 100%
+  }
+
+  :root {
+    background: var(--cp-bg);
+    color: var(--cp-color);
+    --cp-button-default-bg: var(--cp-button-bg);
+    --cp-button-default-color: var(--cp-button-color);
+    --cp-sidebar-width: 180px;
+    --cp-header-height: 65px;
+    --cp-header-height-small: 53px;
+    --cp-control-bar-height: 29px;
+    --cp-control-bar-space-between: 1.5rem;
+    --cp-font-family: 'Lato', 'Lucida Grande', 'Lucida Sans Unicode', Tahoma, Sans-Serif;
+    --cp-font-family-header: 'Telefon Black', Sans-Serif;
+    --cp-font-family-header-alt: 'Telefon', Sans-Serif;
+    --cp-font-family-monospace: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    --cp-font-family-editor: var(--cp-font-family-monospace);
+    --cp-button-icon: currentColor;
+    --cp-button-border-width: 3px;
+    --cp-button-border-radius: 4px;
+    --cp-button-margin-block: 1px;
+    --cp-button-margin-inline: 10px;
+    --cp-button-padding-inline: 16px;
+    --cp-button-padding-block: 10px;
+    --cp-pen-radius: 5px;
+    --cp-pen-logo-size: 30px;
+    --cp-pen-header-spacing: calc(var(--cp-pen-sidebar-spacing) * 1.5);
+    --cp-pen-sidebar-width: 60px;
+    --cp-pen-sidebar-icon-size: 26px;
+    --cp-pen-sidebar-spacing: 6px;
+    --cp-pen-sidebar-minimal-width: 6px;
+    --cp-pen-panel-spacing: 0.7rem;
+    --cp-pen-bar-height: 45px
+  }
+
+  @media(max-width: 1100px) {
+    :root {
+        --cp-pen-sidebar-width: 50px;
+        --cp-pen-sidebar-spacing: 4px;
+        --cp-pen-sidebar-icon-size: 24px;
+        --cp-pen-sidebar-minimal-width: 6px;
+        --cp-pen-panel-spacing: 0.6rem
+    }
+  }
+
+  * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  html,body {
+    height: 100%;
+  }
+
+  .embed-line-highlight {
+    background: rgba(212,214,223,.2)
+  }
+</style>

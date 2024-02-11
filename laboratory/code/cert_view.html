@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>cert_view.command</title>
+  </head>
+  <body class="static">
+    <div id="output">
+      <div id="css-box" class="active">
+        <code data-lang="css" id="actual-css-code" class="cm-s-default">
+          <pre>
+            <code>
+<span class="memo">#!/bin/bash</span>
+
+<span class="value">current_dir</span><span class="white">=</span><span class="string">$(cd "$(dirname "</span><span class="value">$0</span><span class="string">")"</span> <span class="white">&&</span> <span class="string">pwd)</span>
+<span class="value">main_file</span><span class="white">=</span><span class="string">"</span><span class="value">$current_dir</span><span class="string">/issuer_list.txt"</span>
+<span class="value">sub_file</span><span class="white">=</span><span class="string">"</span><span class="value">$current_dir</span><span class="string">/certificate_viewer.txt"</span>
+
+<span class="value">URL</span><span class="white">=</span><span class="string">$(grep "https://" "</span><span class="value">$sub_file</span><span class="string">")</span>
+
+<span class="option">function</span> <span class="command">cert_view</span> <span class="yellow">() {</span>
+  <span class="purple">if</span> <span class="purple">[</span> <span class="white">-n</span> <span class="string">"</span><span class="value">$URL</span><span class="string">"</span> <span class="purple">]</span><span class="white">;</span> <span class="purple">then</span>
+    <span class="purple">while</span> <span class="value">IFS</span><span class="white">=</span> <span class="command">read</span> <span class="option">-r</span> <span class="string">URL</span> <span class="white">||</span> <span class="yellow">[</span><span class="purple">[</span> <span class="white">-n</span> <span class="value">$URL</span> <span class="purple">]</span><span class="yellow">]</span><span class="white">;</span> <span class="purple">do</span>
+      <span class="command">echo</span> <span class="string">"・</span><span class="value">$URL</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="value">$main_file</span>
+      <span class="value">cert_info</span><span class="white">=</span><span class="string">$(openssl s_client -connect $(echo</span> <span class="value">$URL</span> <span class="white">|</span> <span class="string">sed -n -e 's/https:\/\/\([^\/]*\).*/\1/p'):443 -showcerts</span> <span class="white">&lt;</span><span class="string">/dev/null</span> <span class="white">2&gt;</span><span class="string">/dev/null</span> <span class="white">|</span> <span class="string">openssl x509 -noout -text)</span>
+      <span class="value">cert_view</span><span class="white">=</span><span class="string">$(echo "</span><span class="value">$cert_info</span><span class="string">"</span> <span class="white">|</span> <span class="string">sed -n '/Certificate:/,/Subject Public Key Info:/p'</span> <span class="white">|</span> <span class="string">sed '$d')</span>
+      <span class="command">echo</span> <span class="string">"</span><span class="value">$cert_view</span><span class="string">"</span> <span class="white">&gt;&gt;</span> <span class="value">$main_file</span>
+      <span class="command">echo</span> <span class="string">""</span> <span class="white">&gt;&gt;</span> <span class="value">$main_file</span>
+    <span class="purple">done</span> <span class="white">&lt;</span> <span class="string">"</span><span class="value">$sub_file</span><span class="string">"</span>
+  <span class="purple">fi</span>
+<span class="yellow">}</span>
+
+<span class="purple">if</span> <span class="yellow">[</span> <span class="white">-f</span> <span class="string">"</span><span class="value">$sub_file</span><span class="string">"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">cert_view</span>
+<span class="purple">elif</span> <span class="yellow">[</span> <span class="white">! -f</span> <span class="string">"</span><span class="value">$sub_file</span><span class="string">"</span> <span class="yellow">]</span><span class="white">;</span> <span class="purple">then</span>
+  <span class="command">echo</span> <span class="white">-e</span> <span class="string">"\033[1;31mERROR:</span> <span class="value">$sub_file</span> <span class="string">が存在しません。\033[0m"</span>
+<span class="purple">fi</span>
+
+<style>
+  #html-box,#css-box,#js-box {
+    background: repeating-linear-gradient( to top,rgba(255,255,255,0.03) 0px 2px,transparent 2px 4px ),linear-gradient(to bottom,#200933 75%,#3d0b43)
+  }
+
+  #html-box::after,#css-box::after,#js-box::after {
+    content: '';
+    height: 50%;
+    width: 100%;
+    /* display: block; */
+    background-image: linear-gradient(90deg,rgba(252,25,154,.1) 1px,rgba(0,0,0,0) 1px),linear-gradient(0deg,rgba(252,25,154,.1) 1px,rgba(0,0,0,0) 1px);
+    background-position: bottom;
+    /* background-repeat: repeat; */
+    background-size: 20px 20px;
+    /* left: -25px; */
+    position: absolute;
+    /* pointer-events: none; */
+    bottom: 0;
+    transform: perspective(100px) rotateX(60deg);
+    z-index: 0
+  }
+
+  .value {
+    color: #3fefff
+  }
+  .option {
+    color: #005eff;
+  }
+  .string {
+    color: #c6804e;
+  }
+  .memo {
+    color: #008600;
+  }
+  .command {
+    color: #d5cb85;
+  }
+  .integer {
+    color: #c4ffb4;
+  }
+  .back_slash{
+    color: #e3df9d;
+  }
+  .yellow {
+    color: #fff570;
+  }
+  .purple {
+    color: #b869d7;
+  }
+  .white {
+    color: white
+  }
+
+  body.editor {
+    background: #131417
+  }
+
+  .box.box.box,.editor .top-boxes,body.project .editor-pane,body.project .editor {
+    background: #131417
+  }
+
+  .box.box.box pre,.editor .top-boxes pre,pre,body.project .editor-pane pre,body.project .editor pre {
+    color: #d5d7de
+  }
+
+  code[class] .value,code[class] {
+    color: #3fefff;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #3fefff,0 0 1px #3fefff;
+  }
+
+  code[class] .option,code[class] {
+    color: #005eff;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #005eff,0 0 2px #005eff;
+  }
+
+  code[class] .string,code[class] {
+    color: #c6804e;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #c6804e,0 0 1px #c6804e;
+  }
+
+  code[class] .memo,code[class] {
+    color: #008600;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #008600,0 0 2px #008600;
+  }
+
+  code[class] .command,code[class] {
+    color: #d5cb85;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #d5cb85,0 0 1px #d5cb85;
+  }
+
+  code[class] .integer,code[class] {
+    color: #c4ffb4;
+    text-shadow: 0 0 2px #393a33,0 0 35px #ffffff44,0 0 10px #c4ffb4,0 0 2px #c4ffb4;
+  }
+
+  code[class] .back_slash,code[class] {
+    color: #e3df9d;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #e3df9d,0 0 10px #e3df9d;
+  }
+
+  code[class] .yellow,code[class] {
+    color: #fff570;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #fff570,0 0 2px #fff570;
+  }
+
+  code[class] .purple,code[class] {
+    color: #b869d7;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px #b869d7,0 0 2px #b869d7;
+  }
+
+  code[class] .white,code[class] {
+    color: white;
+    text-shadow: 0 0 2px #100c0f,0 0 35px #ffffff44,0 0 5px white,0 0 2px white;
+  }
+
+  * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  html,body {
+    height: 100%;
+  }
+
+  .embed-line-highlight {
+    background: rgba(212,214,223,.2)
+  }
+
+  #output {
+    /* height: calc(100% - 50px - 30px); */
+    height: calc(100%);
+  }
+
+  #output pre {
+    font-size: 20px;
+    white-space: pre-wrap;
+    line-height: 1.35;
+    -moz-tab-size: 2;
+    -o-tab-size: 2;
+    tab-size: 2;
+    max-width: 100vw
+  }
+
+  #output pre code {
+    font-family: var(--cp-font-family-monospace)
+  }
+
+  body.static #output pre,#output.static pre {
+    width: 100%;
+    padding: 20px
+  }
+
+  #output pre,#output iframe {
+    scrollbar-color: rgba(0,0,0,.5) transparent;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch
+  }
+
+  #html-box.active,#css-box.active,#js-box.active,#result-box.active {
+    display: block;
+    height: 100%
+  }
+
+  :root {
+    background: var(--cp-bg);
+    color: var(--cp-color);
+    --cp-button-default-bg: var(--cp-button-bg);
+    --cp-button-default-color: var(--cp-button-color);
+    --cp-sidebar-width: 180px;
+    --cp-header-height: 65px;
+    --cp-header-height-small: 53px;
+    --cp-control-bar-height: 29px;
+    --cp-control-bar-space-between: 1.5rem;
+    --cp-font-family: 'Lato', 'Lucida Grande', 'Lucida Sans Unicode', Tahoma, Sans-Serif;
+    --cp-font-family-header: 'Telefon Black', Sans-Serif;
+    --cp-font-family-header-alt: 'Telefon', Sans-Serif;
+    --cp-font-family-monospace: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    --cp-font-family-editor: var(--cp-font-family-monospace);
+    --cp-button-icon: currentColor;
+    --cp-button-border-width: 3px;
+    --cp-button-border-radius: 4px;
+    --cp-button-margin-block: 1px;
+    --cp-button-margin-inline: 10px;
+    --cp-button-padding-inline: 16px;
+    --cp-button-padding-block: 10px;
+    --cp-pen-radius: 5px;
+    --cp-pen-logo-size: 30px;
+    --cp-pen-header-spacing: calc(var(--cp-pen-sidebar-spacing) * 1.5);
+    --cp-pen-sidebar-width: 60px;
+    --cp-pen-sidebar-icon-size: 26px;
+    --cp-pen-sidebar-spacing: 6px;
+    --cp-pen-sidebar-minimal-width: 6px;
+    --cp-pen-panel-spacing: 0.7rem;
+    --cp-pen-bar-height: 45px
+  }
+
+  @media(max-width: 1100px) {
+    :root {
+        --cp-pen-sidebar-width: 50px;
+        --cp-pen-sidebar-spacing: 4px;
+        --cp-pen-sidebar-icon-size: 24px;
+        --cp-pen-sidebar-minimal-width: 6px;
+        --cp-pen-panel-spacing: 0.6rem
+    }
+  }
+
+  * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  html,body {
+    height: 100%;
+  }
+
+  .embed-line-highlight {
+    background: rgba(212,214,223,.2)
+  }
+
+  #output {
+    /* height: calc(100% - 50px - 30px); */
+    height: calc(100%);
+  }
+
+  #output pre {
+    font-size: 20px;
+    white-space: pre-wrap;
+    line-height: 1.35;
+    -moz-tab-size: 2;
+    -o-tab-size: 2;
+    tab-size: 2;
+    max-width: 100vw
+  }
+
+  #output pre code {
+    font-family: var(--cp-font-family-monospace)
+  }
+
+  body.static #output pre,#output.static pre {
+    width: 100%;
+    padding: 20px
+  }
+
+  #output pre,#output iframe {
+    scrollbar-color: rgba(0,0,0,.5) transparent;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch
+  }
+</style>
