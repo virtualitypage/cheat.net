@@ -33,8 +33,7 @@ function generate_logfile_edit () {
   sed -i '' 's/不審な人影や動き：なし//g' "$mid_file"
   sed -i '' 's/不審な人影や動き：不鮮明  //g' "$mid_file"
 
-  sed -i '' '/2023年/d' "$mid_file"
-  sed -i '' "/${year}年\$/d" "$mid_file"
+  sed -i '' "/${year}年/d" "$mid_file"
 
   sed -i '' '/^$/d' "$mid_file"
 

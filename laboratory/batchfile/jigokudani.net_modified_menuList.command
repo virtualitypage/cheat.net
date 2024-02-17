@@ -1,6 +1,7 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
+today=$(TZ=UTC-9 date '+%Y/%m/%d' | sed 's/\/0/\//g')
 main_file="$current_dir/menu.html"
 
 array=()
@@ -28,6 +29,16 @@ for csv_file in "${array[@]}"; do # 配列の要素を一つずつ処理
         col1=$(echo "$col1" | tr -d '\r')
         code=$(
           cat << EOF
+                <div class="bundle">
+                  <dt>更新日</dt>
+                  <dd>
+                    <span class="modified">$today</span>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
         <div class="info-block block">
           <div class="information">
             <div class="menu-title">
