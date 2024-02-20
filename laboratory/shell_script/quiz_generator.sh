@@ -77,21 +77,21 @@ fi
 # fi
 
 function quiz_generator () {
-cat << EOF > "$txt_file"
+  cat << EOF > "$txt_file"
 #title:$txt_file
 #movable:true
 #shuffle_questions:$change
 EOF
 
-count=0
+  count=0
 
-while IFS=, read -r col1 col2 col3 col4 col5 col6 col7
-do
+  while IFS=, read -r col1 col2 col3 col4 col5 col6 col7
+  do
 
-count=$(echo "$count+1" | bc)
+    count=$(echo "$count+1" | bc)
 
-if [ 択一問題 = "$col1" ]; then
-cat << EOF >> "$txt_file"
+    if [ 択一問題 = "$col1" ]; then
+      cat << EOF >> "$txt_file"
 問題 $count $col2
 択一問題
 a. $col3
@@ -101,15 +101,15 @@ d. $col6
 e. $col7
 
 EOF
-elif [ fill-in: = "$col1" ]; then
-cat << EOF >> "$txt_file"
+    elif [ fill-in: = "$col1" ]; then
+      cat << EOF >> "$txt_file"
 問題 $count $col2
 fill-in:
 $col3
 
 EOF
-elif [ ma: = "$col1" ]; then
-cat << EOF >> "$txt_file"
+    elif [ ma: = "$col1" ]; then
+      cat << EOF >> "$txt_file"
 問題 $count $col2
 ma:
 o:a. $col3
@@ -119,11 +119,11 @@ o:d. $col6
 o:e. $col7
 
 EOF
-fi
-done < "$csv_file"
+    fi
+  done < "$csv_file"
 
-echo -e "\033[1;32mALL SUCCESEFUL: ファイルの出力処理が正常に終了しました。\033[0m"
-echo -e "\033[1;32m$txt_file は $current_dir に格納されています。\033[0m"
+  echo -e "\033[1;32mALL SUCCESEFUL: ファイルの出力処理が正常に終了しました。\033[0m"
+  echo -e "\033[1;32m$txt_file は $current_dir に格納されています。\033[0m"
 }
 
 if [[ -f $csv_file ]] && [ "$txt_file" ]; then

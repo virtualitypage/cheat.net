@@ -20,4 +20,4 @@ for i in $(seq 1 $total); do
   sleep 0.05
 done
 
-echo ""
+echo

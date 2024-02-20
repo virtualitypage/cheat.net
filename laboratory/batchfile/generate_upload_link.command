@@ -32,4 +32,3 @@ if [ -e "$sub_file" ]; then
 elif [ ! -e "$sub_file" ]; then
   echo -e "\033[1;31mERROR: $sub_file が存在しません。$sub_file を配置して再度実行してください。\033[0m"
 fi
-grep https://youtube.com/ 

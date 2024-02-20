@@ -163,21 +163,21 @@ EOF
     elif [ "$col3" = "Disable" ]; then
       templates=$(
         cat << EOF
-                <tr class="borderLine borderColor bgColor">
-                  <td class="cellSize">
-                    <p class="number">$count</p>
-                  </td>
-                  <td class="cellSize">
-                    <a class="link" href="$col1">
-                      <p>$col2</p>
-                    </a>
-                  </td>
-                  <td class="cellSize">
-                    <span class="fontSemibold roundedCorner status statusBatch statusBatch-Disable statusBatch-textColor">
-                      <span>$col3</span>
-                    </span>
-                  </td>
-                </tr>
+                  <tr class="borderLine borderColor bgColor">
+                    <td class="cellSize">
+                      <p class="number">$count</p>
+                    </td>
+                    <td class="cellSize">
+                      <a class="link" href="$col1">
+                        <p>$col2</p>
+                      </a>
+                    </td>
+                    <td class="cellSize">
+                      <span class="fontSemibold roundedCorner status statusBatch statusBatch-Disable statusBatch-textColor">
+                        <span>$col3</span>
+                      </span>
+                    </td>
+                  </tr>
 EOF
       )
     fi
@@ -214,21 +214,21 @@ EOF
     elif [ "$col3" = "Disable" ]; then
       templates=$(
         cat << EOF
-                <tr class="borderLine borderColor bgColor">
-                  <td class="cellSize">
-                    <p class="number">$count</p>
-                  </td>
-                  <td class="cellSize">
-                    <a class="link" href="$col1">
-                      <p>$col2</p>
-                    </a>
-                  </td>
-                  <td class="cellSize">
-                    <span class="fontSemibold roundedCorner status statusBatch statusBatch-Disable statusBatch-textColor">
-                      <span>$col3</span>
-                    </span>
-                  </td>
-                </tr>
+                  <tr class="borderLine borderColor bgColor">
+                    <td class="cellSize">
+                      <p class="number">$count</p>
+                    </td>
+                    <td class="cellSize">
+                      <a class="link" href="$col1">
+                        <p>$col2</p>
+                      </a>
+                    </td>
+                    <td class="cellSize">
+                      <span class="fontSemibold roundedCorner status statusBatch statusBatch-Disable statusBatch-textColor">
+                        <span>$col3</span>
+                      </span>
+                    </td>
+                  </tr>
 EOF
       )
     fi
@@ -265,21 +265,21 @@ EOF
     elif [ "$col3" = "Disable" ]; then
       templates=$(
         cat << EOF
-                <tr class="borderLine borderColor bgColor">
-                  <td class="cellSize">
-                    <p class="number">$count</p>
-                  </td>
-                  <td class="cellSize">
-                    <a class="link" href="$col1">
-                      <p>$col2</p>
-                    </a>
-                  </td>
-                  <td class="cellSize">
-                    <span class="fontSemibold roundedCorner status statusBatch statusBatch-Disable statusBatch-textColor">
-                      <span>$col3</span>
-                    </span>
-                  </td>
-                </tr>
+                  <tr class="borderLine borderColor bgColor">
+                    <td class="cellSize">
+                      <p class="number">$count</p>
+                    </td>
+                    <td class="cellSize">
+                      <a class="link" href="$col1">
+                        <p>$col2</p>
+                      </a>
+                    </td>
+                    <td class="cellSize">
+                      <span class="fontSemibold roundedCorner status statusBatch statusBatch-Disable statusBatch-textColor">
+                        <span>$col3</span>
+                      </span>
+                    </td>
+                  </tr>
 EOF
       )
     fi
@@ -316,21 +316,21 @@ EOF
     elif [ "$col3" = "Disable" ]; then
       templates=$(
         cat << EOF
-                <tr class="borderLine borderColor bgColor">
-                  <td class="cellSize">
-                    <p class="number">$count</p>
-                  </td>
-                  <td class="cellSize">
-                    <a class="link" href="$col1">
-                      <p>$col2</p>
-                    </a>
-                  </td>
-                  <td class="cellSize">
-                    <span class="fontSemibold roundedCorner status statusBatch statusBatch-Disable statusBatch-textColor">
-                      <span>$col3</span>
-                    </span>
-                  </td>
-                </tr>
+                  <tr class="borderLine borderColor bgColor">
+                    <td class="cellSize">
+                      <p class="number">$count</p>
+                    </td>
+                    <td class="cellSize">
+                      <a class="link" href="$col1">
+                        <p>$col2</p>
+                      </a>
+                    </td>
+                    <td class="cellSize">
+                      <span class="fontSemibold roundedCorner status statusBatch statusBatch-Disable statusBatch-textColor">
+                        <span>$col3</span>
+                      </span>
+                    </td>
+                  </tr>
 EOF
       )
     fi
@@ -341,8 +341,8 @@ EOF
 function create_code_end () {
   templates=$(
     cat << EOF
-              </tbody>
-            </table>
+                </tbody>
+              </table>
             <br>
           </div>
         </div>

@@ -14,7 +14,7 @@ function progress_bar () {
 
 function selective_delete () {
   read -p "以下のオプションから一つ選択してください
-  全削除 | 選択削除 | 終了
+  { 全削除 | 選択削除 | 終了 }
 > " section
   if [ "$section" = "全削除" ]; then
     echo -e "\033[1;33mCONFIRM: $volume のゴミ箱を空にします。よろしいですか？\033[0m"
