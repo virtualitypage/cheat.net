@@ -46,7 +46,7 @@ for csv_file in "${array[@]}"; do # 配列の要素を一つずつ処理
               <p class="ja">メニュー情報</p>
             </div>
             <div class="information-data">
-              <div class="head">$col1</div>
+              <div class="column">$col1</div>
               <dl class="data-list">
 EOF
         )
@@ -59,7 +59,7 @@ EOF
               </dl>
               <br>
               <br>
-              <div class="head">$col1</div>
+              <div class="column">$col1</div>
               <dl class="data-list">
 EOF
         )

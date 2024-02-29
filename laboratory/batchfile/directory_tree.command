@@ -18,3 +18,7 @@ if [ "$current_dir" ]; then
     echo -e "\033[1;31mERROR: tree コマンドがインストールされていません。コマンドをインストールしてから再度実行してください。\033[0m"
   fi
 fi
+
+
+# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+# brew install tree
