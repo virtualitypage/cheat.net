@@ -128,7 +128,7 @@ function create_code_start () {
                   <th class="cellSize">STATUS</th>
                 </tr>
               </thead>
-              <tbody>
+                <tbody>
 EOF
   )
   echo "$templates" >> "$txt_file"
