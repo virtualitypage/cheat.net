@@ -86,10 +86,7 @@ init_server () {
 
 # server only
 connect_server () {
-  gip=$(curl https://www.cman.jp/network/support/go_access.cgi 2>&1 \
-    | grep "<tr><th>あなたのIPアドレス<br>(グローバルIP)</th><td><p>" \
-    | sed 's/<tr><th>あなたのIPアドレス<br>(グローバルIP)<\/th><td><p>//g' \
-    | sed 's/<\/p>.*$//g')
+  gip=$(curl -s inet-ip.info)
   echo -e "\033[1;38mGlobal IP: $gip\033[0m"
   echo
 
