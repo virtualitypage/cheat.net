@@ -54,7 +54,7 @@ function authentication(){
     }
   }
   if (window.confirm( '共有カレンダーへの登録を行う場合は「OK」\n共有カレンダーにアクセスする場合は「キャンセル」を押してください。' ) ) {
-    window.open('https://docs.google.com/forms/d/e/1FAIpQLScnbEvxfANmTCfY9BSzF1a2IU3m0pkAJk40HQmcUhc-n5-QUA/viewform');
+    window.open('https://docs.google.com/forms/d/e/1FAIpQLSeek5GzIWfGcDoXBUD3AZJ5uZtcOOTcndKTUklcflG8otquzw/viewform');
   }
   else {
     var enteredPassword = prompt("共有カレンダーへのアクセスには認証が必要です。\n事前共有鍵を入力してください:");
