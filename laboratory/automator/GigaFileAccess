@@ -1,0 +1,146 @@
+on startDialog() -- ダイアログボックスフェーズ0の表示と処理
+	set response to display dialog "GigaFileAccessを実行する前に…
+現在ギガファイル便にデータをアップロードしていますか？" buttons {"いいえ", "はい"}
+	if button returned of response is "いいえ" then
+		tell application "Safari"
+			quit
+			delay 0.5
+			activate
+			set bounds of window 1 to {0, 0, 1100, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+			tell window 1
+				make new tab with properties {URL:"https://gigafile.nu/"}
+			end tell
+			close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
+		end tell
+		firstDialog() -- ダイアログボックスフェーズ1へ移動
+	else
+		display dialog "GigaFileAccessを終了します" buttons {"クソ"} default button "クソ"
+	end if
+end startDialog
+
+on firstDialog() -- ダイアログボックスフェーズ1の表示と処理
+	set response to display dialog "ギガファイル便を使ってファイルをアップロードします
+これから表示されるダイアログ内の手順を基に操作してください
+
+注意！
+・アップロードを開始するとダウンロードURLが表示される
+・ダウンロード用のURLを転送先に伝達(メール送信処理あり)
+・ブラウザの画面を閉じないこと" buttons {"終了", "次へ"} default button "次へ"
+	if button returned of response is "次へ" then
+		secondDialog() -- ダイアログボックス2へ移動
+	else
+		confirmDialog()
+	end if
+end firstDialog
+
+on secondDialog() -- ダイアログボックスフェーズ2の表示と処理
+	set response to display dialog "①画面を下方向にスクロールしてください
+②太字の「アップロード」まで来たら止めます" buttons {"戻る", "次へ"} default button "次へ"
+	if button returned of response is "戻る" then
+		firstDialog() -- ダイアログボックス1へ移動
+	else if button returned of response is "次へ" then
+		thirdDialog() -- ダイアログボックス3へ移動
+	end if
+end secondDialog
+
+on thirdDialog() -- ダイアログボックスフェーズ3の表示と処理
+	set currentDate to do shell script "date '+%Y-%m-%d'"
+	set specifiedFileName to currentDate & " FL-Product 動画データ"
+	set response to display dialog "①以下のファイル名をコピーしてください(command + C)
+②ブラウザの「ファイル名：」右のボックスにペーストします" default answer specifiedFileName buttons {"戻る", "次へ"} default button "次へ"
+	if button returned of response is "戻る" then
+		secondDialog()
+	else if button returned of response is "次へ" then
+		fourthDialog()
+	end if
+end thirdDialog
+
+on fourthDialog() -- ダイアログボックスフェーズ4の表示と処理
+	set response to display dialog "①薄灰色のボタン「ファイルを選択」をクリック
+②動画データが入ったフォルダを選択してダブルクリック
+③command + A でファイルを全選択
+④画面右下の青いボタン「アップロード」をクリック" buttons {"戻る", "次へ"} default button "次へ"
+	if button returned of response is "戻る" then
+		thirdDialog()
+	else if button returned of response is "次へ" then
+		fifthDialog()
+	end if
+end fourthDialog
+
+on fifthDialog() -- ダイアログボックスフェーズ5の表示と処理
+	set response to display dialog "①画面を最下部付近までスクロールします
+②黄土色のボタン「まとめる」をクリック
+　(「n個のファイルをまとめました。」と表示されること)
+　※ n とはファイルの個数を示す
+　※「まとめてダウンロード用URLの発行に失敗しました。」と出た
+　　場合、一つ目のファイルが100%アップロードされた後に
+　　「まとめる」をクリック" buttons {"戻る", "次へ"} default button "次へ"
+	if button returned of response is "戻る" then
+		fourthDialog()
+	else if button returned of response is "次へ" then
+		sixthDialog()
+	end if
+end fifthDialog
+
+on sixthDialog() -- ダイアログボックスフェーズ6の表示と処理
+	set response to display dialog "①https://**.gigafile.nu/ から始まるURLをコピーします
+　(「このダウンロードURLを短くする」をクリックするのも可)
+　(画面遷移先にある深緑色のボタン「短縮する」をクリック、コピーします)
+②コピーしたURLをメールで送信します。「次へ」をクリック" buttons {"戻る", "次へ"} default button "次へ"
+	if button returned of response is "戻る" then
+		fourthDialog()
+	else if button returned of response is "次へ" then
+		seventhDialog()
+	end if
+end sixthDialog
+
+on seventhDialog() -- ダイアログボックスフェーズ7の表示と処理
+	set recipientAddress to "youguigujing42@gmail.com" -- 送信先メールアドレス
+	set senderAddress to "ngd_apm@icloud.com" -- 送信元メールアドレス
+	set subjectText to "ギガファイル便【ダウンロードURL】" -- 件名
+	set mailMessage to ""
+
+	repeat
+		set response to display dialog "以下のボックスにダウンロードURLをペーストしてください
+送信をクリックするとメールが送られます" default answer "" buttons {"終了", "戻る", "送信"} default button "送信"
+
+		if button returned of response is "送信" then
+			set mailMessage to text returned of result
+			if mailMessage is not "" then
+				tell application "Mail" -- メール送信
+					set newMessage to make new outgoing message with properties {subject:subjectText, content:mailMessage, visible:true}
+					tell newMessage
+						make new to recipient with properties {address:recipientAddress}
+						set sender to senderAddress -- 送信元メールアドレスを指定
+						send
+					end tell
+				end tell
+				exit repeat
+			else
+				display dialog "ダウンロードURLをペーストしてください" buttons {"戻る"} default button "戻る"
+			end if
+		else if button returned of response is "戻る" then
+			sixthDialog()
+		else
+			endDialog()
+			exit repeat
+		end if
+	end repeat
+end seventhDialog
+
+on confirmDialog() -- 終了が選択された場合は本当に終了するか確認(初期段階用)
+	set confirm to display dialog "GigaFileAccessを終了します。よろしいですか？" buttons {"いいえ", "はい"} default button "はい"
+	if button returned of confirm is "いいえ" then
+		firstDialog() -- ダイアログボックスフェーズ1へ移動
+	end if
+end confirmDialog
+
+on endDialog() -- 終了が選択された場合は本当に終了するか確認(最終段階用)
+	set confirm to display dialog "メールを送信しないままGigaFileAccessを終了します
+よろしいですか？" buttons {"いいえ", "はい"} default button "はい"
+	if button returned of confirm is "いいえ" then
+		seventhDialog() -- ダイアログボックスフェーズ7へ移動
+	end if
+end endDialog
+
+startDialog() -- メインスクリプト実行
