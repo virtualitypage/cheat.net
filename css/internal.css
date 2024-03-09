@@ -1,0 +1,1634 @@
+/* .middleMargin-bgColor {
+  background-color: rgb(55 180 43);
+} */
+
+.outerMargin-bgColor {
+  background-color: rgb(105 190 250);
+}
+
+.outerMargin {
+  padding: 1.5rem 1.5rem;
+}
+
+.titleSize {
+  font-size: 1.2rem;
+  line-height: 2rem;
+}
+
+.middleMargin-textColor {
+  color: rgb(243 244 246);
+}
+
+.details-2 {
+  font-size: 15px;
+  text-align: center;
+}
+
+table {
+  display: flex;
+  justify-content: space-around;
+  text-align: left;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+.table-row {
+  background-color: rgb(245, 245, 245);
+  line-height: 170%;
+}
+
+.tree {
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+  margin-top: 20px;
+  padding: 30px;
+  background: rgb(255 255 255);
+  color: rgb(0 0 0);
+  font-weight: bold;
+  font-size: 25px;
+  line-height: 1.5;
+  font-family: sans-serif;
+
+  span {
+    color: rgb(168 168 168);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: .4px;
+  }
+
+  /* =========================================================
+  1階層目
+  ========================================================= */
+
+  ul {
+    list-style: none;
+    padding-left: 5px;
+
+    li {
+      position: relative;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 15px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+
+      &:before { /* 横線 */
+        position: absolute;
+        top: 25.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+        left: 20px;
+        width: 15px;
+        height: 1px;
+        margin: auto;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:after { /* 縦線 */
+        position: absolute;
+        top: 11px; /* 縦線の位置は横線に合わせる */
+        bottom: 0;
+        left: 20px;
+        width: 1px;
+        height: 100%;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:last-child:after {
+        height: 15px;
+      }
+    }
+
+    a {
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    /* ==================== file phase1 ======================== */
+
+    .file {
+      display: block;
+      position: absolute;
+      transform: scale(var(--ggs,1));
+      width: 17px;
+      height: 25px;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 77px;
+      box-sizing: border-box;
+      font-size: 20px;
+      overflow: hidden;
+      border: 3.5px solid transparent;
+      border-top: 0;
+      border-right: 0;
+      border-radius: 1px;
+      border-top-right-radius: 4px;
+      box-shadow: 0 0 0 2px;
+    }
+
+    .file::before,.file::after {
+      display: block;
+      position: absolute;
+      box-sizing: border-box;
+      content: "";
+    }
+
+    .file::before {
+      box-shadow: 0 4px 0, -6px -4px 0;
+      background: currentColor;
+      top: 10px;
+      left: 0;
+      width: 10px;
+      height: 2px;
+    }
+
+    /* =================== folder phase1 ====================== */
+
+    .folder {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 6px;
+      margin-right: 10px;
+      margin-left: 10px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .folder::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.6em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    /* ================ opened_folder phase1 =================== */
+
+    .opened_folder {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 30px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .opened_folder::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.4em;
+      height: 1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    .opened_folder::after {
+      position: absolute;
+      top: 0.6em;
+      left: 0.2em;
+      transform: skewX(-30deg);
+      -webkit-transform: skewX(-30deg);
+      width: 1.2em;
+      height: 0.6em;
+      border: 0.1em solid rgb(255 255 255);
+      border-radius: 0.05em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+  }
+
+  /* =========================================================
+  2階層目
+  ========================================================= */
+
+  .ul_phase2 {
+    list-style: none;
+    padding-left: 0px;
+
+    li {
+      position: relative;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 15px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+
+      &:before { /* 横線 */
+        position: absolute;
+        top: 25.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+        left: 39px;
+        width: 15px;
+        height: 1px;
+        margin: auto;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:after { /* 縦線 */
+        position: absolute;
+        top: 11px; /* 縦線の位置は横線に合わせる */
+        bottom: 0;
+        left: 39px;
+        width: 1px;
+        height: 100%;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:last-child:after {
+        height: 15px;
+      }
+    }
+    a {
+      cursor: pointer;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    /* ==================== file phase2 ======================== */
+
+    .file-phase2 {
+      display: block;
+      position: absolute;
+      transform: scale(var(--ggs,1));
+      width: 17px;
+      height: 25px;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 77px;
+      box-sizing: border-box;
+      font-size: 20px;
+      overflow: hidden;
+      border: 3.5px solid transparent;
+      border-top: 0;
+      border-right: 0;
+      border-radius: 1px;
+      border-top-right-radius: 4px;
+      box-shadow: 0 0 0 2px;
+    }
+
+    .file-phase2::before,.file-phase2::after {
+      display: block;
+      position: absolute;
+      box-sizing: border-box;
+      content: "";
+    }
+
+    .file-phase2::before {
+      box-shadow: 0 4px 0, -6px -4px 0;
+      background: currentColor;
+      top: 10px;
+      left: 0;
+      width: 10px;
+      height: 2px;
+    }
+
+    /* =================== folder phase2 ====================== */
+
+    .folder-phase2 {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 6px;
+      margin-right: 10px;
+      margin-left: 50px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .folder-phase2::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.6em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    /* ================ opened_folder phase2 =================== */
+
+    .opened_folder-phase2 {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 45px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .opened_folder-phase2::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.4em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    .opened_folder-phase2::after {
+      position: absolute;
+      top: 0.6em;
+      left: 0.2em;
+      transform: skewX(-30deg);
+      -webkit-transform: skewX(-30deg);
+      width: 1.2em;
+      height: 0.6em;
+      border: 0.1em solid rgb(255 255 255);
+      border-radius: 0.05em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+  }
+
+  /* =========================================================
+  3階層目
+  ========================================================= */
+
+  .ul_phase3 {
+    list-style: none;
+    padding-left: 5px;
+
+    li {
+      position: relative;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 15px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+
+      &:before { /* 横線 */
+        position: absolute;
+        top: 25.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+        left: 59px;
+        width: 15px;
+        height: 1px;
+        margin: auto;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:after { /* 縦線 */
+        position: absolute;
+        top: 11px; /* 縦線の位置は横線に合わせる */
+        bottom: 0;
+        left: 59px;
+        width: 1px;
+        height: 100%;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:last-child:after {
+        height: 15px;
+      }
+    }
+    a {
+      cursor: pointer;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    /* ==================== file phase3 ======================== */
+
+    .file-phase3 {
+      display: block;
+      position: absolute;
+      transform: scale(var(--ggs,1));
+      width: 17px;
+      height: 25px;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 77px;
+      box-sizing: border-box;
+      font-size: 20px;
+      overflow: hidden;
+      border: 3.5px solid transparent;
+      border-top: 0;
+      border-right: 0;
+      border-radius: 1px;
+      border-top-right-radius: 4px;
+      box-shadow: 0 0 0 2px;
+    }
+
+    .file-phase3::before,.file-phase3::after {
+      display: block;
+      position: absolute;
+      box-sizing: border-box;
+      content: "";
+    }
+
+    .file-phase3::before {
+      box-shadow: 0 4px 0, -6px -4px 0;
+      background: currentColor;
+      top: 10px;
+      left: 0;
+      width: 10px;
+      height: 2px;
+    }
+
+    /* =================== folder phase3 ====================== */
+
+    .folder-phase3 {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 69px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .folder-phase3::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.6em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    /* ================ opened_folder phase3 =================== */
+
+    .opened_folder-phase3 {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 69px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .opened_folder-phase3::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.4em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    .opened_folder-phase3::after {
+      position: absolute;
+      top: 0.6em;
+      left: 0.2em;
+      transform: skewX(-30deg);
+      -webkit-transform: skewX(-30deg);
+      width: 1.2em;
+      height: 0.6em;
+      border: 0.1em solid rgb(255 255 255);
+      border-radius: 0.05em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+  }
+
+  /* =========================================================
+  4階層目
+  ========================================================= */
+
+  .ul_phase4 {
+    list-style: none;
+    padding-left: 5px;
+
+    li {
+      position: relative;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 15px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+
+      &:before { /* 横線 */
+        position: absolute;
+        top: 25.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+        left: 79px;
+        width: 15px;
+        height: 1px;
+        margin: auto;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:after { /* 縦線 */
+        position: absolute;
+        top: 11px; /* 縦線の位置は横線に合わせる */
+        bottom: 0;
+        left: 79px;
+        width: 1px;
+        height: 100%;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:last-child:after {
+        height: 15px;
+      }
+    }
+    a {
+      cursor: pointer;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    /* ==================== file phase4 ======================== */
+
+    .file-phase4 {
+      display: block;
+      position: absolute;
+      transform: scale(var(--ggs,1));
+      width: 17px;
+      height: 25px;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 89px;
+      box-sizing: border-box;
+      font-size: 20px;
+      overflow: hidden;
+      border: 3.5px solid transparent;
+      border-top: 0;
+      border-right: 0;
+      border-radius: 1px;
+      border-top-right-radius: 4px;
+      box-shadow: 0 0 0 2px;
+    }
+
+    .file-phase4::before,.file-phase4::after {
+      display: block;
+      position: absolute;
+      box-sizing: border-box;
+      content: "";
+    }
+
+    .file-phase4::before {
+      box-shadow: 0 4px 0, -6px -4px 0;
+      background: currentColor;
+      top: 10px;
+      left: 0;
+      width: 10px;
+      height: 2px;
+    }
+
+    /* =================== folder phase4 ====================== */
+
+    .folder-phase4 {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 69px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .folder-phase4::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.6em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    /* ================ opened_folder phase4 =================== */
+
+    .opened_folder-phase4 {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 89px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .opened_folder-phase4::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.4em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    .opened_folder-phase4::after {
+      position: absolute;
+      top: 0.6em;
+      left: 0.2em;
+      transform: skewX(-30deg);
+      -webkit-transform: skewX(-30deg);
+      width: 1.2em;
+      height: 0.6em;
+      border: 0.1em solid rgb(255 255 255);
+      border-radius: 0.05em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+  }
+
+  /* =========================================================
+  5階層目
+  ========================================================= */
+
+  .ul_phase5 {
+    list-style: none;
+    padding-left: 5px;
+
+    li {
+      position: relative;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 15px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+
+      &:before { /* 横線 */
+        position: absolute;
+        top: 25.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+        left: 79px;
+        width: 15px;
+        height: 1px;
+        margin: auto;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:after { /* 縦線 */
+        position: absolute;
+        top: 11px; /* 縦線の位置は横線に合わせる */
+        bottom: 0;
+        left: 79px;
+        width: 1px;
+        height: 100%;
+        background-color: rgb(0 0 0);
+        content: '';
+      }
+
+      &:last-child:after {
+        height: 15px;
+      }
+    }
+    a {
+      cursor: pointer;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    /* ==================== file phase5 ======================== */
+
+    .file-phase5 {
+      display: block;
+      position: absolute;
+      transform: scale(var(--ggs,1));
+      width: 17px;
+      height: 25px;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 58px;
+      box-sizing: border-box;
+      font-size: 20px;
+      overflow: hidden;
+      border: 3.5px solid transparent;
+      border-top: 0;
+      border-right: 0;
+      border-radius: 1px;
+      border-top-right-radius: 4px;
+      box-shadow: 0 0 0 2px;
+    }
+
+    .file-phase5::before,.file-phase5::after {
+      display: block;
+      position: absolute;
+      box-sizing: border-box;
+      content: "";
+    }
+
+    .file-phase5::before {
+      box-shadow: 0 4px 0, -6px -4px 0;
+      background: currentColor;
+      top: 10px;
+      left: 0;
+      width: 10px;
+      height: 2px;
+    }
+
+    /* =================== folder phase5 ====================== */
+
+    .folder-phase5 {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 69px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .folder-phase5::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.6em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    /* ================ opened_folder phase5 =================== */
+
+    .opened_folder-phase5 {
+      position: absolute;
+      width: 0.8em;
+      height: 0.4em;
+      margin-top: 8px;
+      margin-right: 10px;
+      margin-left: 87px;
+      border-radius: 0.1em 0.1em 0 0;
+      font-size: 20px;
+      background-color: rgb(57 169 214);
+    }
+
+    .opened_folder-phase5::before {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      width: 1.4em;
+      height: 1.1em;
+      border-radius: 0 0.1em 0.1em 0.1em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+
+    .opened_folder-phase5::after {
+      position: absolute;
+      top: 0.6em;
+      left: 0.2em;
+      transform: skewX(-30deg);
+      -webkit-transform: skewX(-30deg);
+      width: 1.2em;
+      height: 0.6em;
+      border: 0.1em solid rgb(255 255 255);
+      border-radius: 0.05em;
+      background-color: rgb(57 169 214);
+      content: "";
+    }
+  }
+}
+
+@media (max-width: 768px) { /* PC画面 */
+  .details-2 {
+    font-size: 10px;
+    text-align: center;
+  }
+
+  table {
+    display: flex;
+    justify-content: space-around;
+    font-size: 8px;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 2px;
+  }
+
+  .table-row {
+    background-color: rgb(245, 245, 245);
+    line-height: 170%;
+  }
+
+  .tree {
+    display: flex;
+    justify-content: space-around;
+    position: relative;
+    margin-top: 20px;
+    padding: 30px;
+    background: rgb(255 255 255);
+    color: rgb(0 0 0);
+    font-weight: bold;
+    font-size: 10px;
+    line-height: 1.5;
+    font-family: sans-serif;
+
+    span {
+      color: rgb(168 168 168);
+      font-style: italic;
+      font-size: 7px;
+      letter-spacing: .4px;
+    }
+
+    /* =========================================================
+    1階層目
+    ========================================================= */
+
+    ul {
+      list-style: none;
+      padding-left: 5px;
+
+      li {
+        position: relative;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 15px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+
+        &:before { /* 横線 */
+          position: absolute;
+          top: 13.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+          left: 16px;
+          width: 9px;
+          height: 1px;
+          margin: auto;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:after { /* 縦線 */
+          position: absolute;
+          top: 3px; /* 縦線の位置は横線に合わせる */
+          bottom: 0;
+          left: 16px;
+          width: 1px;
+          height: 100%;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:last-child:after {
+          height: 11px;
+        }
+      }
+
+      a {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      /* ==================== file phase1 ======================== */
+
+      .file {
+        display: block;
+        position: absolute;
+        transform: scale(var(--ggs,1));
+        width: 17px;
+        height: 25px;
+        margin-top: 8px;
+        margin-right: 10px;
+        margin-left: 77px;
+        box-sizing: border-box;
+        font-size: 10px;
+        overflow: hidden;
+        border: 1px solid transparent;
+        border-top: 0;
+        border-right: 0;
+        border-radius: 1px;
+        border-top-right-radius: 4px;
+        box-shadow: 0 0 0 2px;
+      }
+
+      .file::before,.file::after {
+        display: block;
+        position: absolute;
+        box-sizing: border-box;
+        content: "";
+      }
+
+      .file::before {
+        box-shadow: 0 4px 0, -6px -4px 0;
+        background: currentColor;
+        top: 6px;
+        left: 0;
+        width: 9px;
+        height: 2px;
+      }
+
+      /* =================== folder phase1 ====================== */
+
+      .folder {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 6px;
+        margin-right: 10px;
+        margin-left: 10px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .folder::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.6em;
+        height: 1.1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      /* ================ opened_folder phase1 =================== */
+
+      .opened_folder {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 2px;
+        margin-right: 10px;
+        margin-left: 14px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .opened_folder::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.4em;
+        height: 1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      .opened_folder::after {
+        position: absolute;
+        top: 0.6em;
+        left: 0.2em;
+        transform: skewX(-30deg);
+        -webkit-transform: skewX(-30deg);
+        width: 1.2em;
+        height: 0.6em;
+        border: 0.1em solid rgb(255 255 255);
+        border-radius: 0.05em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+    }
+
+    /* =========================================================
+    2階層目
+    ========================================================= */
+
+    .ul_phase2 {
+      list-style: none;
+      padding-left: 0px;
+
+      li {
+        position: relative;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 15px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+
+        &:before { /* 横線 */
+          position: absolute;
+          top: 13px; /* 横線の位置はアルファベットの小文字に合わせる */
+          left: 20px;
+          width: 9px;
+          height: 1px;
+          margin: auto;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:after { /* 縦線 */
+          position: absolute;
+          top: 5px; /* 縦線の位置は横線に合わせる */
+          bottom: 0;
+          left: 20px;
+          width: 1px;
+          height: 100%;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:last-child:after {
+          height: 8.5px;
+        }
+      }
+      a {
+        cursor: pointer;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      /* ==================== file phase2 ======================== */
+
+      .file-phase2 {
+        display: block;
+        position: absolute;
+        transform: scale(var(--ggs,1));
+        width: 17px;
+        height: 25px;
+        margin-top: 8px;
+        margin-right: 10px;
+        margin-left: 77px;
+        box-sizing: border-box;
+        font-size: 10px;
+        overflow: hidden;
+        border: 1px solid transparent;
+        border-top: 0;
+        border-right: 0;
+        border-radius: 1px;
+        border-top-right-radius: 4px;
+        box-shadow: 0 0 0 2px;
+      }
+
+      .file-phase2::before,.file-phase2::after {
+        display: block;
+        position: absolute;
+        box-sizing: border-box;
+        content: "";
+      }
+
+      .file-phase2::before {
+        box-shadow: 0 4px 0, -6px -4px 0;
+        background: currentColor;
+        top: 6px;
+        left: 0;
+        width: 9px;
+        height: 2px;
+      }
+
+      /* =================== folder phase2 ====================== */
+
+      .folder-phase2 {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 0.5px;
+        margin-right: 10px;
+        margin-left: 17px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .folder-phase2::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.6em;
+        height: 1.1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      /* ================ opened_folder phase2 =================== */
+
+      .opened_folder-phase2 {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 2px;
+        margin-right: 10px;
+        margin-left: 17px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .opened_folder-phase2::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.4em;
+        height: 1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      .opened_folder-phase2::after {
+        position: absolute;
+        top: 0.6em;
+        left: 0.2em;
+        transform: skewX(-30deg);
+        -webkit-transform: skewX(-30deg);
+        width: 1.2em;
+        height: 0.6em;
+        border: 0.1em solid rgb(255 255 255);
+        border-radius: 0.05em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+    }
+
+    /* =========================================================
+    3階層目
+    ========================================================= */
+
+    .ul_phase3 {
+      list-style: none;
+      padding-left: 5px;
+
+      li {
+        position: relative;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 15px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+
+        &:before { /* 横線 */
+          position: absolute;
+          top: 12.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+          left: 19px;
+          width: 9px;
+          height: 1px;
+          margin: auto;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:after { /* 縦線 */
+          position: absolute;
+          top: 5px; /* 縦線の位置は横線に合わせる */
+          bottom: 0;
+          left: 18.5px;
+          width: 1px;
+          height: 100%;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:last-child:after {
+          height: 8.5px;
+        }
+      }
+      a {
+        cursor: pointer;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      /* ==================== file phase3 ======================== */
+
+      .file-phase3 {
+        display: block;
+        position: absolute;
+        transform: scale(var(--ggs,1));
+        width: 11px;
+        height: 14px;
+        margin-top: 1px;
+        margin-right: 10px;
+        margin-left: 26px;
+        box-sizing: border-box;
+        font-size: 10px;
+        overflow: hidden;
+        border: 1px solid transparent;
+        border-top: 0;
+        border-right: 0;
+        border-radius: 1px;
+        border-top-right-radius: 4px;
+        box-shadow: 0 0 0 2px;
+      }
+
+      .file-phase3::before,.file-phase3::after {
+        display: block;
+        position: absolute;
+        box-sizing: border-box;
+        content: "";
+      }
+
+      .file-phase3::before {
+        box-shadow: 0 4px 0, -6px -4px 0;
+        background: currentColor;
+        top: 6px;
+        left: 0;
+        width: 9px;
+        height: 2px;
+      }
+
+      /* =================== folder phase3 ====================== */
+
+      .folder-phase3 {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 1px;
+        margin-right: 10px;
+        margin-left: 23px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .folder-phase3::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.6em;
+        height: 1.1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      /* ================ opened_folder phase3 =================== */
+
+      .opened_folder-phase3 {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 2px;
+        margin-right: 10px;
+        margin-left: 22px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .opened_folder-phase3::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.4em;
+        height: 1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+      }
+
+      .opened_folder-phase3::after {
+        position: absolute;
+        top: 0.6em;
+        left: 0.2em;
+        transform: skewX(-30deg);
+        -webkit-transform: skewX(-30deg);
+        width: 1.2em;
+        height: 0.6em;
+        border: 0.1em solid rgb(255 255 255);
+        border-radius: 0.05em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+    }
+
+    /* =========================================================
+    4階層目
+    ========================================================= */
+
+    .ul_phase4 {
+      list-style: none;
+      padding-left: 5px;
+
+      li {
+        position: relative;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 15px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+
+        &:before { /* 横線 */
+          position: absolute;
+          top: 12.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+          left: 25px;
+          width: 9px;
+          height: 1px;
+          margin: auto;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:after { /* 縦線 */
+          position: absolute;
+          top: 5.5px; /* 縦線の位置は横線に合わせる */
+          bottom: 0;
+          left: 24px;
+          width: 1px;
+          height: 100%;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:last-child:after {
+          height: 8px;
+        }
+      }
+      a {
+        cursor: pointer;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      /* ==================== file phase4 ======================== */
+
+      .file-phase4 {
+        display: block;
+        position: absolute;
+        transform: scale(var(--ggs,1));
+        width: 11px;
+        height: 14px;
+        margin-top: 1px;
+        margin-right: 10px;
+        margin-left: 30px;
+        box-sizing: border-box;
+        font-size: 10px;
+        overflow: hidden;
+        border: 1px solid transparent;
+        border-top: 0;
+        border-right: 0;
+        border-radius: 1px;
+        border-top-right-radius: 4px;
+        box-shadow: 0 0 0 2px;
+      }
+
+      .file-phase4::before,.file-phase4::after {
+        display: block;
+        position: absolute;
+        box-sizing: border-box;
+        content: "";
+      }
+
+      .file-phase4::before {
+        box-shadow: 0 4px 0, -6px -4px 0;
+        background: currentColor;
+        top: 6px;
+        left: 0;
+        width: 9px;
+        height: 2px;
+      }
+
+      /* =================== folder phase4 ====================== */
+
+      .folder-phase4 {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 8px;
+        margin-right: 10px;
+        margin-left: 69px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .folder-phase4::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.6em;
+        height: 1.1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      /* ================ opened_folder phase4 =================== */
+
+      .opened_folder-phase4 {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 2px;
+        margin-right: 10px;
+        margin-left: 27px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .opened_folder-phase4::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.4em;
+        height: 1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      .opened_folder-phase4::after {
+        position: absolute;
+        top: 0.6em;
+        left: 0.2em;
+        transform: skewX(-30deg);
+        -webkit-transform: skewX(-30deg);
+        width: 1.2em;
+        height: 0.6em;
+        border: 0.1em solid rgb(255 255 255);
+        border-radius: 0.05em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+    }
+
+    /* =========================================================
+    5階層目
+    ========================================================= */
+
+    .ul_phase5 {
+      list-style: none;
+      padding-left: 5px;
+
+      li {
+        position: relative;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 15px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+
+        &:before { /* 横線 */
+          position: absolute;
+          top: 25.5px; /* 横線の位置はアルファベットの小文字に合わせる */
+          left: 79px;
+          width: 9px;
+          height: 1px;
+          margin: auto;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:after { /* 縦線 */
+          position: absolute;
+          top: 11px; /* 縦線の位置は横線に合わせる */
+          bottom: 0;
+          left: 79px;
+          width: 1px;
+          height: 100%;
+          background-color: rgb(0 0 0);
+          content: '';
+        }
+
+        &:last-child:after {
+          height: 15px;
+        }
+      }
+      a {
+        cursor: pointer;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      /* ==================== file phase5 ======================== */
+
+      .file-phase5 {
+        display: block;
+        position: absolute;
+        transform: scale(var(--ggs,1));
+        width: 17px;
+        height: 25px;
+        margin-top: 8px;
+        margin-right: 10px;
+        margin-left: 58px;
+        box-sizing: border-box;
+        font-size: 10px;
+        overflow: hidden;
+        border: 1px solid transparent;
+        border-top: 0;
+        border-right: 0;
+        border-radius: 1px;
+        border-top-right-radius: 4px;
+        box-shadow: 0 0 0 2px;
+      }
+
+      .file-phase5::before,.file-phase5::after {
+        display: block;
+        position: absolute;
+        box-sizing: border-box;
+        content: "";
+      }
+
+      .file-phase5::before {
+        box-shadow: 0 4px 0, -6px -4px 0;
+        background: currentColor;
+        top: 6px;
+        left: 0;
+        width: 9px;
+        height: 2px;
+      }
+
+      /* =================== folder phase5 ====================== */
+
+      .folder-phase5 {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 8px;
+        margin-right: 10px;
+        margin-left: 69px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .folder-phase5::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.6em;
+        height: 1.1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      /* ================ opened_folder phase5 =================== */
+
+      .opened_folder-phase5 {
+        position: absolute;
+        width: 0.8em;
+        height: 0.4em;
+        margin-top: 8px;
+        margin-right: 10px;
+        margin-left: 50px;
+        border-radius: 0.1em 0.1em 0 0;
+        font-size: 10px;
+        background-color: rgb(57 169 214);
+      }
+
+      .opened_folder-phase5::before {
+        position: absolute;
+        top: 0.3em;
+        left: 0;
+        width: 1.4em;
+        height: 1em;
+        border-radius: 0 0.1em 0.1em 0.1em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+
+      .opened_folder-phase5::after {
+        position: absolute;
+        top: 0.6em;
+        left: 0.2em;
+        transform: skewX(-30deg);
+        -webkit-transform: skewX(-30deg);
+        width: 1.2em;
+        height: 0.6em;
+        border: 0.1em solid rgb(255 255 255);
+        border-radius: 0.05em;
+        background-color: rgb(57 169 214);
+        content: "";
+      }
+    }
+  }
+}
