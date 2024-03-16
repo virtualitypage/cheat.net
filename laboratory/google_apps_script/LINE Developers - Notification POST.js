@@ -48,6 +48,9 @@ function doPost(e) {
     case "いやです":
       LineDeveloperMessage();
       break;
+    case "予定を変更する":
+      responseMessage = 'microSDカード回収日 予定変更フォーム' + '\n' + '-----FORM_URL-----';
+      break;
     case "どこにいるんだァ？一旦集まロットォ！！！":
       responseMessage = "集合しましょう。集合場所の候補としては「川上神社の鳥居付近(南方面)」「土俵がある建物」などです。";
       break;
@@ -155,6 +158,7 @@ function menuNotification() {
 
         const targets = [];
         for (const electedMenu of election) {
+          // const menu = electedMenu.replace(/\([^()]*\)|[\r\n]/g, "").trim();
           const menu = electedMenu;
           targets.push(menu);
         }
@@ -228,6 +232,7 @@ function getMenuDetails(messageText) {
   const detailsValues = targetSheet.getRange(1, detailsColumn, targetSheet.getLastRow(), 1).getValues();
 
   if (messageText === null) {
+    console.log('メニューが見つからないため、詳細情報を取得できません。');
     return;
   }
 
@@ -237,9 +242,12 @@ function getMenuDetails(messageText) {
   for (let i = 0; i < menuValues.length; i++) {
     // menuValuesの要素をトリムして正規化してから比較
     if (menuValues[i][0].toString().trim() === normalizedMessage) {
+      console.log('メニュー詳細:' + detailsValues[i][0]);
       return detailsValues[i][0];
     }
   }
+  console.log('detailsValues:', detailsValues);
+  console.log('message:', messageText);
   return; // 該当するメニューが見つからない場合
 }
 
