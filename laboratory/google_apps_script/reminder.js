@@ -1,13 +1,13 @@
 function reminder() {
-  const sheet = SpreadsheetApp.getActive().getSheetByName('-----SHEET_NAME-----'); // getSheetByNameで指定したシートの全行を取得する
-  const lastRow = sheet.getLastRow();
-  const range = sheet.getRange('B3:D' + lastRow);
-  const sheetRows = range.getValues();
-  const today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'y-M-d');
+  var sheet = SpreadsheetApp.getActive().getSheetByName('-----SHEET_NAME-----'); // getSheetByNameで指定したシートの全行を取得する
+  var lastRow = sheet.getLastRow();
+  var range = sheet.getRange('B3:D' + lastRow);
+  var sheetRows = range.getValues();
+  var today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'y-M-d');
 
-  const todays = new Date();
-  const year = todays.getFullYear();
-  const month = todays.getMonth() + 2;
+  var todays = new Date();
+  var year = todays.getFullYear();
+  var month = todays.getMonth() + 2;
 
   // 取得したスプレッドシートの行配列から，メッセージを作成
   // 列はA,B,C,...が0,1,2,...にマップされる
@@ -80,7 +80,7 @@ function LineDeveloperMessage() {
 }
 
 function initializeTrigger() { // 通知用のトリガーを定期的に作成する
-  const triggers = ScriptApp.getProjectTriggers(); // 対象のプロジェクトに登録されているトリガーを取得
+  var triggers = ScriptApp.getProjectTriggers(); // 対象のプロジェクトに登録されているトリガーを取得
   triggers.forEach(function (t) {
     if (t.getHandlerFunction() === 'createTrigger') { // createTriggerトリガーが重複しないように古いトリガーを削除
       ScriptApp.deleteTrigger(t);
@@ -90,13 +90,13 @@ function initializeTrigger() { // 通知用のトリガーを定期的に作成�
 }
 
 function createTrigger() { // 指定した日時にLineDeveloperMessageを実行する
-  const triggers = ScriptApp.getProjectTriggers();
+  var triggers = ScriptApp.getProjectTriggers();
   triggers.forEach(function (t) {
     if (t.getHandlerFunction() === 'LineDeveloperMessage') { // 使用済み・不要なLineDeveloperMessageトリガーを削除
       ScriptApp.deleteTrigger(t);
     }
   });
-  const today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'y-M-d');
-  const time = '9:00:00';
+  var today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'y-M-d');
+  var time = '9:00:00';
   ScriptApp.newTrigger('LineDeveloperMessage').timeBased().at(new Date(`${today} ${time}`)).create(); // 当日の対象時刻にLineDeveloperMessageを実行するトリガーを作成
 }

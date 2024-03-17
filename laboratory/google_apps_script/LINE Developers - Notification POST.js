@@ -1,9 +1,7 @@
-// トップ部分に前回のメニューを保持する変数を追加
-var lastSuggestedMenu = "";
+var lastSuggestedMenu = ""; // 前回のメニューを保持する変数を追加
 
 function doPost(e) {
-  //LINE Messaging APIのチャネルアクセストークンを設定
-  var token = "-----CHANNEL_ACCESS_TOKEN-----";
+  var token = "-----CHANNEL_ACCESS_TOKEN-----"; //LINE Messaging APIのチャネルアクセストークンを設定
 
   // グループLINEのグループIDを取得するコード　※スプレッドシートで実行することで取得できる
   // var json = JSON.parse(e.postData.contents);
@@ -61,8 +59,7 @@ function doPost(e) {
       responseMessage = "";
   }
 
-  // APIリクエスト時にセットするペイロード値を設定する
-  var payload = {
+  var payload = { // APIリクエスト時にセットするペイロード値を設定する
     'replyToken': replyToken,
     'messages': [{
       'type': 'text',
@@ -70,19 +67,16 @@ function doPost(e) {
     }]
   };
 
-  //　HTTPSのPOST時のオプションパラメータを設定する
-  var options = {
+  var options = { //　HTTPSのPOST時のオプションパラメータを設定する
     'method': 'POST',
     'headers': { "Authorization": "Bearer " + token },
     'contentType': 'application/json',
     'payload': JSON.stringify(payload)
   };
-  //　LINE Messaging APIにリクエストし、ユーザーからの投稿に返答する
-  UrlFetchApp.fetch(url, options);
+  UrlFetchApp.fetch(url, options); //　LINE Messaging APIにリクエストし、ユーザーからの投稿に返答する
 }
 
-// スプレッドシートからmessageTextの値を取得する関数
-function getMenuTextFromSpreadsheet() {
+function getMenuTextFromSpreadsheet() { // スプレッドシートからmessageTextの値を取得する関数
   // スプレッドシートにアクセスして値を書き込む
   var spreadsheetId = "-----SPREAD_SHEET_ID-----"; // スプレッドシートのID　※シートを変更したら必ず更新すること
   var sheetName = "-----SHEET_NAME-----"; // 書き込むシートの名前に置き換える
@@ -93,43 +87,38 @@ function getMenuTextFromSpreadsheet() {
 }
 
 function menuNotification() {
+  var targetSpreadsheetId = '-----SPREAD_SHEET_ID-----'; // スプレッドシートのID　※シートを変更したら必ず更新すること
+  var today = new Date(); // 現在の日時を取得
+  var year = today.getFullYear();
+  var month = (today.getMonth() + 1).toString().padStart(2, '0');
+  var sheetName = year + month;
 
-  const targetSpreadsheetId = '-----SPREAD_SHEET_ID-----'; // スプレッドシートのID　※シートを変更したら必ず更新すること
+  var targetSpreadsheet = SpreadsheetApp.openById(targetSpreadsheetId);
+  var sheet = targetSpreadsheet.getSheetByName(sheetName);
 
-  const today = new Date(); // 現在の日時を取得
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0');
-  const sheetName = year + month;
-
-  const targetSpreadsheet = SpreadsheetApp.openById(targetSpreadsheetId);
-  const sheet = targetSpreadsheet.getSheetByName(sheetName);
-
-  // const date = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'MM/dd');
-  const dates = sheet.getRange('A2:A').getValues(); // 日時データの範囲を指定
-  const targetDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // 今日の日時を取得
+  // var date = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'MM/dd');
+  var dates = sheet.getRange('A2:A').getValues(); // 日時データの範囲を指定
+  var targetDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // 今日の日時を取得
 
   let message = '';
 
   for (let i = 0; i < dates.length; i++) { // A2から下行に向かって確認していく
-
-    const day = dates[i][0];
-
+    var day = dates[i][0];
     if (day instanceof Date && day.getTime() === targetDate.getTime()) {
+      var row = i + 2; // 行番号を取得（A2から始まるため、+2する）
+      var range = sheet.getRange('C' + row + ':AG' + row); // C 列から AG 列までの範囲を取得
+      var rowData = range.getValues()[0]; // C 列から AG 列までのデータを取得（1行分のデータを取得）
 
-      const row = i + 2; // 行番号を取得（A2から始まるため、+2する）
-      const range = sheet.getRange('C' + row + ':AG' + row); // C 列から AG 列までの範囲を取得
-      const rowData = range.getValues()[0]; // C 列から AG 列までのデータを取得（1行分のデータを取得）
-
-      const enabledColumn = []; // キーワードを含まない含まない空行の列を保持する配列
-      const disabledColumn = []; // 除外する列の列を保持する配列
-      const selectedColumn = sheet.getRange('C1:AG1').getValues()[0]; // 列のヘッダー行を取得
+      var enabledColumn = []; // キーワードを含まない含まない空行の列を保持する配列
+      var disabledColumn = []; // 除外する列の列を保持する配列
+      var selectedColumn = sheet.getRange('C1:AG1').getValues()[0]; // 列のヘッダー行を取得
 
       wordDetection = false; // キーワードが見つかったかどうかのフラグ
 
-      const disabledIndex = disabledColumn.map(invalidColumn => selectedColumn.indexOf(invalidColumn));
+      var disabledIndex = disabledColumn.map(invalidColumn => selectedColumn.indexOf(invalidColumn));
 
       for (let i = 0; i < rowData.length; i++) { // 行ごとにキーワードの有無を確認していく(C列〜AG列まで)
-        const cellValue = rowData[i];
+        var cellValue = rowData[i];
         if (typeof cellValue === 'string' && (cellValue.includes('休') || cellValue.includes('済'))) {
           wordDetection = true;
           continue;
@@ -140,26 +129,25 @@ function menuNotification() {
       }
 
       if (enabledColumn.length >= 1) { // enabledColumn 配列に格納された、使用可能な列数が1つ以上ある場合
-        const randomLottery = []; // ランダムに選出された1つの列を格納する
+        var randomLottery = []; // ランダムに選出された1つの列を格納する
         while (randomLottery.length < 1) { //　ランダム抽選(列数が1になるまで繰り返し処理)
-          const randomIndex = Math.floor(Math.random() * enabledColumn.length);
+          var randomIndex = Math.floor(Math.random() * enabledColumn.length);
           if (!randomLottery.includes(randomIndex)) {
             randomLottery.push(randomIndex);
           }
         }
 
         // 献立を選出
-
-        const election = [];
-        for (const randomIndex of randomLottery) {
-          const electionIndex = enabledColumn[randomIndex]; // 選択された列のインデックス
+        var election = [];
+        for (var randomIndex of randomLottery) {
+          var electionIndex = enabledColumn[randomIndex]; // 選択された列のインデックス
           election.push(selectedColumn[electionIndex]);
         }
 
-        const targets = [];
-        for (const electedMenu of election) {
-          // const menu = electedMenu.replace(/\([^()]*\)|[\r\n]/g, "").trim();
-          const menu = electedMenu;
+        var targets = [];
+        for (var electedMenu of election) {
+          // var menu = electedMenu.replace(/\([^()]*\)|[\r\n]/g, "").trim();
+          var menu = electedMenu;
           targets.push(menu);
         }
         message = '本日の夕食は「' + targets + '」にしませんか？';
@@ -170,7 +158,6 @@ function menuNotification() {
         console.log('メッセージがありません。');
         return;
       }
-
       console.log('menuNotification() 関数の実行結果:', message); // messageの値をデバッグログで出力
       return message;
     }
@@ -180,68 +167,55 @@ function menuNotification() {
 var url = 'https://api.line.me/v2/bot/message/reply';
 
 function exampleCallMenuNotification(replyToken, token) { // 第3引数にmessageを追加
-  // menuNotification()関数を呼び出す
-  var messageValue = menuNotification();
+  var messageValue = menuNotification(); // menuNotification()関数を呼び出す
+  Logger.log('message:', messageValue); // messageの値を出力して確認
 
-  // messageの値を出力して確認
-  Logger.log('message:', messageValue);
-
-  // getMenuDetails()関数を呼び出す
-  var detailsMessage = getMenuDetails(messageValue);
+  var detailsMessage = getMenuDetails(messageValue); // getMenuDetails()関数を呼び出す
   Logger.log('detailsMessage:', detailsMessage); // デバッグログでdetailsMessageの値を確認
 
   if (detailsMessage) {
-    // APIリクエスト時にセットするペイロード値を設定する
-    var detailsPayload = {
+    var detailsPayload = { // APIリクエスト時にセットするペイロード値を設定する
       'replyToken': replyToken,
       'messages': [{
         'type': 'text',
         'text': detailsMessage // 取得した詳細情報を送信
       }]
     };
-    // HTTPSのPOST時のオプションパラメータを設定する
-    var detailsOptions = {
+    var detailsOptions = { // HTTPSのPOST時のオプションパラメータを設定する
       'method': 'POST',
       'headers': { "Authorization": "Bearer " + token },
       'contentType': 'application/json',
       'payload': JSON.stringify(detailsPayload)
     };
-
-    // LINE Messaging APIにリクエストし、詳細情報を送信
-    var response = UrlFetchApp.fetch(url, detailsOptions);
+    var response = UrlFetchApp.fetch(url, detailsOptions); // LINE Messaging APIにリクエストし、詳細情報を送信
     console.log('APIリクエストの結果:', response.getContentText());
   } else {
-    // 詳細情報が見つからない場合の処理（任意に追加）
-    console.log('詳細情報が見つかりませんでした。');
+    console.log('詳細情報が見つかりませんでした。'); // 詳細情報が見つからない場合の処理（任意に追加）
   }
   return detailsMessage; // detailsMessageを返す
 }
 
 function getMenuDetails(messageText) {
+  var targetSpreadsheetId = '-----SPREAD_SHEET_ID-----'; // スプレッドシートのID　※シートを変更したら必ず更新すること
+  var targetSheetName = '-----SHEET_NAME-----';
 
-  const targetSpreadsheetId = '-----SPREAD_SHEET_ID-----'; // スプレッドシートのID　※シートを変更したら必ず更新すること
-  const targetSheetName = '-----SHEET_NAME-----';
+  var targetSpreadsheet = SpreadsheetApp.openById(targetSpreadsheetId);
+  var targetSheet = targetSpreadsheet.getSheetByName(targetSheetName);
 
-  const targetSpreadsheet = SpreadsheetApp.openById(targetSpreadsheetId);
-  const targetSheet = targetSpreadsheet.getSheetByName(targetSheetName);
+  var menuColumn = 3; // メニューが格納されている列のインデックス（C列なら3）
+  var detailsColumn = 4; // メニューの詳細が格納されている列のインデックス（D列なら4）
 
-  const menuColumn = 3; // メニューが格納されている列のインデックス（C列なら3）
-  const detailsColumn = 4; // メニューの詳細が格納されている列のインデックス（D列なら4）
-
-  const menuValues = targetSheet.getRange(1, menuColumn, targetSheet.getLastRow(), 1).getValues();
-  const detailsValues = targetSheet.getRange(1, detailsColumn, targetSheet.getLastRow(), 1).getValues();
+  var menuValues = targetSheet.getRange(1, menuColumn, targetSheet.getLastRow(), 1).getValues();
+  var detailsValues = targetSheet.getRange(1, detailsColumn, targetSheet.getLastRow(), 1).getValues();
 
   if (messageText === null) {
     console.log('メニューが見つからないため、詳細情報を取得できません。');
     return;
   }
 
-  // messageをトリムして正規化（不要な空白を取り除いて統一する）
-  const normalizedMessage = messageText;
-
+  var normalizedMessage = messageText; // messageをトリムして正規化（不要な空白を取り除いて統一する）
   for (let i = 0; i < menuValues.length; i++) {
-    // menuValuesの要素をトリムして正規化してから比較
-    if (menuValues[i][0].toString().trim() === normalizedMessage) {
+    if (menuValues[i][0].toString().trim() === normalizedMessage) { // menuValuesの要素をトリムして正規化してから比較
       console.log('メニュー詳細:' + detailsValues[i][0]);
       return detailsValues[i][0];
     }
@@ -256,8 +230,7 @@ function LineDeveloperMessage() {
   var myUserId = "-----USER_ID-----";
   // var myUserId = "C97fda4cd18f1d0bd01e7765567540c75"; // グループLINEのグループID
 
-  // 以下、メッセージの内容を設定
-  var headers = {
+  var headers = { // 以下、メッセージの内容を設定
     "Authorization": "Bearer " + channelAccessToken,
     "Content-Type": "application/json"
   };
@@ -268,8 +241,7 @@ function LineDeveloperMessage() {
     return; // メッセージがない場合は終了
   }
 
-  // `messageText`の値をデバッグログで出力
-  console.log('messageText:', messageText);
+  console.log('messageText:', messageText); // `messageText`の値をデバッグログで出力
 
   // スプレッドシートにアクセスして値を書き込む
   var spreadsheetId = "-----SPREAD_SHEET_ID-----"; // スプレッドシートのID　※シートを変更したら必ず更新すること

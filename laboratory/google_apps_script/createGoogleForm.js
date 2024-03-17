@@ -1,6 +1,5 @@
 function createGoogleForm() {
-  const form = FormApp.create('---FORM_NAME---');
-
+  var form = FormApp.create('---FORM_NAME---');
   form.setTitle('---TITLE---');
   form.setDescription('---DESCRIPTION---');
 
@@ -45,13 +44,13 @@ function createGoogleForm() {
   textItem.setTitle("---TITLE---");
   textItem.setRequired(true);
 
-  const item = form.addListItem().setTitle('---TITLE---').setRequired(true)
+  var item = form.addListItem().setTitle('---TITLE---').setRequired(true)
 
   var textItem = form.addParagraphTextItem();
   textItem.setTitle("---TITLE---");
 
   //条件分岐するためのメソッドを用意
-  const section2 = form.addPageBreakItem().setTitle('---TITLE---').setHelpText('---DESCRIPTION---');
+  var section2 = form.addPageBreakItem().setTitle('---TITLE---').setHelpText('---DESCRIPTION---');
 
   //セクション2に条件分岐する選択肢を追加
   item.setChoices([
