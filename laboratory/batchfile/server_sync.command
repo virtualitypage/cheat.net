@@ -26,6 +26,7 @@ function server_sync () {
   src_securityLog_2024="$log_dir/securityLog/2024/"
   src_stat_text_2023="$log_dir/stat_text/2023/"
   src_stat_text_2024="$log_dir/stat_text/2024/"
+  src_stdout="$log_dir/stdout/"
   src_talk="$log_dir/talk/"
   src_mail="$log_dir/mail/"
 
@@ -42,6 +43,7 @@ function server_sync () {
   securityLog_2024="$dst_volume/var/log/securityLog/2024" # "2024年度 防犯カメラ記録" 保管ディレクトリ
   stat_text_2023="$dst_volume/var/log/stat_text/2023"     # "2023年度 防犯カメラ記録 status" 保管ディレクトリ
   stat_text_2024="$dst_volume/var/log/stat_text/2024"     # "2024年度 防犯カメラ記録 status" 保管ディレクトリ
+  stdout="$dst_volume/var/log/stdout"                     # "コマンドログ" 保管ディレクトリ
   talk="$dst_volume/var/log/talk"                         # "グループLINEのトーク履歴" 保管ディレクトリ
   mail="$dst_volume/var/mail"                             # "メールファイル" 保管ディレクトリ
 
@@ -81,6 +83,9 @@ function server_sync () {
   echo
   echo "rsync --archive --human-readable --progress \"$src_stat_text_2024\" $stat_text_2024"
   rsync --archive --human-readable --progress "$src_stat_text_2024" $stat_text_2024
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_stdout\" $stdout"
+  rsync --archive --human-readable --progress "$src_stdout" $stdout
   echo
   echo "rsync --archive --human-readable --progress \"$src_talk\" $talk"
   rsync --archive --human-readable --progress "$src_talk" $talk
