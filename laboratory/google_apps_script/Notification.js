@@ -38,7 +38,7 @@ function Notification() {
           enabledColumn.push(selectedColumn[i]); // selectedColumn から列のヘッダー行を取得し、 enabledColumn 配列に有効な列のインデックスを追加
         }
       }
-      text = ' ' + year + '年' + date + ' ' + '地獄谷'  + '\n' + '開店予定の店をお知らせします。' + '\n' + '\n' + enabledColumn.join('\n');
+      text = ' ' + year + '年' + date + '' + '\n' + enabledColumn.join('\n');
       console.log(text);
     }
   }

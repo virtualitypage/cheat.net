@@ -563,7 +563,7 @@ EOF
     else
       span20="<span class=\"string\">$col20</span>"
     fi
-    echo "${span1} ${span2}${span3}${span4}${span5}${span6}${span7}${span8}${span9}${span10}${span11}${span12}${span13}${span14}${span15}${span16}${span17}${span18}${span19}${span20}" >>"$current_dir/$main_file.html"
+    echo "${span1} ${span2}${span3}${span4}${span5}${span6}${span7}${span8}${span9}${span10}${span11}${span12}${span13}${span14}${span15}${span16}${span17}${span18}${span19}${span20}" >> "$current_dir/$main_file.html"
   done < "$sub_file"
 
   rm "$sub_file"
