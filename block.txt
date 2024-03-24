@@ -1,2 +1,1 @@
-||jigokudani.net^
-||explainshell.com^
+0.0.0.0 jigokudani.net
