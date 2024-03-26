@@ -10,13 +10,24 @@ mid_copy="$current_dir/securityCamera_Log_before.txt"
 diff_file="$current_dir/securityCamera_diff.txt"
 
 function diff_check () {
-  if [ -s "$mid_copy" ]; then
-    sed -e 's/・［//g' -e 's/］//g' -e '/→/d' -e '/^[<space><tab>]*$/d' "$mid_copy" > "$mid_copy.tmp"
-  else
-    touch "$mid_copy.tmp"
+  if [ -e "$sub_file" ] && [ -e "$mid_copy" ]; then
+    sed -e 's/・［//g' -e 's/］//g' -e '/→/d' -e '/^[<space><tab>]*$/d' -e '/記録文章/d' "$mid_copy" > "$mid_copy.tmp"
+  elif [ -e "$sub_file" ] && [ -n "$mid_copy" ]; then
+    echo "cut -d ',' -f2 securityCamera_manual.csv > securityCamera_Log_before.txt"
+    cut -d ',' -f2 "$sub_file" > "$mid_copy"
+    sed -e 's/・［//g' -e 's/］//g' -e '/→/d' -e '/^[<space><tab>]*$/d' -e '/記録文章/d' "$mid_copy" > "$mid_copy.tmp"
+    echo
+    echo -e "\033[1;36mINFO: securityCamera_manual.csv を読み込んで securityCamera_Log_before.txt を作成しました\033[0m"
+  elif [ -n "$sub_file" ] && [ -n "$mid_copy" ]; then
+    echo -e "\033[1;31mERROR: securityCamera_manual.csv と securityCamera_Log_before.txt が存在しません\033[0m"
+    exit 1
   fi
   if [ -e "$mid_file" ] && [ -e "$mid_copy" ]; then
-    diff "$mid_copy.tmp" "$mid_file" \
+    echo
+    echo -e "\033[1;36mINFO: securityCamera_Log_before.txt と securityCamera_Log.txt で差分を出力します\033[0m"
+    sort "$mid_file" > "$mid_file.tmp"
+    sort "$mid_copy.tmp" > "$mid_copy"
+    diff "$mid_copy" "$mid_file.tmp" \
       | sed '1d' \
       | sed 's/> //g' \
       | sed '/\\ No newline at end of file/d' \
@@ -36,13 +47,14 @@ $line
 EOF
       echo >> "$diff_file"
     done < "$diff_file.tmp"
-    rm "$diff_file.tmp" "$mid_copy.tmp"
+    rm "$diff_file.tmp" "$mid_file.tmp" "$mid_copy.tmp"
     diff_file=$(basename "$diff_file")
     echo
     echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
     echo -e "\033[1;32m$diff_file は $current_dir に格納されています。\033[0m"
+    echo
   else
-    echo -e "\033[1;31msecurityCamera_Log.txt または securityCamera_Log_before.txt が存在しません。\033[0m"
+    echo -e "\033[1;31mERROR: securityCamera_Log.txt または securityCamera_Log_before.txt が存在しません。\033[0m"
     exit 1
   fi
 }
@@ -65,7 +77,7 @@ function generate_logfile_csv () { # securityCamera_diff.txt >> securityCamera_m
     echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
     echo -e "\033[1;32m$sub_file は $current_dir に格納されています。\033[0m"
   else
-    echo -e "\033[1;31msecurityCamera_manual.csv または securityCamera_diff.txt が存在しません。\033[0m"
+    echo -e "\033[1;31mERROR: securityCamera_manual.csv または securityCamera_diff.txt が存在しません。\033[0m"
     exit 1
   fi
 }
@@ -123,7 +135,7 @@ function generate_logfile_manual () { # securityCamera_manual_copy.csv >> securi
     echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
     echo -e "\033[1;32m$main_file は $current_dir に格納されています。\033[0m"
   else
-    echo -e "\033[1;31msecurityCamera_manual.csv が存在しません。\033[0m"
+    echo -e "\033[1;31mERROR: securityCamera_manual.csv が存在しません。\033[0m"
     exit 1
   fi
 }
