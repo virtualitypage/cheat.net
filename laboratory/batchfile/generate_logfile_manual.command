@@ -19,7 +19,7 @@ function diff_check () {
     echo
     echo -e "\033[1;36mINFO: securityCamera_manual.csv を読み込んで securityCamera_Log_before.txt を作成しました\033[0m"
   elif [ -n "$sub_file" ] && [ -n "$mid_copy" ] || [ -n "$sub_file" ] || [ -n "$mid_copy" ]; then
-    echo -e "\033[1;31mERROR: securityCamera_manual.csv と securityCamera_Log_before.txt 又はその両方が存在しません\033[0m"
+    echo -e "\033[1;31mERROR: securityCamera_manual.csv か securityCamera_Log_before.txt 又はその両方が存在しません\033[0m"
     exit 1
   fi
   if [ -e "$mid_file" ] && [ -e "$mid_copy" ]; then
