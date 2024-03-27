@@ -18,8 +18,8 @@ function diff_check () {
     sed -e 's/・［//g' -e 's/］//g' -e '/→/d' -e '/^[<space><tab>]*$/d' -e '/記録文章/d' "$mid_copy" > "$mid_copy.tmp"
     echo
     echo -e "\033[1;36mINFO: securityCamera_manual.csv を読み込んで securityCamera_Log_before.txt を作成しました\033[0m"
-  elif [ -n "$sub_file" ] && [ -n "$mid_copy" ]; then
-    echo -e "\033[1;31mERROR: securityCamera_manual.csv と securityCamera_Log_before.txt が存在しません\033[0m"
+  elif [ -n "$sub_file" ] && [ -n "$mid_copy" ] || [ -n "$sub_file" ] || [ -n "$mid_copy" ]; then
+    echo -e "\033[1;31mERROR: securityCamera_manual.csv と securityCamera_Log_before.txt 又はその両方が存在しません\033[0m"
     exit 1
   fi
   if [ -e "$mid_file" ] && [ -e "$mid_copy" ]; then
@@ -37,15 +37,23 @@ function diff_check () {
       | sed '/.*b/d' \
       | sed '/.*c/d' \
       | sed '/.*d/d' \
-      | sed '/^[<space><tab>]*$/d' > "$diff_file.tmp"
-    while IFS= read -r line || [[ -n $line ]]; do
-      line=$(echo "$line" | sed -e 's/^/・［/' -e 's/$/］/')
-      cat << EOF >> "$diff_file"
+      | sed '/^[<space><tab>]*$/d' > "$diff_file"
+
+    sed -e 's/(/\\(/g' -e 's/)/\\)/g' -e '/^[<space><tab>]*$/d' "$diff_file" > "$diff_file.tmp"
+    sed -e 's/(/\\(/g' -e 's/)/\\)/g' -e '/^[<space><tab>]*$/d' "$mid_copy" > "$mid_copy.tmp"
+    echo -n > "$diff_file"
+
+    while IFS= read -r line; do
+      grep=$(grep -o "$line" "$mid_copy.tmp")
+      if [ -z "$grep" ]; then
+        line=$(echo "$line" | sed -e 's/^/・［/' -e 's/$/］/' -e 's/\\(/(/g' -e 's/\\)/)/g')
+        cat << EOF >> "$diff_file"
 ①動体検知②音声記録③無断駐車④敷地内への侵入⑤不審な人影や動き
 $line
 →
 EOF
-      echo >> "$diff_file"
+        echo >> "$diff_file"
+      fi
     done < "$diff_file.tmp"
     rm "$diff_file.tmp" "$mid_file.tmp" "$mid_copy.tmp"
     diff_file=$(basename "$diff_file")
