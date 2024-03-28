@@ -55,7 +55,7 @@ EOF
         echo >> "$diff_file"
       fi
     done < "$diff_file.tmp"
-    rm "$diff_file.tmp" "$mid_file.tmp" "$mid_copy.tmp"
+    rm "$diff_file.tmp" "$mid_file.tmp" "$mid_copy.tmp" 2>/dev/null
     diff_file=$(basename "$diff_file")
     echo
     echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
@@ -63,12 +63,14 @@ EOF
     echo
   else
     echo -e "\033[1;31mERROR: securityCamera_Log.txt または securityCamera_Log_before.txt が存在しません。\033[0m"
+    echo
+    rm "$diff_file.tmp" "$mid_file.tmp" "$mid_copy.tmp" 2>/dev/null
     exit 1
   fi
 }
 
 function generate_logfile_csv () { # securityCamera_diff.txt >> securityCamera_manual.csv
-  if [ ! -e "$sub_file" ]; then
+  if [ -n "$sub_file" ]; then
     echo "項目名,記録文章,防犯カメラの内容" >> "$sub_file"
   fi
   if [ -e "$sub_file" ] && [ -e "$diff_file" ]; then
@@ -142,8 +144,10 @@ function generate_logfile_manual () { # securityCamera_manual_copy.csv >> securi
     echo
     echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
     echo -e "\033[1;32m$main_file は $current_dir に格納されています。\033[0m"
+    echo
   else
     echo -e "\033[1;31mERROR: securityCamera_manual.csv が存在しません。\033[0m"
+    echo
     exit 1
   fi
 }
@@ -159,7 +163,7 @@ templateList=$(
    ※ diff_check 実行後に生成された diff ファイルの内容を csv ファイルへ追記します
 
 > generate_logfile_manual
-  → csv ファイルと manual ファイルが存在する => securityCamera_manual.csv >> securityCamera_manual.txt
+  → csv ファイルが存在する => securityCamera_manual.csv >> securityCamera_manual.txt
    generate_logfile_csv 実行後に生成された csv ファイルを開いて1列目を昇順で並び替えた後 .numbers として保存
    .numbers → .csv 書き出し後、この関数を実行して生成されたものを「FL-Product 防犯カメラ記録マニュアル.numbers」にペースト
 EOF
