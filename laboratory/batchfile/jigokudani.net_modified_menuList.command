@@ -3,11 +3,12 @@
 current_dir=$(cd "$(dirname "$0")" && pwd)
 today=$(TZ=UTC-9 date '+%Y/%m/%d' | sed 's/\/0/\//g')
 main_file="$current_dir/menu.html"
+dir="$current_dir/Hell Valley - menu list"
 
 array=()
 while IFS= read -r -d '' csv; do
   array+=("$csv")
-done < <(find "$current_dir" -type f -name "*.csv" -print0)
+done < <(find "$dir" -type f -name "*.csv" -print0)
 
 for csv_file in "${array[@]}"; do # 配列の要素を一つずつ処理
   sed -e 's/,TRUE//g' -e 's/,,TRUE//g' "$csv_file" > "$current_dir/array.csv"
