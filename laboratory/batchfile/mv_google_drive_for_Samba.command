@@ -247,16 +247,16 @@ function automator_rsync_google_drive () {
     echo -e "\033[1;36mINFO: 動画ファイル(mp4)のステータスを取得しています…\033[0m"
     for mp4_file in "${mp4_search_result[@]}"; do
       mp4_file=$(basename "$mp4_file")
-      if [ ! -e "$src_volume_path"/"$mp4_file" ]; then
+      if [ ! -e "$src_volume_path/$mp4_file" ]; then
         continue
       fi
-      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume_path"/"$mp4_file")
+      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume_path/$mp4_file")
       echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> $txt_file\033[0m"
       if [ "$first_file" = true ]; then
-        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$dst_volume/$txt_file"
         first_file=false
       else
-        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$dst_volume/$txt_file"
       fi
     done
     echo
@@ -267,16 +267,16 @@ function automator_rsync_google_drive () {
     echo -e "\033[1;36mINFO: 動画ファイル(mov)のステータスを取得しています…\033[0m"
     for mov_file in "${mov_files[@]}"; do
       mov_file=$(basename "$mov_file")
-      if [ ! -e "$src_volume_path"/"$mov_file" ]; then
+      if [ ! -e "$src_volume_path/$mov_file" ]; then
         continue
       fi
-      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume_path"/"$mov_file")
+      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume_path/$mov_file")
       echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> $txt_file\033[0m"
       if [ "$first_file" = true ]; then
-        echo "$(basename "$mov_file") -> $mov_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$mov_file") -> $mov_stat" >> "$dst_volume/$txt_file"
         first_file=false
       else
-        echo "$(basename "$mov_file") -> $mov_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$mov_file") -> $mov_stat" >> "$dst_volume/$txt_file"
       fi
     done
     echo
@@ -287,16 +287,16 @@ function automator_rsync_google_drive () {
     echo -e "\033[1;36mINFO: 動画ファイル(avi)のステータスを取得しています…\033[0m"
     for avi_file in "${avi_files[@]}"; do
       avi_file=$(basename "$avi_file")
-      if [ ! -e "$src_volume_path"/"$avi_file" ]; then
+      if [ ! -e "$src_volume_path/$avi_file" ]; then
         continue
       fi
       avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$avi_file")
       echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> $txt_file\033[0m"
       if [ "$first_file" = true ]; then
-        echo "$(basename "$avi_file") -> $avi_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$avi_file") -> $avi_stat" >> "$dst_volume/$txt_file"
         first_file=false
       else
-        echo "$(basename "$avi_file") -> $avi_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$avi_file") -> $avi_stat" >> "$dst_volume/$txt_file"
       fi
     done
     echo
@@ -356,14 +356,14 @@ function automator_rsync_google_drive () {
     rmdir -v "$src_volume_path"
     echo
     echo "rmdir -v $src_volume/$directory_TF"
-    rmdir -v $src_volume/"$directory"_TF
+    rmdir -v "$src_volume/$directory"_TF
     echo
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" から転送用フォルダ \"$today\" と一時フォルダ \"$directory_TF\" を削除しました\033[0m"
     echo
     echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
-    echo "・$today_string" >> "$dst_volume"/$disk_free
+    echo "・$today_string" >> "$dst_volume/$disk_free"
     echo "df -H $src_volume >> $dst_volume/$disk_free"
-    df -H $src_volume >> "$dst_volume"/$disk_free
+    df -H $src_volume >> "$dst_volume/$disk_free"
     echo >> "$dst_volume"/$disk_free
     echo
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
@@ -420,16 +420,16 @@ function mv_google_drive () {
     echo -e "\033[1;36mINFO: 動画ファイル(mp4)のステータスを取得しています…\033[0m"
     for mp4_file in "${mp4_files[@]}"; do
       mp4_file=$(basename "$mp4_file")
-      if [ ! -e "$src_volume_path"/"$mp4_file" ]; then
+      if [ ! -e "$src_volume_path/$mp4_file" ]; then
         continue
       fi
-      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" $src_volume/"$today"/"$mp4_file")
+      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume/$today/$mp4_file")
       echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> $txt_file\033[0m"
       if [ $first_file = true ]; then
-        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$dst_volume/$txt_file"
         first_file=false
       else
-        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$dst_volume/$txt_file"
       fi
     done
     echo
@@ -440,16 +440,16 @@ function mv_google_drive () {
     echo -e "\033[1;36mINFO: 動画ファイル(mov)のステータスを取得しています…\033[0m"
     for mov_file in "${mov_files[@]}"; do
       mov_file=$(basename "$mov_file")
-      if [ ! -e "$src_volume_path"/"$mov_file" ]; then
+      if [ ! -e "$src_volume_path/$mov_file" ]; then
         continue
       fi
-      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" $src_volume/"$today"/"$mov_file")
+      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M"" $src_volume/$today/$mov_file")
       echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> $txt_file\033[0m"
       if [ $first_file = true ]; then
-        echo "$(basename "$mov_file") -> $mov_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$mov_file") -> $mov_stat" >> "$dst_volume/$txt_file"
         first_file=false
       else
-        echo "$(basename "$mov_file") -> $mov_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$mov_file") -> $mov_stat" >> "$dst_volume/$txt_file"
       fi
     done
     echo
@@ -460,16 +460,16 @@ function mv_google_drive () {
     echo -e "\033[1;36mINFO: 動画ファイル(avi)のステータスを取得しています…\033[0m"
     for avi_file in "${avi_files[@]}"; do
       avi_file=$(basename "$avi_file")
-      if [ ! -e "$src_volume_path"/"$avi_file" ]; then
+      if [ ! -e "$src_volume_path/$avi_file" ]; then
         continue
       fi
-      avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" $src_volume/"$today"/"$avi_file")
+      avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume/$today/$avi_file")
       echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> $txt_file\033[0m"
       if [ $first_file = true ]; then
-        echo "$(basename "$avi_file") -> $avi_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$avi_file") -> $avi_stat" >> "$dst_volume/$txt_file"
         first_file=false
       else
-        echo "$(basename "$avi_file") -> $avi_stat" >> "$dst_volume"/"$txt_file"
+        echo "$(basename "$avi_file") -> $avi_stat" >> "$dst_volume/$txt_file"
       fi
     done
     echo
@@ -536,10 +536,10 @@ function mv_google_drive () {
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" から転送用フォルダ \"$today\" と一時フォルダ \"$directory_TF\" を削除しました\033[0m"
     echo
     echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
-    echo "・$today_string" >> "$dst_volume"/"$disk_free"
+    echo "・$today_string" >> "$dst_volume/$disk_free"
     echo "df -H $src_volume >> $dst_volume/$disk_free"
-    df -H $src_volume >> "$dst_volume"/"$disk_free"
-    echo >> "$dst_volume"/"$disk_free"
+    df -H $src_volume >> "$dst_volume/$disk_free"
+    echo >> "$dst_volume/$disk_free"
     echo
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
     echo

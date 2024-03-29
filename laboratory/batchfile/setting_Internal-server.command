@@ -47,5 +47,4 @@ function setting_Internal-server () {
   echo -e "\033[1;32mALL SUCCESSFUL: フォルダの作成処理が正常に終了しました。\033[0m"
   echo
 }
-
 setting_Internal-server

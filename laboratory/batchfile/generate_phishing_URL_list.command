@@ -770,7 +770,7 @@ function generate_phishing_URL_list () {
   Reinan_Cable_Network=true
 
   comment=$(
-    cat <<EOF
+    cat << EOF
 # phishing URL List
 # Blocking Web Browser
 #
@@ -4368,7 +4368,7 @@ EOF
 }
 
 functionList=$(
-  cat <<EOF
+  cat << EOF
 > download
   → JPCERT/CCが確認したフィッシングサイトURLリストをダウンロードする
 

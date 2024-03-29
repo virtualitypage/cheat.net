@@ -9,7 +9,7 @@ function open_url () {
     URL=$(echo "$url" | tr -d '\r')
     active=$(curl -I --max-time 10 "$URL" 2>/dev/null | head -n 1 | tr -d '\r' | sed 's/[[:space:]]*$//')
     inactive=$(curl -I --max-time 10 "$URL" 2>&1 | grep -o "Could not resolve host")
-    if [[ "$active" =~ "200" ]] || [[ "$active" =~ "302" ]]; then
+    if [[ "$active" =~ 200 ]] || [[ "$active" =~ 302 ]]; then
       echo -e "\033[1;32mActive: $URL\033[0m"
       echo "$URL" >> "$main_file"
     elif [[ "$active" =~ 403 ]]; then
