@@ -613,10 +613,10 @@
                 <summary style="text-align: center; color: white;">通知登録フォームの注意点</summary>
                 ・通知登録フォーム（設定用GAS[フォーム]）.txt　6行目
                 <br>
-                <br>var sheetId = '';<br>
+                <br>var sheetId = "-----SPREAD_SHEET_ID-----";<br>
                 <br>① 通知登録フォーム（作成用GAS）を実行する<br>
                 <br>② 生成された「通知登録フォーム（登録用）」のURL(https://docs.google.com/spreadsheets/d/ と edit#gid=0の間にある英数字)をコピー<br>
-                <br>③ コピーしたIDを''(シングルクォーテーション)の中に入れる
+                <br>③ コピーしたIDを""(ダブルクォーテーション)の中に入れる
                 <br><br>
                 <br>・通知登録フォーム（設定用GAS[シート]）.txt　28行目
                 <br><br>
@@ -745,12 +745,12 @@
                 <summary style="text-align: center; color: white;">リマインドシート - microSDカード回収の注意点</summary>
                 ・リマインドシート - microSDカード回収（通知用GAS）.txt
                 <br><br>
-                <br>87行目　var channelAccessToken = "-----CHANNEL_ACCESS_TOKEN-----";<br>
+                <br>96行目　var channelAccessToken = "-----CHANNEL_ACCESS_TOKEN-----";<br>
                 <br>① https://developers.line.biz/console/にて「最近閲覧したチャネル」から「LINE Notification」をクリック<br>
                 <br>②「Messaging API設定」ページ下部にある「チャネルアクセストークン（長期）」をコピー<br>
                 <br>③ コピーしたIDを""(ダブルクォーテーション)の中に入れる
                 <br><br>
-                <br>88行目　var groupId = "-----GROUP_ID-----";<br>
+                <br>97行目　var groupId = "-----GROUP_ID-----";<br>
               </details>
               <br>
             </div>
@@ -771,23 +771,32 @@
               </div>
               <details style="color: white;">
                 <summary style="text-align: center; color: white;">リマインドシート - 銀行振込 (XX銀行)の注意点</summary>
+                ・リマインドシート - 銀行振込 (XX銀行)（作成用GAS）.txt　
+                <br>
+                <br>2行目　var bank = "-----BANK_NAME-----"; // 振込先銀行名<br>
+                <br>振込先の銀行名""(ダブルクォーテーション)の中に入れる
+                <br><br>
                 ・リマインドシート - 銀行振込 (XX銀行)（設定用GAS[シート]）.txt　
                 <br>
-                <br>33行目　var channelAccessToken = "";<br>
+                <br>68行目　var bank = "-----BANK_NAME-----"; // 振込先銀行名<br>
+                <br>振込先の銀行名""(ダブルクォーテーション)の中に入れる
+                <br>
+                <br>108行目　var channelAccessToken = "-----ACCESS_TOKEN-----";<br>
                 <br>① https://developers.line.biz/console/にて「最近閲覧したチャネル」から「LINE Notification」をクリック<br>
                 <br>②「Messaging API設定」ページ下部にある「チャネルアクセストークン（長期）」をコピー<br>
                 <br>③ コピーしたIDを""(ダブルクォーテーション)の中に入れる
-                <br><br>
-                <br>34行目　var myUserId = "";<br>
+                <br>
+                <br>109行目　var myUserId = "-----USER_ID-----";<br>
                 <br>① https://developers.line.biz/console/にて「最近閲覧したチャネル」から「LINE Notification」をクリック<br>
                 <br>②「チャネル基本設定」ページ下部にある「あなたのユーザーID」をコピー<br>
                 <br>③ コピーしたIDを""(ダブルクォーテーション)の中に入れる
                 <br><br>
-                <br>・以下のメッセージコードに変更を加える(XXに任意の銀行名を入れる)<br>
-                <br>20行目　text_title = year + '年' + month + '月分' + ' ' + 'XX銀行への入金のお知らせ' + '\n';<br>
-                <br>50行目　"altText": "銀行振込のリマインド通知です(XX銀行)",<br>
-                <br>58行目　"text": "XX銀行への振込完了"<br>
-                <br>63行目　"text": “XX銀行への振込未完了"
+                ・リマインドシート - 銀行振込 (XX銀行)（設定用GAS［フォーム］）.txt　
+                <br>
+                <br>18行目　var sheetId = "-----SPREAD_SHEET_ID-----";<br>
+                <br>① リマインドシート - 銀行振込 (XX銀行)（作成用GAS）を実行する<br>
+                <br>② 生成された「リマインドシート - 銀行振込 (XX銀行)」のURL(https://docs.google.com/spreadsheets/d/ と /editの間にある英数字)をコピー<br>
+                <br>③ コピーしたIDを""(ダブルクォーテーション)の中に入れる
               </details>
               <br>
             </div>
@@ -810,17 +819,17 @@
                 <summary style="text-align: center; color: white;">リマインドシート - 献立通知表の注意点</summary>
                 ・リマインドシート - 献立通知表（設定用GAS[シート]）.txt
                 <br><br>
-                <br>84行目　var channelAccessToken = "";<br>
+                <br>84行目　var channelAccessToken = "-----CHANNEL_ACCESS_TOKEN-----";<br>
                 <br>① https://developers.line.biz/console/にて「最近閲覧したチャネル」から「LINE Notification」をクリック<br>
                 <br>②「Messaging API設定」ページ下部にある「チャネルアクセストークン（長期）」をコピー<br>
                 <br>③ コピーしたIDを""(ダブルクォーテーション)の中に入れる
                 <br><br>
-                <br>85行目　var myUserId = "";<br>
+                <br>85行目　var myUserId = "-----USER_ID-----";<br>
                 <br>① https://developers.line.biz/console/にて「最近閲覧したチャネル」から「LINE Notification」をクリック<br>
                 <br>②「チャネル基本設定」ページ下部にある「あなたのユーザーID」をコピー<br>
                 <br>③ コピーしたIDを""(ダブルクォーテーション)の中に入れる
                 <br><br>
-                <br>104行目　var spreadsheetId = "";<br>
+                <br>104行目　var spreadsheetId = "-----SPREAD_SHEET_ID-----";<br>
                 <br>① 献立通知（作成用GAS）を実行する<br>
                 <br>② 生成された「献立表（通知用）」のURL(https://docs.google.com/spreadsheets/d/ と edit#gid=0の間にある英数字)をコピー<br>
                 <br>③ コピーしたIDを""(ダブルクォーテーション)の中に入れる
