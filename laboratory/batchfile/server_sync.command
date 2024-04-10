@@ -8,14 +8,12 @@ logfile=$src_volume/server_sync_"$today".log
 
 function server_sync () {
   # Google Drive 共有フォルダのパス
-  home_dir="$src_volume/home"
   local_dir="$src_volume/usr/local"
   share_dir="$src_volume/usr/share"
   src_dir="$src_volume/usr/src"
   log_dir="$src_volume/var/log"
 
   src_dev="$src_volume/dev/"
-  src_admin="$home_dir/admin/"
   src_footage_2023="$local_dir/footage/2023/"
   src_footage_2024="$local_dir/footage/2024/"
   src_arch="$share_dir/arch/"
@@ -32,7 +30,6 @@ function server_sync () {
 
   # internalサーバ(Samba)の親ディレクトリ
   dev="$dst_volume/dev"                                   # "開発用ファイル" 保管ディレクトリ
-  admin="$dst_volume/home/admin"                          # adminユーザ専用ディレクトリ
   footage_2023="$dst_volume/usr/local/footage/2023"       # "2023年度 防犯カメラ映像" 保管ディレクトリ
   footage_2024="$dst_volume/usr/local/footage/2024"       # "2024年度 防犯カメラ映像" 保管ディレクトリ
   arch="$dst_volume/usr/share/arch"                       # "アーキテクチャ" 保管ディレクトリ
@@ -50,9 +47,6 @@ function server_sync () {
   # internalサーバ(Samba)に転送
   echo "rsync --archive --human-readable --progress \"$src_dev\" $dev"
   rsync --archive --human-readable --progress "$src_dev" $dev
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_admin\" $admin"
-  rsync --archive --human-readable --progress "$src_admin" $admin
   echo
   echo "rsync --archive --human-readable --progress \"$src_footage_2023\" $footage_2023"
   rsync --archive --human-readable --progress "$src_footage_2023" $footage_2023
