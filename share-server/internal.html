@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="../css/internal.css">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7MY5P9TV7J"></script>
-    <script>
+    <!-- <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-7MY5P9TV7J');
-    </script>
+    </script> -->
   </head>
   <body>
     <header class="site-header">
@@ -94,17 +94,17 @@
         <div class="tree">
           <ul>
             internal
-            <li><i class="opened_folder"></i>　　　 home <span>- 0kb</span>
-              <ul class="ul_phase2">
+            <li><i class="opened_folder"></i>　　　 dev <span>- 230kb</span>
+              <!-- <ul class="ul_phase2">
                 <li><i class="folder-phase2"></i>　　  　 admin <span></span>
                   <ul>
                   </ul>
                 </li>
-              </ul>
+              </ul> -->
             </li>
-            <li><i class="opened_folder"></i>　　　 usr <span>- 15.5mb</span>
+            <li><i class="opened_folder"></i>　　　 usr <span>- 23.1mb</span>
               <ul class="ul_phase2">
-                <li><i class="opened_folder-phase2"></i>　　  　 local <span>- 746kb</span>
+                <li><i class="opened_folder-phase2"></i>　　  　 local <span>- 2.2mb</span>
                   <ul class="ul_phase3">
                     <li><i class="opened_folder-phase3"></i>　　  　　footage <span></span>
                       <ul class="ul_phase4">
@@ -115,23 +115,33 @@
                   </ul>
                   </li>
                   <ul class="ul_phase2">
-                    <li><i class="opened_folder-phase2"></i>　　  　 share <span>- 14.7mb</span>
+                    <li><i class="opened_folder-phase2"></i>　　  　 share <span>- 15.2mb</span>
                       <ul class="ul_phase3">
                         <li><i class="opened_folder-phase3"></i>　　  　　arch</li>
                         <li><i class="opened_folder-phase3"></i>　　  　　config</li>
                         <li><i class="opened_folder-phase3"></i>　　  　　pdf</li>
                       </ul>
                     </li>
+                    <li><i class="opened_folder-phase2"></i>　　  　 src <span>- 5.6mb</span>
+                      <ul class="ul_phase3">
+                        <li><i class="opened_folder-phase3"></i>　　  　　apple</li>
+                        <li><i class="opened_folder-phase3"></i>　　  　　google</li>
+                        <li><i class="opened_folder-phase3"></i>　　  　　shell</li>
+                      </ul>
+                    </li>
                   </ul>
                 </li>
               </ul>
-            <li><i class="opened_folder"></i>　　　 var <span>- 4.2mb</span>
+            <li><i class="opened_folder"></i>　　　 var <span>- 15.1mb</span>
               <ul class="ul_phase2">
                 <li><i class="opened_folder-phase2"></i>　　  　 cache <span>- 0kb</span>
-                <li><i class="opened_folder-phase2"></i>　　  　 log <span>- 4.2mb</span>
+                <li><i class="opened_folder-phase2"></i>　　  　 log <span>- 15.1mb</span>
                   <ul class="ul_phase3">
-                    <li><i class="opened_folder-phase3"></i>　　  　　securityLog_2023
-                    <li><i class="opened_folder-phase3"></i>　　  　　securityLog_2024
+                    <li><i class="opened_folder-phase3"></i>　　  　　securityLog
+                      <ul class="ul_phase4">
+                        <li><i class="opened_folder-phase4"></i>　　　　　2023</li>
+                        <li><i class="opened_folder-phase4"></i>　　　　　2024</li>
+                      </ul>
                     <li><i class="opened_folder-phase3"></i>　　  　　stat_text
                       <ul class="ul_phase4">
                         <li><i class="opened_folder-phase4"></i>　　　　　2023</li>
@@ -141,6 +151,7 @@
                     <li><i class="opened_folder-phase3"></i>　　  　　talk</li>
                   </ul>
                 </li>
+                <li><i class="opened_folder-phase2"></i>　　  　 mail <span>- 0kb</span>
               </ul>
             </li>
           </ul>
@@ -156,16 +167,12 @@
               <td>家庭内ネットワークのみで共有されるフォルダ</td>
             </tr>
             <tr class="table-row">
-              <td>home</td>
-              <td>個人フォルダを格納するフォルダ</td>
-            </tr>
-            <tr class="table-row">
-              <td>admin</td>
-              <td>管理者専用のフォルダ</td>
+              <td>dev</td>
+              <td>開発関連のデータを格納するフォルダ</td>
             </tr>
             <tr class="table-row">
               <td>usr</td>
-              <td>公開されるべきデータをを格納している</td>
+              <td>公開されるべきデータを格納している</td>
             </tr>
             <tr class="table-row">
               <td>local</td>
@@ -192,6 +199,22 @@
               <td>読み込み専用のファイルを格納</td>
             </tr>
             <tr class="table-row">
+              <td>src</td>
+              <td>各言語のソースコードを格納するフォルダ</td>
+            </tr>
+            <tr class="table-row">
+              <td>apple</td>
+              <td>Apple Scriptのソースコードファイルを格納</td>
+            </tr>
+            <tr class="table-row">
+              <td>google</td>
+              <td>Google Apps Scriptのソースコードファイルを格納</td>
+            </tr>
+            <tr class="table-row">
+              <td>shell</td>
+              <td>シェルスクリプトのソースコードファイルを格納</td>
+            </tr>
+            <tr class="table-row">
               <td>var</td>
               <td>ログ関連のファイルを格納している</td>
             </tr>
@@ -204,12 +227,8 @@
               <td>ログファイル格納フォルダ</td>
             </tr>
             <tr class="table-row">
-              <td>securityLog_2023</td>
-              <td>防犯カメラの記録ファイル(2023年版)を格納</td>
-            </tr>
-            <tr class="table-row">
-              <td>securityLog_2024</td>
-              <td>防犯カメラの記録ファイル(2024年版)を格納</td>
+              <td>securityLog</td>
+              <td>防犯カメラの記録ファイルを格納</td>
             </tr>
             <tr class="table-row">
               <td>stat_text</td>
@@ -222,6 +241,10 @@
             <tr class="table-row">
               <td>talk</td>
               <td>LINEのトーク履歴を格納</td>
+            </tr>
+            <tr class="table-row">
+              <td>mail</td>
+              <td>メールアーカイブを格納</td>
             </tr>
           </tbody>
         </table>
