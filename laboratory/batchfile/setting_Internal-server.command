@@ -5,6 +5,9 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 function setting_Internal-server () {
   mkdir "$current_dir"/dev
 
+  mkdir "$current_dir"/media
+  mkdir "$current_dir"/media/footage
+
   mkdir "$current_dir"/usr
   mkdir "$current_dir"/usr/local
   mkdir "$current_dir"/usr/local/footage
@@ -26,6 +29,8 @@ function setting_Internal-server () {
   mkdir "$current_dir"/var/mail/
 
   setfile -m "3/1/2024 0:00" "$current_dir"/dev
+  setfile -m "3/1/2024 0:00" "$current_dir"/media
+  setfile -m "3/1/2024 0:00" "$current_dir"/media/footage
   setfile -m "3/1/2024 0:00" "$current_dir"/usr
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/local
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/local/footage

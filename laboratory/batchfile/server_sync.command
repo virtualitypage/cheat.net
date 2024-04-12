@@ -8,18 +8,23 @@ logfile=$src_volume/server_sync_"$today".log
 
 function server_sync () {
   # Google Drive 共有フォルダのパス
+  media_dir="$src_volume/media"
   local_dir="$src_volume/usr/local"
   share_dir="$src_volume/usr/share"
   src_dir="$src_volume/usr/src"
   log_dir="$src_volume/var/log"
 
   src_dev="$src_volume/dev/"
+  src_media_footage="$media_dir/footage/"
   src_footage_2023="$local_dir/footage/2023/"
   src_footage_2024="$local_dir/footage/2024/"
   src_arch="$share_dir/arch/"
   src_config="$share_dir/config/"
   src_pdf="$share_dir/pdf/"
   src_code="$src_dir/"
+  src_code_apple="$src_dir/apple/"
+  src_code_google="$src_dir/google/"
+  src_code_shell="$src_dir/shell/"
   src_securityLog_2023="$log_dir/securityLog/2023/"
   src_securityLog_2024="$log_dir/securityLog/2024/"
   src_stat_text_2023="$log_dir/stat_text/2023/"
@@ -30,12 +35,16 @@ function server_sync () {
 
   # internalサーバ(Samba)の親ディレクトリ
   dev="$dst_volume/dev"                                   # "開発用ファイル" 保管ディレクトリ
+  media_footage="$dst_volume/media/footage"               # "防犯カメラ写真" 保管ディレクトリ
   footage_2023="$dst_volume/usr/local/footage/2023"       # "2023年度 防犯カメラ映像" 保管ディレクトリ
   footage_2024="$dst_volume/usr/local/footage/2024"       # "2024年度 防犯カメラ映像" 保管ディレクトリ
   arch="$dst_volume/usr/share/arch"                       # "アーキテクチャ" 保管ディレクトリ
   config="$dst_volume/usr/share/config"                   # "コンフィグ関連ファイル" 保管ディレクトリ
   pdf="$dst_volume/usr/share/pdf"                         # "PDFファイル" 保管ディレクトリ
   src="$dst_volume/usr/src"                               # "ソースコード" 保管ディレクトリ
+  src_apple="$dst_volume/usr/src/apple"                   # "AppleScriptのソースコード" 保管ディレクトリ
+  src_google="$dst_volume/usr/src/google"                 # "Google Apps Scriptのソースコード" 保管ディレクトリ
+  src_shell="$dst_volume/usr/src/shell"                   # "shell scriptのソースコード" 保管ディレクトリ
   securityLog_2023="$dst_volume/var/log/securityLog/2023" # "2023年度 防犯カメラ記録" 保管ディレクトリ
   securityLog_2024="$dst_volume/var/log/securityLog/2024" # "2024年度 防犯カメラ記録" 保管ディレクトリ
   stat_text_2023="$dst_volume/var/log/stat_text/2023"     # "2023年度 防犯カメラ記録 status" 保管ディレクトリ
@@ -47,6 +56,9 @@ function server_sync () {
   # internalサーバ(Samba)に転送
   echo "rsync --archive --human-readable --progress \"$src_dev\" $dev"
   rsync --archive --human-readable --progress "$src_dev" $dev
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_media_footage\" $media_footage"
+  rsync --archive --human-readable --progress "$src_media_footage" $media_footage
   echo
   echo "rsync --archive --human-readable --progress \"$src_footage_2023\" $footage_2023"
   rsync --archive --human-readable --progress "$src_footage_2023" $footage_2023
@@ -65,6 +77,15 @@ function server_sync () {
   echo
   echo "rsync --archive --human-readable --progress \"$src_code\" $src"
   rsync --archive --human-readable --progress "$src_code" $src
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_code_apple\" $src_apple"
+  rsync --archive --human-readable --progress "$src_code_apple" $src_apple
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_code_google\" $src_google"
+  rsync --archive --human-readable --progress "$src_code_google" $src_google
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_code_shell\" $src_shell"
+  rsync --archive --human-readable --progress "$src_code_shell" $src_shell
   echo
   echo "rsync --archive --human-readable --progress \"$src_securityLog_2023\" $securityLog_2023"
   rsync --archive --human-readable --progress "$src_securityLog_2023" $securityLog_2023
