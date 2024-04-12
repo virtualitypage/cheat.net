@@ -6,7 +6,7 @@ function setting_Internal-server () {
   mkdir "$current_dir"/dev
 
   mkdir "$current_dir"/media
-  mkdir "$current_dir"/media/footage
+  mkdir "$current_dir"/media/red_zone
 
   mkdir "$current_dir"/usr
   mkdir "$current_dir"/usr/local
@@ -30,7 +30,7 @@ function setting_Internal-server () {
 
   setfile -m "3/1/2024 0:00" "$current_dir"/dev
   setfile -m "3/1/2024 0:00" "$current_dir"/media
-  setfile -m "3/1/2024 0:00" "$current_dir"/media/footage
+  setfile -m "3/1/2024 0:00" "$current_dir"/media/red_zone
   setfile -m "3/1/2024 0:00" "$current_dir"/usr
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/local
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/local/footage

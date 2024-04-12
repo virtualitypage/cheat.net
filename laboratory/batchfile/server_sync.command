@@ -8,14 +8,13 @@ logfile=$src_volume/server_sync_"$today".log
 
 function server_sync () {
   # Google Drive 共有フォルダのパス
-  media_dir="$src_volume/media"
   local_dir="$src_volume/usr/local"
   share_dir="$src_volume/usr/share"
   src_dir="$src_volume/usr/src"
   log_dir="$src_volume/var/log"
 
   src_dev="$src_volume/dev/"
-  src_media_footage="$media_dir/footage/"
+  src_media_red_zone="$src_volume/media/red_zone/"
   src_footage_2023="$local_dir/footage/2023/"
   src_footage_2024="$local_dir/footage/2024/"
   src_arch="$share_dir/arch/"
@@ -35,7 +34,7 @@ function server_sync () {
 
   # internalサーバ(Samba)の親ディレクトリ
   dev="$dst_volume/dev"                                   # "開発用ファイル" 保管ディレクトリ
-  media_footage="$dst_volume/media/footage"               # "防犯カメラ写真" 保管ディレクトリ
+  media_red_zone="$dst_volume/media/red_zone"             # "防犯カメラ写真" 保管ディレクトリ
   footage_2023="$dst_volume/usr/local/footage/2023"       # "2023年度 防犯カメラ映像" 保管ディレクトリ
   footage_2024="$dst_volume/usr/local/footage/2024"       # "2024年度 防犯カメラ映像" 保管ディレクトリ
   arch="$dst_volume/usr/share/arch"                       # "アーキテクチャ" 保管ディレクトリ
@@ -57,8 +56,8 @@ function server_sync () {
   echo "rsync --archive --human-readable --progress \"$src_dev\" $dev"
   rsync --archive --human-readable --progress "$src_dev" $dev
   echo
-  echo "rsync --archive --human-readable --progress \"$src_media_footage\" $media_footage"
-  rsync --archive --human-readable --progress "$src_media_footage" $media_footage
+  echo "rsync --archive --human-readable --progress \"$src_media_red_zone\" $media_red_zone"
+  rsync --archive --human-readable --progress "$src_media_red_zone" $media_red_zone
   echo
   echo "rsync --archive --human-readable --progress \"$src_footage_2023\" $footage_2023"
   rsync --archive --human-readable --progress "$src_footage_2023" $footage_2023
