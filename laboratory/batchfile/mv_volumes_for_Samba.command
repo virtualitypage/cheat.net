@@ -1,14 +1,21 @@
 #!/bin/bash
 
 today=$(date '+%Y-%m-%d')
+today_string=$(date '+%Y年%-m月%-d日')
+
 src_volume="/Volumes/Untitled/DCIM/100MEDIA"
 dst_volume="/Volumes/Internal/var/cache"
 destination="$HOME/Library/CloudStorage/GoogleDrive-ganbanlife@gmail.com/.shortcut-targets-by-id/1mZyi1kb7Iepj2zVvRgVo_BGJAmlC8GKY/共有フォルダ/動画用フォルダ"
-src_file="DSCF0001.AVI"
-DISK="Untitled"
-SERVER="Internal"
 archive="/Volumes/Internal/var/cache/archive"
 logfile="$destination/mv_volumes_$today.log"
+
+src_file="DSCF0001.AVI"
+date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_volume/$src_file)
+queue="$HOME/Desktop/$date_dir"
+disk_free="diskFree.log"
+
+DISK="Untitled"
+SERVER="Internal"
 
 mp4_files=()
 mov_files=()
@@ -43,9 +50,69 @@ EOF
   echo "$message" | perl -pe 'chomp if eof' >> "$logfile"
 }
 
-function mv_volumes () {
-  date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_volume/$src_file)
+function enqueue () {
   main_file="$date_dir status.txt"
+  cd $HOME/Desktop || exit
+
+  if [ ! -e "$date_dir" ]; then
+    mkdir "$date_dir"
+  elif [ ! -d "$date_dir" ]; then
+    echo -e "\033[1;36mINFO: \"$date_dir\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
+    mkdir archive
+    echo "mv -v $queue $archive"
+    mv -v "$queue" $archive
+    mkdir "$date_dir"
+    echo
+  fi
+  echo -e "\033[1;36mINFO: DISK \"$DISK\" にて動画ファイルを検索しています…\033[0m"
+  for file in "$src_volume"/*; do
+    if [ -f "$file" ]; then
+      mp4_search_result=$(find "$file" -type f -iname '*.mp4' 2>/dev/null) # .mp4 ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$mp4_search_result" ]; then
+        mp4_files+=("$mp4_search_result")
+        files_found_mp4=true
+        echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
+      fi
+      mov_search_result=$(find "$file" -type f -iname '*.mov' 2>/dev/null) # .mov ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$mov_search_result" ]; then
+        mov_files+=("$mov_search_result")
+        files_found_mov=true
+        echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
+      fi
+      avi_search_result=$(find "$file" -type f -iname '*.avi' 2>/dev/null) # .avi ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$avi_search_result" ]; then
+        avi_files+=("$avi_search_result")
+        files_found_avi=true
+        echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
+      fi
+    fi
+  done
+  echo
+  echo -e "\033[1;36mINFO: 動画ファイルのエンキュー処理を実行します…\033[0m"
+  echo "rsync --archive --human-readable --progress $src_volume/* $queue"
+  rsync --archive --human-readable --progress $src_volume/* "$queue"
+
+  while [ $? -ne 0 ]; do
+    echo
+    echo -e "\033[1;33mWARNING: rsync コマンドが異常終了しました。3秒後に同期処理を再度実行します\033[0m"
+    sleep 3
+    echo "rsync --archive --human-readable --progress $src_volume/* $queue"
+    rsync --archive --human-readable --progress $src_volume/* "$queue"
+  done
+  echo
+
+  if [ $? -eq 0 ]; then
+    echo "rm $src_volume/*"
+    rm $src_volume/*
+  fi
+
+  echo
+  echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルのエンキュー処理が正常に終了しました。\033[0m"
+  echo -e "\033[1;32mDISK \"$DISK\" 内のファイルは $queue に格納されています。\033[0m"
+  echo
+}
+
+function dequeue () {
   cd $dst_volume || exit
 
   if [ ! -e "$date_dir" ]; then
@@ -58,8 +125,8 @@ function mv_volumes () {
     mkdir "$date_dir"
     echo
   fi
-  echo -e "\033[1;36mINFO: DISK \"$DISK\" にて動画ファイルを検索しています…\033[0m"
-  for file in "$src_volume"/*; do
+  echo -e "\033[1;36mINFO: デキュー領域 \"$queue\" にて動画ファイルを検索しています…\033[0m"
+  for file in "$queue"/*; do
     if [ -f "$file" ]; then
       mp4_search_result=$(find "$file" -type f -iname '*.mp4' 2>/dev/null) # .mp4 ファイルを検索(大文字小文字を区別しない)
       if [ -n "$mp4_search_result" ]; then
@@ -96,65 +163,23 @@ function mv_volumes () {
   echo
 
   if [ $? -eq 0 ]; then
-    rm $src_volume/*
+    echo "rm -rf $queue"
+    rm -rf $queue
   fi
 
-  if [ "$files_found_mp4" = true ]; then
-    first_file=true
-    echo -e "\033[1;36mINFO: 動画ファイル(mp4)のステータスを変更しています…\033[0m"
-    for mp4_file in "${mp4_files[@]}"; do
-      mp4_file=$(basename "$mp4_file")
-      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$dst_volume/$date_dir/$mp4_file")
-      if [ "$first_file" = true ]; then
-        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$date_dir status.txt\033[0m"
-        first_file=false
-      else
-        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$date_dir status.txt\033[0m"
-      fi
-    done
-  fi
-
-  if [ "$files_found_mov" = true ]; then
-    first_file=true
-    echo -e "\033[1;36mINFO: 動画ファイル(mov)のステータスを変更しています…\033[0m"
-    for mov_file in "${mov_files[@]}"; do
-      mov_file=$(basename "$mov_file")
-      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$dst_volume/$date_dir/$mov_file")
-      if [ "$first_file" = true ]; then
-        echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$date_dir status.txt\033[0m"
-        first_file=false
-      else
-        echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$date_dir status.txt\033[0m"
-      fi
-    done
-  fi
-
-  if [ "$files_found_avi" = true ]; then
-    first_file=true
-    echo -e "\033[1;36mINFO: 動画ファイル(avi)のステータスを変更しています…\033[0m"
-    for avi_file in "${avi_files[@]}"; do
-      avi_file=$(basename "$avi_file")
-      avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$dst_volume/$date_dir/$avi_file")
-      if [ "$first_file" = true ]; then
-        echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$date_dir status.txt\033[0m"
-        first_file=false
-      else
-        echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$date_dir status.txt\033[0m"
-      fi
-    done
-  fi
   echo
   echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルの同期処理が正常に終了しました。\033[0m"
-  echo -e "\033[1;32mDISK \"$DISK\" 内のファイルは $dst_volume/$date_dir に格納されています。\033[0m"
+  echo -e "\033[1;32mデキュー領域 \"$queue\" 内のファイルは $dst_volume/$date_dir に格納されています。\033[0m"
   echo
   stream_editor
   end_point
+  echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
+  echo "・$today_string" >> "$destination/$disk_free"
+  echo "df -H $src_volume >> $destination/$disk_free"
+  df -H $src_volume >> "$destination/$disk_free"
+  echo >> "$destination/$disk_free"
+  echo
+  echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
 }
 
 exec > >(tee -a "$logfile")
@@ -176,7 +201,8 @@ if [ -e $src_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
     echo
-    mv_volumes
+    enqueue
+    dequeue
   elif [ -e $src_volume ] && [ ! -e $dst_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;31mERROR: SERVER \"$SERVER\" にアクセス出来ません。サーバーにアクセスされているか確認して再度実行してください。\033[0m"
