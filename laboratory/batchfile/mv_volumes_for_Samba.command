@@ -152,7 +152,7 @@ function dequeue () {
     fi
   done
   echo
-  echo -e "\033[1;36mINFO: 動画ファイルをSERVER \"$SERVER\" に移動しています…\033[0m"
+  echo -e "\033[1;36mINFO: 動画ファイルを SERVER \"$SERVER\" に移動しています…\033[0m"
   echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
   rsync --archive --human-readable --progress $queue/* "$dst_volume/$date_dir"
 
