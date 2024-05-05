@@ -14,6 +14,7 @@ function server_sync () {
   log_dir="$src_volume/var/log"
 
   src_dev="$src_volume/dev/"
+  src_media_photos="$src_volume/media/photos/"
   src_media_red_zone="$src_volume/media/red_zone/"
   src_footage_2023="$local_dir/footage/2023/"
   src_footage_2024="$local_dir/footage/2024/"
@@ -34,6 +35,7 @@ function server_sync () {
 
   # internalサーバ(Samba)の親ディレクトリ
   dev="$dst_volume/dev"                                   # "開発用ファイル" 保管ディレクトリ
+  media_photos="$dst_volume/media/photos"                 # "写真" 保管ディレクトリ
   media_red_zone="$dst_volume/media/red_zone"             # "防犯カメラ写真" 保管ディレクトリ
   footage_2023="$dst_volume/usr/local/footage/2023"       # "2023年度 防犯カメラ映像" 保管ディレクトリ
   footage_2024="$dst_volume/usr/local/footage/2024"       # "2024年度 防犯カメラ映像" 保管ディレクトリ
@@ -55,6 +57,9 @@ function server_sync () {
   # internalサーバ(Samba)に転送
   echo "rsync --archive --human-readable --progress \"$src_dev\" $dev"
   rsync --archive --human-readable --progress "$src_dev" $dev
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_media_photos\" $media_photos"
+  rsync --archive --human-readable --progress "$src_media_photos" $media_photos
   echo
   echo "rsync --archive --human-readable --progress \"$src_media_red_zone\" $media_red_zone"
   rsync --archive --human-readable --progress "$src_media_red_zone" $media_red_zone

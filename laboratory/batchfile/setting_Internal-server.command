@@ -5,31 +5,21 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 function setting_Internal-server () {
   mkdir "$current_dir"/dev
 
-  mkdir "$current_dir"/media
-  mkdir "$current_dir"/media/red_zone
+  mkdir -p "$current_dir"/media/movie "$current_dir"/media/photos "$current_dir"/media/red_zone
 
-  mkdir "$current_dir"/usr
-  mkdir "$current_dir"/usr/local
-  mkdir "$current_dir"/usr/local/footage
-  mkdir "$current_dir"/usr/local/footage/2023 "$current_dir"/usr/local/footage/2024
-  mkdir "$current_dir"/usr/share
-  mkdir "$current_dir"/usr/share/arch "$current_dir"/usr/share/config "$current_dir"/usr/share/pdf
-  mkdir "$current_dir"/usr/src
-  mkdir "$current_dir"/usr/src/apple "$current_dir"/usr/src/google "$current_dir"/usr/src/shell
+  mkdir -p "$current_dir"/usr/local "$current_dir"/usr/local/footage "$current_dir"/usr/local/footage/2023 "$current_dir"/usr/local/footage/2024
+  mkdir -p "$current_dir"/usr/share/arch "$current_dir"/usr/share/config "$current_dir"/usr/share/pdf
+  mkdir -p "$current_dir"/usr/src/apple "$current_dir"/usr/src/google "$current_dir"/usr/src/shell
 
-  mkdir "$current_dir"/var/
-  mkdir "$current_dir"/var/cache/
-  mkdir "$current_dir"/var/log/
-  mkdir "$current_dir"/var/log/securityLog
-  mkdir "$current_dir"/var/log/securityLog/2023 "$current_dir"/var/log/securityLog/2024
-  mkdir "$current_dir"/var/log/stat_text
-  mkdir "$current_dir"/var/log/stat_text/2023 "$current_dir"/var/log/stat_text/2024
-  mkdir "$current_dir"/var/log/stdout
-  mkdir "$current_dir"/var/log/talk
-  mkdir "$current_dir"/var/mail/
+  mkdir -p "$current_dir"/var/cache
+  mkdir -p "$current_dir"/var/log/securityLog/2023 "$current_dir"/var/log/securityLog/2024
+  mkdir -p "$current_dir"/var/log/stat_text/2023 "$current_dir"/var/log/stat_text/2024
+  mkdir -p "$current_dir"/var/log/stdout "$current_dir"/var/log/talk "$current_dir"/var/mail
 
   setfile -m "3/1/2024 0:00" "$current_dir"/dev
   setfile -m "3/1/2024 0:00" "$current_dir"/media
+  setfile -m "3/1/2024 0:00" "$current_dir"/media/movie
+  setfile -m "3/1/2024 0:00" "$current_dir"/media/photos
   setfile -m "3/1/2024 0:00" "$current_dir"/media/red_zone
   setfile -m "3/1/2024 0:00" "$current_dir"/usr
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/local
