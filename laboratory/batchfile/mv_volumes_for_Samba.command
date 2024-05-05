@@ -175,10 +175,10 @@ function dequeue () {
 
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
-  echo "・$today_string" >>"$destination/$disk_free"
-  echo "df -H $src_volume >> $destination/$disk_free"
-  df -H $src_volume >>"$destination/$disk_free"
-  echo >>"$destination/$disk_free"
+  echo "・$today_string" >> "$destination/$disk_free"
+  echo "df -H $dst_volume >> $destination/$disk_free"
+  df -H $dst_volume >> "$destination/$disk_free"
+  echo >> "$destination/$disk_free"
   echo
   echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
   echo
