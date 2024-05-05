@@ -150,15 +150,15 @@ function dequeue () {
   done
   echo
   echo -e "\033[1;36mINFO: 動画ファイルをSERVER \"$SERVER\" に移動しています…\033[0m"
-  echo "rsync --archive --human-readable --progress $src_volume/* $dst_volume/$date_dir"
-  rsync --archive --human-readable --progress $src_volume/* "$dst_volume/$date_dir"
+  echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
+  rsync --archive --human-readable --progress $queue/* "$dst_volume/$date_dir"
 
   while [ $? -ne 0 ]; do
     echo
     echo -e "\033[1;33mWARNING: rsync コマンドが異常終了しました。3秒後に同期処理を再度実行します\033[0m"
     sleep 3
-    echo "rsync --archive --human-readable --progress $src_volume/* $dst_volume/$date_dir"
-    rsync --archive --human-readable --progress $src_volume/* "$dst_volume/$date_dir"
+    echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
+    rsync --archive --human-readable --progress $queue/* "$dst_volume/$date_dir"
   done
   echo
 
