@@ -106,7 +106,7 @@ function enqueue () {
     echo "rm $src_volume/*"
     rm $src_volume/*
     echo
-    echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" 内のファイルを削除しました…\033[0m"
+    echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" 内のファイルを削除しました\033[0m"
   fi
 
   echo
@@ -184,7 +184,6 @@ function dequeue () {
   echo
   echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルの同期処理が正常に終了しました。\033[0m"
   echo -e "\033[1;32mデキュー領域 \"$queue\" 内のファイルは $dst_volume/$date_dir に格納されています。\033[0m"
-  echo
   stream_editor
   end_point
 }
