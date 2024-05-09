@@ -212,6 +212,7 @@ if [ -e $src_volume ]; then
   elif [ -e $src_volume ] && [ ! -e $dst_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;31mERROR: SERVER \"$SERVER\" にアクセス出来ません。サーバーにアクセスされているか確認して再度実行してください。\033[0m"
+    echo -e "\033[1;36mHINT: ショートカット \"Internal Injection\" をクリックしてサーバーにアクセス。\033[0m"
     echo
     exit 1
   fi
