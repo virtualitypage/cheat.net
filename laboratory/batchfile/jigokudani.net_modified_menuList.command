@@ -11,7 +11,7 @@ while IFS= read -r -d '' csv; do
 done < <(find "$dir" -type f -name "*.csv" -print0)
 
 function modified_date () {
-  admin_console="$current_dir/admin_console.html"
+  admin_console="$dir/admin_console.html"
   rm "$dir/._*" 2>/dev/null
   first_string=true
   if $first_string; then
