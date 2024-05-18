@@ -1,7 +1,6 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-today=$(TZ=UTC-9 date '+%Y/%m/%d' | sed 's/\/0/\//g')
 dir="$current_dir/Hell Valley - menu list"
 array_csv="$dir/array.csv"
 
@@ -11,8 +10,7 @@ while IFS= read -r -d '' csv; do
 done < <(find "$dir" -type f -name "*.csv" -print0)
 
 function modified_date () {
-  admin_console="$dir/admin_console.html"
-  rm "$dir/._*" 2>/dev/null
+  main_file="$current_dir/admin_console.html"
   first_string=true
   if $first_string; then
     code=$(
@@ -122,7 +120,7 @@ function modified_date () {
 EOF
     )
     first_string=false
-    echo "$code" >> "$admin_console"
+    echo "$code" >> "$main_file"
   fi
   count=0
   for csv_file in "${array[@]}"; do # 配列の要素を一つずつ処理
@@ -159,7 +157,7 @@ EOF
                     </tr>
 EOF
       )
-      echo "$code" >> "$admin_console"
+      echo "$code" >> "$main_file"
       else
         code=$(
           cat << EOF
@@ -180,7 +178,7 @@ EOF
                     </tr>
 EOF
         )
-        echo "$code" >> "$admin_console"
+        echo "$code" >> "$main_file"
       fi
     done < "$array_csv.tmp"
     sed -i '' '1d' "$csv_file"
@@ -245,36 +243,34 @@ EOF
 </html>
 EOF
   )
-  echo "$code" >> "$admin_console"
+  echo "$code" >> "$main_file"
   rm "$array_csv" "$array_csv.tmp"
 }
 
 function modified_menuList () {
   main_file="$current_dir/menu.html"
+  sub_file="$dir/date.csv"
   for csv_file in "${array[@]}"; do # 配列の要素を一つずつ処理
-    sed -e 's/,TRUE//g' -e 's/,,TRUE//g' "$csv_file" > "$current_dir/array.csv"
-    # sed -i '' 's/,,//g' "$csv_file"
+    sed -e 's/,,//g' -e 's/,TRUE//g' -e 's/,,TRUE//g' -e 's/TRUE//g' -e '/FALSE/d' "$csv_file" > "$array_csv"
+    sed -e '3,$d' "$array_csv" > "$sub_file"
+    tr '\n' ',' < "$sub_file" > "$sub_file.tmp"
+    tr -d '\r\n' < "$sub_file.tmp" > "$sub_file"
+    rm "$sub_file.tmp"
     csv_name=$(basename "$csv_file")
-    mv "$current_dir/array.csv" "$csv_name"
     csv_name=$(echo "$csv_name" | sed 's/^[^-]*-//') # csvファイル名の行頭からハイフンまでの文字列を削除
     echo "$csv_name"
     echo "$csv_name" >> "$main_file"
     first_string=true
-    while IFS=, read -r col1 col2 col3 || [[ -n $col3 ]]; do
-      col3=$(echo "$col3" | tr -d '\r')
-      if [ "$col3" = "FALSE" ]; then # FALSEの場合、指定の行を削除する
-        sed -i '' '/FALSE/ d' "$csv_file"
-        continue
-      fi
-      if [ "$col1" ] && [ -z "$col2" ]; then
-        if $first_string; then
-          col1=$(echo "$col1" | tr -d '\r')
-          code=$(
-            cat << EOF
+    if $first_string; then
+      while IFS=, read -r col1 col2 || [[ -n $col2 ]]; do
+        col1=$(echo "$col1" | sed 's/modified: //g')
+        col2=$(echo "$col2" | tr -d '\r')
+        code=$(
+          cat << EOF
                   <div class="bundle">
                     <dt>更新日</dt>
                     <dd>
-                      <span class="modified">$today</span>
+                      <span class="modified">$col1</span>
                     </dd>
                   </div>
                 </dl>
@@ -288,25 +284,29 @@ function modified_menuList () {
                 <p class="ja">メニュー情報</p>
               </div>
               <div class="information-data">
-                <div class="column">$col1</div>
+                <div class="column">$col2</div>
                 <dl class="data-list">
 EOF
-          )
-          first_string=false
-          echo "$code" >> "$main_file"
-        else
-          col1=$(echo "$col1" | tr -d '\r')
-          code=$(
-            cat << EOF
+        )
+        first_string=false
+        echo "$code" >> "$main_file"
+        sed -i '' '1,2d' "$array_csv"
+      done < "$sub_file"
+    fi
+
+    while IFS=, read -r col1 col2 col3 || [[ -n $col3 ]]; do
+      if [ "$col1" ] && [ -z "$col2" ]; then
+        col1=$(echo "$col1" | tr -d '\r')
+        code=$(
+          cat << EOF
                 </dl>
                 <br>
                 <br>
                 <div class="column">$col1</div>
                 <dl class="data-list">
 EOF
-          )
-          echo "$code" >> "$main_file"
-        fi
+        )
+        echo "$code" >>"$main_file"
       else
         col2=$(echo "$col2" | tr -d '\r' | sed 's/-//g')
         code=$(
@@ -319,14 +319,15 @@ EOF
         )
         echo "$code" >> "$main_file"
       fi
-    done < "$csv_file"
+    done < "$array_csv"
     echo "--------------------" >> "$main_file"
-    # sed -e 's/<\/dt>//g' -e 's/円/円<\/dt>/g' -e 's/円<\/dt>〜/円〜<\/dt>/g' "$main_file" > "$main_file".tmp
-    # mv "$main_file".tmp "$main_file"
+    rm "$array_csv" "$sub_file"
   done
 }
 
 if [ "$dir" ]; then
+  rm "$dir"/._* 2>/dev/null
   modified_date
   modified_menuList
+  rm -rf "$dir"
 fi
