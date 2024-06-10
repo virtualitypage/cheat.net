@@ -294,7 +294,7 @@ EOF
       done < "$sub_file"
     fi
 
-    while IFS=, read -r col1 col2 col3 || [[ -n $col3 ]]; do
+    while IFS=, read -r col1 col2 || [[ -n $col2 ]]; do
       if [ "$col1" ] && [ -z "$col2" ]; then
         col1=$(echo "$col1" | tr -d '\r')
         code=$(
