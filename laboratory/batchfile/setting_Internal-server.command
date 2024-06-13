@@ -7,7 +7,7 @@ function setting_Internal-server () {
 
   mkdir -p "$current_dir"/media/movie "$current_dir"/media/photos "$current_dir"/media/red_zone
 
-  mkdir -p "$current_dir"/usr/local "$current_dir"/usr/local/footage "$current_dir"/usr/local/footage/2023 "$current_dir"/usr/local/footage/2024
+  mkdir -p "$current_dir"/usr/local "$current_dir"/usr/local/footage "$current_dir"/usr/local/footage/2023 "$current_dir"/usr/local/footage/2024 "$current_dir"/usr/local/web_archive
   mkdir -p "$current_dir"/usr/share/arch "$current_dir"/usr/share/config "$current_dir"/usr/share/pdf
   mkdir -p "$current_dir"/usr/src/apple "$current_dir"/usr/src/google "$current_dir"/usr/src/shell
 
@@ -25,6 +25,7 @@ function setting_Internal-server () {
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/local
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/local/footage
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/local/footage/2023 "$current_dir"/usr/local/footage/2024
+  setfile -m "3/1/2024 0:00" "$current_dir"/usr/local/web_archive
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/share
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/share/arch "$current_dir"/usr/share/config "$current_dir"/usr/share/pdf
   setfile -m "3/1/2024 0:00" "$current_dir"/usr/src

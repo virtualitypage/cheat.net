@@ -18,6 +18,7 @@ function server_sync () {
   src_media_red_zone="$src_volume/media/red_zone/"
   src_footage_2023="$local_dir/footage/2023/"
   src_footage_2024="$local_dir/footage/2024/"
+  src_web_archive="$local_dir/web_archive/"
   src_arch="$share_dir/arch/"
   src_config="$share_dir/config/"
   src_pdf="$share_dir/pdf/"
@@ -39,6 +40,7 @@ function server_sync () {
   media_red_zone="$dst_volume/media/red_zone"             # "防犯カメラ写真" 保管ディレクトリ
   footage_2023="$dst_volume/usr/local/footage/2023"       # "2023年度 防犯カメラ映像" 保管ディレクトリ
   footage_2024="$dst_volume/usr/local/footage/2024"       # "2024年度 防犯カメラ映像" 保管ディレクトリ
+  web_archive="$dst_volume/usr/local/web_archive"         # "webサイトの圧縮ファイル" 保管ディレクトリ
   arch="$dst_volume/usr/share/arch"                       # "アーキテクチャ" 保管ディレクトリ
   config="$dst_volume/usr/share/config"                   # "コンフィグ関連ファイル" 保管ディレクトリ
   pdf="$dst_volume/usr/share/pdf"                         # "PDFファイル" 保管ディレクトリ
@@ -69,6 +71,9 @@ function server_sync () {
   echo
   echo "rsync --archive --human-readable --progress \"$src_footage_2024\" $footage_2024"
   rsync --archive --human-readable --progress "$src_footage_2024" $footage_2024
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_web_archive\" $web_archive"
+  rsync --archive --human-readable --progress "$src_web_archive" $web_archive
   echo
   echo "rsync --archive --human-readable --progress \"$src_arch\" $arch"
   rsync --archive --human-readable --progress "$src_arch" $arch
