@@ -15,7 +15,7 @@ function server_sync () {
 
   src_dev="$src_volume/dev/"
   src_media_photos="$src_volume/media/photos/"
-  src_media_red_zone="$src_volume/media/red_zone/"
+  src_media_red_zone="$src_volume/media/red_zone/*"
   src_footage_2023="$local_dir/footage/2023/"
   src_footage_2024="$local_dir/footage/2024/"
   src_web_archive="$local_dir/web_archive/"
