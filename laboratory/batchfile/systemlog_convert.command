@@ -33,6 +33,12 @@ function mac_table_entry () {
       echo "$col1, $col2" >> "$MacTableEntry"
     elif [[ $col2 =~ MacTableDeleteEntry() ]]; then
       echo "$col1, $col2" >> "$MacTableEntry"
+    else
+      echo
+      echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
+      echo -e "\033[1;32mファイルは $current_dir に格納されています。\033[0m"
+      echo
+      exit 0
     fi
   done < "$main_file"
   for i in {1..10}; do
