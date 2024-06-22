@@ -2,9 +2,12 @@
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
 year=$(TZ=UTC-9 date '+%Y')
-today=$(TZ=UTC-9 date '+%Y%m%d')
-main_file="$current_dir/securityCamera_Rec($today).txt"
 sub_file=$(find "$current_dir" -type f -name "*$year*status.txt" 2> /dev/null)
+date=$(basename "$sub_file" | sed 's/ status.txt//g')
+main_file="$current_dir/securityCamera_Rec($date).txt"
+securityCamera_Rec=$(basename "$main_file")
+
+rm "$current_dir"/._*
 
 function generate_logfile () {
   while IFS= read -r line; do
@@ -32,9 +35,13 @@ EOF
   sed -i '' 's/09日/9日/g' "$main_file"
 
   echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
-  echo -e "\033[1;32m$main_file は $current_dir に格納されています。\033[0m"
+  echo -e "\033[1;32m$securityCamera_Rec は $current_dir に格納されています。\033[0m"
+  echo
 }
 
 if [ -f "$sub_file" ]; then
   generate_logfile
+else
+  echo -e "\033[1;31mERROR: status.txt が存在しない、または複数の status.txt が配置されています。単一のファイルのみ配置して下さい。\033[0m"
+  echo
 fi
