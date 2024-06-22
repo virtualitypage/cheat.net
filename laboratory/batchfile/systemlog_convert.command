@@ -33,22 +33,18 @@ function mac_table_entry () {
       echo "$col1, $col2" >> "$MacTableEntry"
     elif [[ $col2 =~ MacTableDeleteEntry() ]]; then
       echo "$col1, $col2" >> "$MacTableEntry"
-    else
-      echo
-      echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
-      echo -e "\033[1;32mファイルは $current_dir に格納されています。\033[0m"
-      echo
-      exit 0
     fi
   done < "$main_file"
   for i in {1..10}; do
     mac="${mac_table[$i - 1]}"
     host="${host_table[$i - 1]}"
-    sed -i '' 's/kern.*New Sta:/MacTableInsertEntry(): /g' "$MacTableEntry"
-    sed -i '' 's/kern.*Del Sta:/MacTableDeleteEntry(): /g' "$MacTableEntry"
-    sed -i '' "s/$mac/$host/g" "$MacTableEntry"
+    sed -i '' 's/kern.*New Sta:/MacTableInsertEntry(): /g' "$MacTableEntry" 2>/dev/null
+    sed -i '' 's/kern.*Del Sta:/MacTableDeleteEntry(): /g' "$MacTableEntry" 2>/dev/null
+    sed -i '' "s/$mac/$host/g" "$MacTableEntry" 2>/dev/null
   done
-  echo -e "\033[1;32mSUCCESS: MacTableEntryファイルの出力処理が正常に終了しました。\033[0m"
+  if [ -e "$MacTableEntry" ]; then
+    echo -e "\033[1;32mSUCCESS: MacTableEntryファイルの出力処理が正常に終了しました。\033[0m"
+  fi
 }
 
 if [ -e "$sub_file" ]; then
@@ -61,8 +57,8 @@ if [ -e "$sub_file" ]; then
 elif [ -n "$sub_file" ] && [ -e "$main_file" ]; then
   mac_table_entry
   echo
-  echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
-  echo -e "\033[1;32mファイルは $current_dir に格納されています。\033[0m"
+  echo -e "\033[1;32mALL SUCCESSFUL: MacTableEntryファイルの出力処理が正常に終了しました。\033[0m"
+  echo -e "\033[1;32mMacTableEntry.csv は $current_dir に格納されています。\033[0m"
   echo
 else
   echo -e "\033[1;31mERROR: \"system.log\"が格納されたlogreadディレクトリが存在しません。gl.iNetの管理画面から\"ログをエクスポート\"して下さい。\033[0m"
