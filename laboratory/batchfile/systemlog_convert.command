@@ -7,7 +7,7 @@ sub_file="$current_dir/logread/system.log"
 MacTableEntry="$current_dir/MacTableEntry.csv"
 
 function systemlog_convert () {
-  sed -i '' "s/ ${year}//g" "$sub_file"
+  sed -i '' "s/ ${year} / /g" "$sub_file"
   sed -i '' "s/^/${year}\//g" "$sub_file"
   days=("Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat")
   for i in {1..7}; do
@@ -19,7 +19,7 @@ function systemlog_convert () {
     month="${months[$i - 1]}"
     sed -i '' "s/${month} /$i\//g" "$sub_file"
   done
-  sed -i '' 's/^\([^ ]* [^ ]*\) /&,"/g' "$sub_file" # 各行の二つ目の半角スペースの前にコンマを挿入
+  sed -i '' 's/^\([^ ]* [^ ]*\)/&,"/g' "$sub_file" # 各行の二つ目の半角スペースの前にコンマを挿入
   sed -i '' 's/$/"/g' "$sub_file"
   mv "$sub_file" "$main_file"
   rm -rf "$current_dir/logread"
