@@ -4,10 +4,11 @@
 year=$(TZ=UTC-9 date '+%Y')
 date=$(TZ=UTC-9 date '+%Y-%m-%d')
 time=$(TZ=UTC-9 date '+%H_00_00')
-dir="/etc/Archive/$date"
+dir="/etc/archive/$date"
 main_file="$dir/$time/system.csv"
 sub_file="$dir/$time/system_${time}.log"
 MacTableEntry="$dir/$time/MacTableEntry.csv"
+authpriv="$dir/$time/authpriv.csv"
 
 systemlog_acquisition () {
   mkdir "$dir" "$dir/$time" 2>/dev/null
@@ -25,6 +26,7 @@ systemlog_convert () {
   j=1
   months="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
   for month in $months; do
+    sed -i.bak "s/${month}  /$j\//g" "$main_file"
     sed -i.bak "s/${month} /$j\//g" "$main_file"
     j=$((j + 1))
   done
@@ -59,6 +61,18 @@ mac_table_entry () {
   sed -i.bak 's/iPhone_11_Pro_Max/iPhone 11 Pro Max/g' "$MacTableEntry" 2>/dev/null
   rm "$dir/$time/MacTableEntry.csv.bak"
 }
+
+private_authentication_message () {
+  while IFS=, read -r col1 col2; do
+    case "$col2" in
+      *authpriv.*)
+        echo "$col1,$col2" >> "$authpriv"
+      ;;
+    esac
+  done < "$main_file"
+}
+
 systemlog_acquisition
 systemlog_convert
 mac_table_entry
+private_authentication_message

@@ -5,6 +5,7 @@ year=$(TZ=UTC-9 date '+%Y')
 main_file="$current_dir/system.csv"
 sub_file="$current_dir/logread/system.log"
 MacTableEntry="$current_dir/MacTableEntry.csv"
+authpriv="$current_dir/authpriv.csv"
 
 function systemlog_convert () {
   sed -i '' "s/ ${year} / /g" "$sub_file"
@@ -17,6 +18,7 @@ function systemlog_convert () {
   months=("Jan" "Feb" "Mar" "Apr" "May" "Jun" "Jul" "Aug" "Sep" "Oct" "Nov" "Dec")
   for i in {1..12}; do
     month="${months[$i - 1]}"
+    sed -i '' "s/${month}  /$i\//g" "$sub_file"
     sed -i '' "s/${month} /$i\//g" "$sub_file"
   done
   sed -i '' 's/^\([^ ]* [^ ]*\) /\1,"/' "$sub_file" # 各行の二つ目の半角スペースの前にコンマを挿入
@@ -30,9 +32,9 @@ function mac_table_entry () {
   host_table=("alisa_HUAWEI P30 lite" "ayako_HUAWEI P30 lite" "DESKTOP-CL4OL20" "DESKTOP-TCDB3LJ" "hideki_HUAWEI P30 lite" "hideki_OPPO-A79-5G" "iMac-Kochi" "MacBook-Pro" "tetsuo_iPhone SE" "yuki_iPhone 11 Pro Max")
   while IFS=, read -r col1 col2 || [[ -n $col2 ]]; do
     if [[ $col2 =~ MacTableInsertEntry() ]]; then
-      echo "$col1, $col2" >> "$MacTableEntry"
+      echo "$col1,$col2" >> "$MacTableEntry"
     elif [[ $col2 =~ MacTableDeleteEntry() ]]; then
-      echo "$col1, $col2" >> "$MacTableEntry"
+      echo "$col1,$col2" >> "$MacTableEntry"
     fi
   done < "$main_file"
   for i in {1..10}; do
@@ -47,9 +49,21 @@ function mac_table_entry () {
   fi
 }
 
+function private_authentication_message () {
+  while IFS=, read -r col1 col2 || [[ -n $col2 ]]; do
+    if [[ $col2 =~ authpriv. ]]; then
+      echo "$col1,$col2" >> "$authpriv"
+    fi
+  done < "$main_file"
+  if [ -e "$authpriv" ]; then
+    echo -e "\033[1;32mSUCCESS: authprivファイルの出力処理が正常に終了しました。\033[0m"
+  fi
+}
+
 if [ -e "$sub_file" ]; then
   systemlog_convert
   mac_table_entry
+  private_authentication_message
   echo
   echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
   echo -e "\033[1;32mファイルは $current_dir に格納されています。\033[0m"
