@@ -23,6 +23,7 @@ function systemlog_convert () {
   done
   sed -i '' 's/^\([^ ]* [^ ]*\) /\1,"/' "$sub_file" # 各行の二つ目の半角スペースの前にコンマを挿入
   sed -i '' 's/$/"/g' "$sub_file"
+  sed -i '' '/.*tx_free_v3_notify_handler().*$/d' "$sub_file"
   mv "$sub_file" "$main_file"
   rm -rf "$current_dir/logread"
 }

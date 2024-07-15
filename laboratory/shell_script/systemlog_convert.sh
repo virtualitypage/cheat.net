@@ -32,6 +32,7 @@ systemlog_convert () {
   done
   sed -i.bak 's/^\([^ ]* [^ ]*\) /\1,"/' "$main_file" # 各行の二つ目の半角スペースの前にコンマを挿入
   sed -i.bak 's/$/"/g' "$main_file"
+  sed -i.bak '/.*tx_free_v3_notify_handler().*$/d' "$main_file"
   rm "$dir/$time/system.csv.bak"
 }
 
