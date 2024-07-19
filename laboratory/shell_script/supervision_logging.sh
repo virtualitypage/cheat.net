@@ -6,7 +6,7 @@ date=$(TZ=UTC-9 date '+%Y-%m-%d')
 time=$(TZ=UTC-9 date '+%H:%M')
 
 dir="/etc/archive"
-dir_disk="/etc/archive/$date/disk_logger"
+dir_disk="/etc/archive/disk_logger"
 dir_int="/etc/archive/$date/interface_logger"
 
 disk_log="$dir_disk/disk_metrics_$month.log"
@@ -14,7 +14,7 @@ temp_log="$dir_int/temperature_$date.log"
 temp_path="/sys/class/thermal/thermal_zone0/temp"
 
 disk_logger () {
-  mkdir -p "$dir" "$dir_disk" 2>/dev/null
+  mkdir "$dir" "$dir_disk" 2>/dev/null
   echo "[$date]" >> "$disk_log"
   echo "・システム稼働時間" >> "$disk_log"
   uptime | sed 's/^ //g' >> "$disk_log"
