@@ -14,7 +14,7 @@ temp_log="$dir_int/temperature_$date.log"
 temp_path="/sys/class/thermal/thermal_zone0/temp"
 
 disk_logger () {
-  mkdir "$dir" "$dir_path" "$dir_disk" 2>/dev/null
+  mkdir -p "$dir" "$dir_disk" 2>/dev/null
   echo "[$date]" >> "$disk_log"
   echo "・システム稼働時間" >> "$disk_log"
   uptime | sed 's/^ //g' >> "$disk_log"
@@ -28,7 +28,7 @@ disk_logger () {
 }
 
 interface_logger () {
-  mkdir "$dir" "$dir_path" "$dir_int" 2>/dev/null
+  mkdir -p "$dir" "$dir_int" 2>/dev/null
   cat $temp_path | sed -e 's/\([0-9]\{2\}\)\([0-9]\{3\}\)/\1.\2/g' -e 's/$/℃/g' -e "s/^/$date $time -> /g" >> "$temp_log"
   ints="br-lan eth0 lo rax0 tailscale0"
   i=1
