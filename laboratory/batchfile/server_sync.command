@@ -32,6 +32,7 @@ function server_sync () {
   src_stat_text_2024="$log_dir/stat_text/2024/"
   src_stdout="$log_dir/stdout/"
   src_talk="$log_dir/talk/"
+  src_temp_log="$log_dir/temp_log/"
   src_mail="$log_dir/mail/"
 
   # internalサーバ(Samba)の親ディレクトリ
@@ -54,6 +55,7 @@ function server_sync () {
   stat_text_2024="$dst_volume/var/log/stat_text/2024"     # "2024年度 防犯カメラ記録 status" 保管ディレクトリ
   stdout="$dst_volume/var/log/stdout"                     # "コマンドログ" 保管ディレクトリ
   talk="$dst_volume/var/log/talk"                         # "グループLINEのトーク履歴" 保管ディレクトリ
+  temp_log="$dst_volume/var/log/temp_log"                 # "GL-MT3000のCPU温度ログ" 保管ディレクトリ
   mail="$dst_volume/var/mail"                             # "メールファイル" 保管ディレクトリ
 
   # internalサーバ(Samba)に転送
@@ -113,6 +115,9 @@ function server_sync () {
   echo
   echo "rsync --archive --human-readable --progress \"$src_talk\" $talk"
   rsync --archive --human-readable --progress "$src_talk" $talk
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_temp_log\" $temp_log"
+  rsync --archive --human-readable --progress "$src_temp_log" $temp_log
   echo
   echo "rsync --archive --human-readable --progress \"$src_mail\" $mail"
   rsync --archive --human-readable --progress "$src_mail" $mail
