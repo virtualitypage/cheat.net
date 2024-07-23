@@ -12,6 +12,7 @@ dir_temp="/etc/archive/$date"
 
 disk_log="$dir_disk/disk_metrics_$month.log"
 temp_log="$dir_temp/temperature_$date.log"
+cpu_log="$dir_temp/CPU_utilization_$date.log"
 temp_path="/sys/class/thermal/thermal_zone0/temp"
 
 everyday_logger () {
@@ -40,21 +41,24 @@ everyday_logger () {
   done
 }
 
-temperature_logger () {
+cpu_logger () {
   mkdir -p "$dir" "$dir_temp" 2>/dev/null
   cat $temp_path | sed -e 's/\([0-9]\{2\}\)\([0-9]\{3\}\)/\1.\2/g' -e 's/$/℃/g' -e "s/^/$date $time -> /g" >> "$temp_log"
+  mpstat | awk 'NR==4 {printf "%.2f\n", 100-$12}' | sed "s/^/$date $time -> /g" >> "$cpu_log"
+  # NRで4行目、$12で12列目のフィールドを指定、その値から100引いてCPU総使用率(少数第2位)を求める
 }
 
 csv_conversion () {
   sed -e 's/ /,/g' -e 's/℃//g' "$temp_log" > "$temp_log.csv"
+  sed -e 's/ /,/g' "$cpu_log" > "$cpu_log.csv"
 }
 
 case $1 in
   "everyday_logger")
     everyday_logger
   ;;
-  "temperature_logger")
-    temperature_logger
+  "cpu_logger")
+    cpu_logger
   ;;
   "csv_conversion")
     csv_conversion
