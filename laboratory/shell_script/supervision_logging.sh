@@ -13,6 +13,7 @@ dir_temp="/etc/archive/$date"
 disk_log="$dir_disk/disk_metrics_$month.log"
 temp_log="$dir_temp/temperature_$date.log"
 cpu_log="$dir_temp/CPU_utilization_$date.log"
+kill_log="$dir_temp/proccess_kill_$date.log"
 temp_path="/sys/class/thermal/thermal_zone0/temp"
 
 everyday_logger () {
@@ -46,6 +47,9 @@ cpu_logger () {
   cat $temp_path | sed -e 's/\([0-9]\{2\}\)\([0-9]\{3\}\)/\1.\2/g' -e 's/$/℃/g' -e "s/^/$date $time -> /g" >> "$temp_log"
   mpstat | awk 'NR==4 {printf "%.2f\n", 100-$12}' | sed "s/^/$date $time -> /g" >> "$cpu_log"
   # NRで4行目、$12で12列目のフィールドを指定、その値から100引いてCPU総使用率(少数第2位)を求める
+  ps=$(ps aux | grep "cat /dev/urandom" | grep -v grep | awk 'NR==1 {print $2}' 2>&1)
+  echo "$ps" | sed "s/^/$date $time -> /g" >> "$kill_log"
+  kill "$ps"
 }
 
 csv_conversion () {
