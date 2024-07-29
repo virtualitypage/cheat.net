@@ -16,7 +16,7 @@ cpu_log="$dir_temp/CPU_utilization_$date.log"
 kill_log="$dir_temp/proccess_kill_$date.log"
 temp_path="/sys/class/thermal/thermal_zone0/temp"
 
-everyday_logger () {
+disk_logger () {
   mkdir "$dir" "$dir_disk" "$dir_int" 2>/dev/null
   echo "[$date]" >> "$disk_log"
   echo "・システム稼働時間" >> "$disk_log"
@@ -28,7 +28,9 @@ everyday_logger () {
   echo "・各ディレクトリ容量" >> "$disk_log"
   du -sh /* >> "$disk_log" 2>/dev/null
   echo >> "$disk_log"
+}
 
+traffic_logger () {
   ints="br-lan eth0 lo rax0 tailscale0"
   i=1
   for int in $ints; do
@@ -58,8 +60,11 @@ csv_conversion () {
 }
 
 case $1 in
-  "everyday_logger")
-    everyday_logger
+  "disk_logger")
+    disk_logger
+  ;;
+  "traffic_logger")
+    traffic_logger
   ;;
   "cpu_logger")
     cpu_logger
