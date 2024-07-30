@@ -35,11 +35,8 @@ traffic_logger () {
   i=1
   for int in $ints; do
     echo "$date" >> "$dir_int/${int}_$month.log"
-    ifconfig $int | grep "RX bytes:" | sed -e 's/          //g' -e 's/  /\n/g' > "$dir_int/${int}_cache.log"
-    sed -i.bak -e 's/RX bytes:[^ ]* (\(.*\))/RX bytes: \1/p' -e 's/TX bytes:[^ ]* (\(.*\))/TX bytes: \1/p' "$dir_int/${int}_cache.log"
-    echo >> "$dir_int/${int}_cache.log"
-    sed -e '1d' -e '4d' "$dir_int/${int}_cache.log" >> "$dir_int/${int}_$month.log"
-    rm "$dir_int/${int}_cache.log" "$dir_int/${int}_cache.log.bak"
+    ip -s link show $int >> "$dir_int/${int}_$month.log"
+    echo >> "$dir_int/${int}_$month.log"
     i=$((i + 1))
   done
 }
