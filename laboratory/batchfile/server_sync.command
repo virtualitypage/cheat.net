@@ -12,6 +12,7 @@ function server_sync () {
   share_dir="$src_volume/usr/share"
   src_dir="$src_volume/usr/src"
   log_dir="$src_volume/var/log"
+  audit_dir="$src_volume/var/log/audit_trail"
 
   src_dev="$src_volume/dev/"
   src_media_photos="$src_volume/media/photos/"
@@ -32,33 +33,37 @@ function server_sync () {
   src_stat_text_2024="$log_dir/stat_text/2024/"
   src_stdout="$log_dir/stdout/"
   src_talk="$log_dir/talk/"
-  src_cpu_log="$log_dir/cpu_log/"
-  src_kill_log="$log_dir/kill_log/"
+  src_cpu_usage="$audit_dir/gl-mt3000/cpu_usage/"
+  src_disk_usage="$audit_dir/gl-mt3000/disk_usage/"
+  src_proccess="$audit_dir/gl-mt3000/proccess/"
+  src_traffic_stat="$audit_dir/gl-mt3000/traffic_stat/"
   src_mail="$log_dir/mail/"
 
   # internalサーバ(Samba)の親ディレクトリ
-  dev="$dst_volume/dev"                                   # "開発用ファイル" 保管ディレクトリ
-  media_photos="$dst_volume/media/photos"                 # "写真" 保管ディレクトリ
-  media_red_zone="$dst_volume/media/red_zone"             # "防犯カメラ写真" 保管ディレクトリ
-  footage_2023="$dst_volume/usr/local/footage/2023"       # "2023年度 防犯カメラ映像" 保管ディレクトリ
-  footage_2024="$dst_volume/usr/local/footage/2024"       # "2024年度 防犯カメラ映像" 保管ディレクトリ
-  web_archive="$dst_volume/usr/local/web_archive"         # "webサイトの圧縮ファイル" 保管ディレクトリ
-  arch="$dst_volume/usr/share/arch"                       # "アーキテクチャ" 保管ディレクトリ
-  config="$dst_volume/usr/share/config"                   # "コンフィグ関連ファイル" 保管ディレクトリ
-  pdf="$dst_volume/usr/share/pdf"                         # "PDFファイル" 保管ディレクトリ
-  src="$dst_volume/usr/src"                               # "ソースコード" 保管ディレクトリ
-  src_apple="$dst_volume/usr/src/apple"                   # "AppleScriptのソースコード" 保管ディレクトリ
-  src_google="$dst_volume/usr/src/google"                 # "Google Apps Scriptのソースコード" 保管ディレクトリ
-  src_shell="$dst_volume/usr/src/shell"                   # "shell scriptのソースコード" 保管ディレクトリ
-  securityLog_2023="$dst_volume/var/log/securityLog/2023" # "2023年度 防犯カメラ記録" 保管ディレクトリ
-  securityLog_2024="$dst_volume/var/log/securityLog/2024" # "2024年度 防犯カメラ記録" 保管ディレクトリ
-  stat_text_2023="$dst_volume/var/log/stat_text/2023"     # "2023年度 防犯カメラ記録 status" 保管ディレクトリ
-  stat_text_2024="$dst_volume/var/log/stat_text/2024"     # "2024年度 防犯カメラ記録 status" 保管ディレクトリ
-  stdout="$dst_volume/var/log/stdout"                     # "コマンドログ" 保管ディレクトリ
-  talk="$dst_volume/var/log/talk"                         # "グループLINEのトーク履歴" 保管ディレクトリ
-  cpu_log="$dst_volume/var/log/cpu_log"                   # "GL-MT3000のCPU温度ログ" 保管ディレクトリ
-  kill_log="$dst_volume/var/log/kill_log"                 # "GL-MT3000のプロセスキルログ" 保管ディレクトリ
-  mail="$dst_volume/var/mail"                             # "メールファイル" 保管ディレクトリ
+  dev="$dst_volume/dev"                                     # "開発用ファイル" 保管ディレクトリ
+  media_photos="$dst_volume/media/photos"                   # "写真" 保管ディレクトリ
+  media_red_zone="$dst_volume/media/red_zone"               # "防犯カメラ写真" 保管ディレクトリ
+  footage_2023="$dst_volume/usr/local/footage/2023"         # "2023年度 防犯カメラ映像" 保管ディレクトリ
+  footage_2024="$dst_volume/usr/local/footage/2024"         # "2024年度 防犯カメラ映像" 保管ディレクトリ
+  web_archive="$dst_volume/usr/local/web_archive"           # "webサイトの圧縮ファイル" 保管ディレクトリ
+  arch="$dst_volume/usr/share/arch"                         # "アーキテクチャ" 保管ディレクトリ
+  config="$dst_volume/usr/share/config"                     # "コンフィグ関連ファイル" 保管ディレクトリ
+  pdf="$dst_volume/usr/share/pdf"                           # "PDFファイル" 保管ディレクトリ
+  src="$dst_volume/usr/src"                                 # "ソースコード" 保管ディレクトリ
+  src_apple="$dst_volume/usr/src/apple"                     # "AppleScriptのソースコード" 保管ディレクトリ
+  src_google="$dst_volume/usr/src/google"                   # "Google Apps Scriptのソースコード" 保管ディレクトリ
+  src_shell="$dst_volume/usr/src/shell"                     # "shell scriptのソースコード" 保管ディレクトリ
+  securityLog_2023="$dst_volume/var/log/securityLog/2023"   # "2023年度 防犯カメラ記録" 保管ディレクトリ
+  securityLog_2024="$dst_volume/var/log/securityLog/2024"   # "2024年度 防犯カメラ記録" 保管ディレクトリ
+  stat_text_2023="$dst_volume/var/log/stat_text/2023"       # "2023年度 防犯カメラ記録 status" 保管ディレクトリ
+  stat_text_2024="$dst_volume/var/log/stat_text/2024"       # "2024年度 防犯カメラ記録 status" 保管ディレクトリ
+  stdout="$dst_volume/var/log/stdout"                       # "コマンドログ" 保管ディレクトリ
+  talk="$dst_volume/var/log/talk"                           # "グループLINEのトーク履歴" 保管ディレクトリ
+  cpu_usage="$dst_volume/var/log/gl-mt3000/cpu_usage"       # "GL-MT3000のCPUログ" 保管ディレクトリ
+  disk_usage="$dst_volume/var/log/gl-mt3000/disk_usage"     # "GL-MT3000のディスクログ" 保管ディレクトリ
+  proccess="$dst_volume/var/log/gl-mt3000/proccess"         # "GL-MT3000のプロセスキルログ" 保管ディレクトリ
+  traffic_stat="$dst_volume/var/log/gl-mt3000/traffic_stat" # "GL-MT3000のトラフィックログ" 保管ディレクトリ
+  mail="$dst_volume/var/mail"                               # "メールファイル" 保管ディレクトリ
 
   # internalサーバ(Samba)に転送
   echo "rsync --archive --human-readable --progress \"$src_dev\" $dev"
@@ -118,11 +123,17 @@ function server_sync () {
   echo "rsync --archive --human-readable --progress \"$src_talk\" $talk"
   rsync --archive --human-readable --progress "$src_talk" $talk
   echo
-  echo "rsync --archive --human-readable --progress \"$src_cpu_log\" $cpu_log"
-  rsync --archive --human-readable --progress "$src_cpu_log" $cpu_log
+  echo "rsync --archive --human-readable --progress \"$src_cpu_usage\" $cpu_usage"
+  rsync --archive --human-readable --progress "$src_cpu_usage" $cpu_usage
   echo
-  echo "rsync --archive --human-readable --progress \"$src_kill_log\" $kill_log"
-  rsync --archive --human-readable --progress "$src_kill_log" $kill_log
+  echo "rsync --archive --human-readable --progress \"$src_disk_usage\" $disk_usage"
+  rsync --archive --human-readable --progress "$src_disk_usage" $disk_usage
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_proccess\" $proccess"
+  rsync --archive --human-readable --progress "$src_proccess" $proccess
+  echo
+  echo "rsync --archive --human-readable --progress \"$src_traffic_stat\" $traffic_stat"
+  rsync --archive --human-readable --progress "$src_traffic_stat" $traffic_stat
   echo
   echo "rsync --archive --human-readable --progress \"$src_mail\" $mail"
   rsync --archive --human-readable --progress "$src_mail" $mail
