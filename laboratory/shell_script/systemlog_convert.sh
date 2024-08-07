@@ -16,7 +16,7 @@ systemlog_acquisition () {
 }
 
 systemlog_convert () {
-  sed -e "s/ ${year} / /g" -e "s/^/${year}\//g" "$dir/$time/system_${time}.log" > "$main_file"
+  cat "$sub_file" > "$main_file"
   days="Sun Mon Tue Wed Thu Fri Sat"
   i=1
   for day in $days; do
@@ -30,9 +30,12 @@ systemlog_convert () {
     sed -i.bak "s/${month} /$j\//g" "$main_file"
     j=$((j + 1))
   done
-  sed -i.bak 's/^\([^ ]* [^ ]*\) /\1,"/' "$main_file" # 各行の二つ目の半角スペースの前にコンマを挿入
-  sed -i.bak 's/$/"/g' "$main_file"
+  # sed -i.bak 's/^\([^ ]* [^ ]*\) /\1,"/' "$main_file" # 各行の二つ目の半角スペースの前にコンマを挿入
   sed -i.bak '/.*tx_free_v3_notify_handler().*$/d' "$main_file"
+  sed -i.bak 's/"/""/g' "$main_file"
+  sed -i.bak "s/ ${year} /,\"/g" "$main_file"
+  sed -i.bak "s/^/${year}\//g" "$main_file"
+  sed -i.bak -e 's/$/"/g' -e 's/}"/}/g' "$main_file"
   rm "$dir/$time/system.csv.bak"
 }
 

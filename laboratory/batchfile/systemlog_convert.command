@@ -8,8 +8,6 @@ MacTableEntry="$current_dir/MacTableEntry.csv"
 authpriv="$current_dir/authpriv.csv"
 
 function systemlog_convert () {
-  sed -i '' "s/ ${year} / /g" "$sub_file"
-  sed -i '' "s/^/${year}\//g" "$sub_file"
   days=("Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat")
   for i in {1..7}; do
     day="${days[$i - 1]}" # 配列のインデックスは0から始まるため-1する
@@ -21,9 +19,12 @@ function systemlog_convert () {
     sed -i '' "s/${month}  /$i\//g" "$sub_file"
     sed -i '' "s/${month} /$i\//g" "$sub_file"
   done
-  sed -i '' 's/^\([^ ]* [^ ]*\) /\1,"/' "$sub_file" # 各行の二つ目の半角スペースの前にコンマを挿入
-  sed -i '' 's/$/"/g' "$sub_file"
+  # sed -i '' 's/^\([^ ]* [^ ]*\) /\1,"/' "$sub_file" # 各行の二つ目の半角スペースの前にコンマを挿入
   sed -i '' '/.*tx_free_v3_notify_handler().*$/d' "$sub_file"
+  sed -i '' 's/"/""/g' "$sub_file"
+  sed -i '' "s/ ${year} /,\"/g" "$sub_file"
+  sed -i '' "s/^/${year}\//g" "$sub_file"
+  sed -i '' -e 's/$/"/g' -e's/}"/}/g' "$sub_file"
   mv "$sub_file" "$main_file"
   rm -rf "$current_dir/logread"
 }
