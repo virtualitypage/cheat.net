@@ -35,7 +35,7 @@ systemlog_convert () {
   sed -i.bak 's/"/""/g' "$main_file"
   sed -i.bak "s/ ${year} /,\"/g" "$main_file"
   sed -i.bak "s/^/${year}\//g" "$main_file"
-  sed -i.bak -e 's/$/"/g' -e 's/}"/}/g' "$main_file"
+  sed -i.bak 's/$/"/g' "$main_file"
   rm "$dir/$time/system.csv.bak"
 }
 

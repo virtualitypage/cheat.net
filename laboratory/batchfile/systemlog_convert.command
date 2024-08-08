@@ -24,7 +24,7 @@ function systemlog_convert () {
   sed -i '' 's/"/""/g' "$sub_file"
   sed -i '' "s/ ${year} /,\"/g" "$sub_file"
   sed -i '' "s/^/${year}\//g" "$sub_file"
-  sed -i '' -e 's/$/"/g' -e's/}"/}/g' "$sub_file"
+  sed -i '' 's/$/"/g' "$sub_file"
   mv "$sub_file" "$main_file"
   rm -rf "$current_dir/logread"
 }
