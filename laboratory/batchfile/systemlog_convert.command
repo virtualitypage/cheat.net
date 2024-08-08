@@ -30,7 +30,7 @@ function systemlog_convert () {
 }
 
 function mac_table_entry () {
-  mac_table=("04:d3:b5:f3:f6:a7" "fc:87:43:48:63:7a" "b8:9a:2a:7d:79:7c" "34:e8:94:8b:e1:96" "54:f2:94:48:44:39" "ca:23:49:d1:5c:33" "58:40:4e:e4:d8:b2" "8c:85:90:b9:18:32" "86:a9:22:a4:9d:f2" "82:dd:fa:5c:21:cc")
+  mac_table=("04:d3:b5:f3:f6:a7" "fc:87:43:48:63:7a" "b8:9a:2a:7d:79:7c" "34:e8:94:8b:e1:96" "54:f2:94:48:44:39" "6e:c3:98:cd:28:cd" "58:40:4e:e4:d8:b2" "8c:85:90:b9:18:32" "fa:30:ea:61:6c:be" "8a:b7:1e:87:01:4e")
   host_table=("alisa_HUAWEI P30 lite" "ayako_HUAWEI P30 lite" "DESKTOP-CL4OL20" "DESKTOP-TCDB3LJ" "hideki_HUAWEI P30 lite" "hideki_OPPO-A79-5G" "iMac-Kochi" "MacBook-Pro" "tetsuo_iPhone SE" "yuki_iPhone 11 Pro Max")
   while IFS=, read -r col1 col2 || [[ -n $col2 ]]; do
     if [[ $col2 =~ MacTableInsertEntry() ]]; then
