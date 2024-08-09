@@ -1,18 +1,14 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-dir="$current_dir/password_lists"
-
-array=()
-while IFS= read -r -d '' csv; do
-  array+=("$csv")
-done < <(find "$dir" -type f -name "*.csv" -print0)
+csv_file="$current_dir/Chrome パスワード.csv"
+today=$(TZ=UTC-9 date '+%Y年%m月%d日')
 
 function modified_passwordList () {
   main_file="$current_dir/passwd.html"
   first_string=true
   if $first_string; then
-    code=$(cat << 'EOF'
+    cat << EOF >> "$main_file"
 <!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -20,74 +16,79 @@ function modified_passwordList () {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
-  <style>
-    .btn_passwd {
-      color: #000;
-      /* border-top: 2px solid #b1921b;
-      border-right: 2px solid #cea82c;
-      border-bottom: 2px solid #987c1e;
-      border-left: 2px solid #ffed8b; */
-      border-top: 2px solid #d8dcdc;
-      border-right: 2px solid #666;
-      border-bottom: 2px solid #333;
-      border-left: 2px solid #868888;
-      border-radius: 0;
-      /* background-image: linear-gradient\(-45deg, #ffd75b 0%, #fff5a0 50%, #fffabe 34%, #ffffdb 100%, #fff5a0 100%\); */
-      background-image: linear-gradient\(-45deg, #333 0%, #868888 50%, #d8dcdc 34%, white 100%, #666 100%\);
-      text-shadow: 0 0 5px #fff, 0 0 5px #fff, 0 0 5px #fff, 0 0 5px #fff, 0 0 5px #fff;
-    }
-
-    a.btn-solid-silver:hover {
-      text-shadow: 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff;
-    }
-
-    body {
-      background-color: #f7f7f7;
-      font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "游ゴシック体", "Yu Gothic", YuGothic, Meiryo, メイリオ, "Noto Sans JP", sans-serif;
-    }
-
-    #content1 {
-      padding: 20px;
-    }
-
-    label {
-      margin-right: 10px;
-    }
-  </style>
   <body>
-    <article id="content1">
+    <article id="content">
       <form method="post" action="">
+        <p>クローズドなパスワード管理簿　更新日：$today</p>
 EOF
-    )
-    first_string=false
-    echo "$code" >> "$main_file"
-    sed -i '' 's/\\//g' "$main_file"
+  first_string=false
   fi
   count=0
-  for csv_file in "${array[@]}"; do # 配列の要素を一つずつ処理
-    sed -i '' '1,2d' "$csv_file"
-    echo "$csv_file"
-    while IFS=, read -r col1 col2 || [[ -n $col2 ]]; do
-      count=$((count + 1))
-      col2=$(echo "$col2" | tr -d '\r')
-      code=$(
-        cat << EOF
+  sed '1d' "$csv_file" > "$csv_file.tmp"
+  echo "$csv_file"
+  while IFS=, read -r col1 col2 col3 col4 || [[ -n $col4 ]]; do
+    count=$((count + 1))
+    cat << EOF >> "$main_file"
+        <a href="$col2" target="_blank">
+          <label>$col1</label>
+        </a>
+        <br>
         <div class="password-container">
-          <label for="input_passwd$count">$col1</label><br>
-          <input type="password" id="input_passwd$count" name="input_passwd$count" value="$col2">
+          <label>　ユーザー名</label>
+          <input type="password" id="input_username$count" name="input_username$count" value="$col3">
+          <button class="btn_passwd">表示</button>
+          <br>
+          <label>　パスワード</label>
+          <input type="password" id="input_passwd$count" name="input_passwd$count" value="$col4">
           <button class="btn_passwd">表示</button>
         </div>
+        <br>
 EOF
-      )
-      echo "$code" >> "$main_file"
-    done < "$csv_file"
-  done
-  code=$(
-    cat << EOF
+  done < "$csv_file.tmp"
+  cat << EOF >> "$main_file"
       </form>
     </article>
+    <footer>
+    </footer>
   </body>
 </html>
+
+<style>
+  .btn_passwd {
+    color: #000;
+    font-size: 15px;
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    /* border-top: 2px solid #b1921b;
+    border-right: 2px solid #cea82c;
+    border-bottom: 2px solid #987c1e;
+    border-left: 2px solid #ffed8b; */
+    border-top: 2px solid #d8dcdc;
+    border-right: 2px solid #666;
+    border-bottom: 2px solid #333;
+    border-left: 2px solid #868888;
+    border-radius: 0;
+    /* background-image: linear-gradient(-45deg, #ffd75b 0%, #fff5a0 50%, #fffabe 34%, #ffffdb 100%, #fff5a0 100%); */
+    background-image: linear-gradient(-45deg, #333 0%, #868888 50%, #d8dcdc 34%, white 100%, #666 100%);
+    text-shadow: 0 0 5px #fff, 0 0 5px #fff, 0 0 5px #fff, 0 0 5px #fff, 0 0 5px #fff;
+    margin-top: 5px;
+  }
+
+  a.btn-solid-silver:hover {
+    text-shadow: 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff, 0 0 7px #fff;
+  }
+	body {
+		background-color: #f7f7f7;
+	}
+	#content {
+    padding-top: 5px;
+		padding-left: 20px;
+	}
+	label {
+		margin-right: 10px;
+	}
+</style>
 
 <script>
   window.addEventListener('DOMContentLoaded', function() {
@@ -108,12 +109,9 @@ EOF
   });
 </script>
 EOF
-  )
-  code=$(perl -pe 'chomp if eof' <<< "$code")
-  echo "$code" | perl -pe 'chomp if eof' >> "$main_file"
 }
 
-if [ "$dir" ]; then
-  rm "$dir"/._* 2>/dev/null
+if [ "$csv_file" ]; then
   modified_passwordList
+  rm "$csv_file.tmp"
 fi
