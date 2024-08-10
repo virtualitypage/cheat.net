@@ -35,7 +35,7 @@ function server_sync () {
   src_talk="$log_dir/talk/"
   src_cpu_usage="$audit_dir/gl-mt3000/cpu_usage/"
   src_disk_usage="$audit_dir/gl-mt3000/disk_usage/"
-  src_proccess="$audit_dir/gl-mt3000/proccess/"
+  src_process="$audit_dir/gl-mt3000/process/"
   src_traffic_stat="$audit_dir/gl-mt3000/traffic_stat/"
   src_mail="$log_dir/mail/"
 
@@ -61,7 +61,7 @@ function server_sync () {
   talk="$dst_volume/var/log/talk"                           # "グループLINEのトーク履歴" 保管ディレクトリ
   cpu_usage="$dst_volume/var/log/gl-mt3000/cpu_usage"       # "GL-MT3000のCPUログ" 保管ディレクトリ
   disk_usage="$dst_volume/var/log/gl-mt3000/disk_usage"     # "GL-MT3000のディスクログ" 保管ディレクトリ
-  proccess="$dst_volume/var/log/gl-mt3000/proccess"         # "GL-MT3000のプロセスキルログ" 保管ディレクトリ
+  process="$dst_volume/var/log/gl-mt3000/process"           # "GL-MT3000のプロセスキルログ" 保管ディレクトリ
   traffic_stat="$dst_volume/var/log/gl-mt3000/traffic_stat" # "GL-MT3000のトラフィックログ" 保管ディレクトリ
   mail="$dst_volume/var/mail"                               # "メールファイル" 保管ディレクトリ
 
@@ -129,8 +129,8 @@ function server_sync () {
   echo "rsync --archive --human-readable --progress \"$src_disk_usage\" $disk_usage"
   rsync --archive --human-readable --progress "$src_disk_usage" $disk_usage
   echo
-  echo "rsync --archive --human-readable --progress \"$src_proccess\" $proccess"
-  rsync --archive --human-readable --progress "$src_proccess" $proccess
+  echo "rsync --archive --human-readable --progress \"$src_process\" $process"
+  rsync --archive --human-readable --progress "$src_process" $process
   echo
   echo "rsync --archive --human-readable --progress \"$src_traffic_stat\" $traffic_stat"
   rsync --archive --human-readable --progress "$src_traffic_stat" $traffic_stat
