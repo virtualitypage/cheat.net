@@ -13,7 +13,7 @@ dir_temp="/etc/archive/$date"
 disk_log="$dir_disk/disk_metrics_$month.log"
 temp_log="$dir_temp/CPU_temp_$date.log"
 cpu_log="$dir_temp/CPU_util_$date.log"
-kill_log="$dir_temp/proccess_kill_$date.log"
+kill_log="$dir_temp/process_kill_$date.log"
 temp_path="/sys/class/thermal/thermal_zone0/temp"
 
 disk_logger () {
