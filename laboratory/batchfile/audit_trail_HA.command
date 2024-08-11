@@ -1,6 +1,7 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
+current_dir=$(echo $current_dir | sed 's/\/@COMMAND//g')
 src_dir="$current_dir/archive"
 yesterday=$(TZ=UTC-9 date -v -1d '+%Y-%m-%d')
 date=$(find $src_dir/$yesterday -type f -name CPU_temp_*.log)
