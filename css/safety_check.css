@@ -96,8 +96,8 @@ form dl dt {
   display: block;
 }
 
-/*1000px以上*/
-@media screen and (min-width: 1000px) {
+/*768px以上*/
+@media (min-width: 768px) {
   p {
     font-size: 20px;
     text-align: center;
