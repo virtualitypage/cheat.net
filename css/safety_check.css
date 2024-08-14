@@ -58,8 +58,6 @@ form dl dt {
   color: green;
   background-color: transparent;
 }
-
-
 .input_radio + span {
   padding-left: 28px;
   display: inline-block;
