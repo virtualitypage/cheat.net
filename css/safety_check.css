@@ -3,7 +3,7 @@ body {
   font-family: sans-serif;
 }
 p {
-  font-size: 20px;
+  font-size: 15px;
   text-align: center;
 }
 .box_calc {
@@ -26,7 +26,7 @@ form dl dt {
   margin: 20px;
 }
 .form_label {
-  font-size: 20px;
+  font-size: 25px;
   display: flex;
   align-items: center;
 }
@@ -34,8 +34,8 @@ form dl dt {
   display: none;
 }
 .radio_span {
-  margin: 10px;
-  font-size: 20px;
+  margin: 5px;
+  font-size: 25px;
 }
 .form_submit {
   text-align: center;
@@ -59,7 +59,7 @@ form dl dt {
   background-color: transparent;
 }
 .input_radio + span {
-  padding-left: 28px;
+  padding-left: 38px;
   display: inline-block;
   position: relative;
 }
@@ -72,8 +72,8 @@ form dl dt {
 .input_radio + span::before {
   border: 1px solid #000000;
   background-color: #ffffff;
-  height: 20px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
   border-radius: 50%;
   left: 0;
   top: 50%;
@@ -84,9 +84,9 @@ form dl dt {
   border: none;
   background-color: #1500ff;
   border-radius: 50%;
-  height: 12px;
-  width: 12px;
-  left: 4px;
+  height: 16px;
+  width: 16px;
+  left: 7.8px;
   top: 50%;
   transform: translateY(-50%);
   display: none;
@@ -96,31 +96,31 @@ form dl dt {
   display: block;
 }
 
-/*782px以下*/
-@media screen and (max-width: 782px) {
+/*768px以上*/
+@media screen and (min-width: 768px) {
   p {
-    font-size: 15px;
+    font-size: 20px;
     text-align: center;
   }
   .form_label {
-    font-size: 25px;
+    font-size: 20px;
     display: flex;
     align-items: center;
   }
   .radio_span {
-    margin: 5px;
-    font-size: 25px;
+    margin: 10px;
+    font-size: 20px;
   }
   .input_radio + span {
-    padding-left: 38px;
+    padding-left: 28px;
     display: inline-block;
     position: relative;
   }
   .input_radio + span::before {
     border: 1px solid #000000;
     background-color: #ffffff;
-    height: 30px;
-    width: 30px;
+    height: 20px;
+    width: 20px;
     border-radius: 50%;
     left: 0;
     top: 50%;
@@ -130,9 +130,9 @@ form dl dt {
     border: none;
     background-color: #1500ff;
     border-radius: 50%;
-    height: 16px;
-    width: 16px;
-    left: 7.8px;
+    height: 12px;
+    width: 12px;
+    left: 4px;
     top: 50%;
     transform: translateY(-50%);
     display: none;
