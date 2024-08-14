@@ -32,6 +32,7 @@ form dl dt {
 
 .box_calc {
   height: calc(1em + 20px);
+  font-size: 20px;
 }
 
 .input_radio {
@@ -118,7 +119,6 @@ form dl dt {
 
   .box_calc {
     height: calc(1em + 20px);
-    font-size: 20px;
   }
 
   .form_label {
