@@ -109,8 +109,8 @@ form dl dt {
   background-color: transparent;
 }
 
-/*768px以上*/
-@media (min-width: 768px) {
+/* PC Only */
+@media (min-width: 1024px) {
   p {
     font-size: 20px;
     text-align: center;
