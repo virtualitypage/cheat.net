@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>安否確認フォーム</title>
+    <link rel="stylesheet" href="../css/safety_check.css">
     <script>
       let submitted = false;
       const onloadFrame = () => {
@@ -15,7 +16,7 @@
 <body>
   <form action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdyuKNmR8zTkv9v1I7-Lxqfg4vyXHzsj8ZcLcT_fOJ1yqxplg/formResponse" method="post" target="hidden-iframe" onsubmit="submitted = true;">
     <h1 style="text-align: center; margin-top: 40px">安否確認フォーム</h1>
-    <p style="font-size: 20px; text-align: center;">災害発生時には自身と家族の安全確保を最優先に行動してください。<br>身の回りの安全確保が出来次第、以下の安否状況を知らせてください。</p>
+    <p>災害発生時には自身と家族の安全確保を最優先に行動してください。<br>身の回りの安全確保が出来次第、以下の安否状況を知らせてください。</p>
     <div class="form_body">
       <dl>
         <dt class="form_label">名　　　前</dt>
@@ -79,110 +80,3 @@
   </form>
   <iframe name="hidden-iframe" style="display: none;" onload="onloadFrame()"></iframe>
 </body>
-
-<style>
-  body {
-    background-color: #f4f4f9;
-  }
-  .box_calc {
-    height: calc(1em + 20px)
-  }
-  .form_body {
-    position: absolute;
-    top: 380px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  form dl {
-    display: flex;
-    align-items: center;
-  }
-  form dl dt {
-    width: 150px;
-  }
-  .form_block {
-    margin: 20px;
-  }
-  .form_label {
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-  }
-  .input_radio {
-    display: none;
-  }
-  .radio_span {
-    margin: 10px;
-    font-size: 20px;
-  }
-  .form_submit {
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .form_submit button {
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    background-color: green;
-    border: solid 1px green;
-    border-radius: 4px;
-    padding: 5px 32px;
-    transition: 0.4s;
-    cursor: pointer;
-  }
-  .form_submit button:hover {
-    color: green;
-    background-color: transparent;
-  }
-
-  .input_radio + span {
-    padding-left: 28px;
-    display: inline-block;
-    position: relative;
-  }
-  .input_radio + span::after, .input_radio + span::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-  }
-  .input_radio + span::before {
-    border: 1px solid #000000;
-    background-color: #ffffff;
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  /* ラジオボタンにチェックが付いていない時 */
-  .input_radio + span::after {
-    border: none;
-    background-color: #1500ff;
-    border-radius: 50%;
-    height: 12px;
-    width: 12px;
-    left: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: none;
-  }
-  /* ラジオボタンにチェックが付いた時 */
-  .input_radio:checked + span::after {
-    display: block;
-  }
-  @media (min-width: 640px) {
-    .c-form__item {
-      flex-wrap: nowrap;
-    }
-    .c-form__label {
-      width: 40%;
-    }
-    .c-form__input {
-      width: 55%;
-    }
-  }
-  </style>

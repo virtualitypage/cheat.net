@@ -1,0 +1,140 @@
+body {
+  background-color: #f4f4f9;
+  font-family: sans-serif;
+}
+p {
+  font-size: 20px;
+  text-align: center;
+}
+.box_calc {
+  height: calc(1em + 20px)
+}
+.form_body {
+  position: absolute;
+  top: 400px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+form dl {
+  display: flex;
+  align-items: center;
+}
+form dl dt {
+  width: 150px;
+}
+.form_block {
+  margin: 20px;
+}
+.form_label {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+.input_radio {
+  display: none;
+}
+.radio_span {
+  margin: 10px;
+  font-size: 20px;
+}
+.form_submit {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form_submit button {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: green;
+  border: solid 1px green;
+  border-radius: 4px;
+  padding: 5px 32px;
+  transition: 0.4s;
+  cursor: pointer;
+}
+.form_submit button:hover {
+  color: green;
+  background-color: transparent;
+}
+
+
+.input_radio + span {
+  padding-left: 28px;
+  display: inline-block;
+  position: relative;
+}
+.input_radio + span::after, .input_radio + span::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+}
+.input_radio + span::before {
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* ラジオボタンにチェックが付いていない時 */
+.input_radio + span::after {
+  border: none;
+  background-color: #1500ff;
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+}
+/* ラジオボタンにチェックが付いた時 */
+.input_radio:checked + span::after {
+  display: block;
+}
+@media (max-width: 748px) {
+  p {
+    font-size: 15px;
+    text-align: center;
+  }
+  .form_label {
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+  }
+  .radio_span {
+    margin: 5px;
+    font-size: 25px;
+  }
+  .input_radio + span {
+    padding-left: 38px;
+    display: inline-block;
+    position: relative;
+  }
+  .input_radio + span::before {
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .input_radio + span::after {
+    border: none;
+    background-color: #1500ff;
+    border-radius: 50%;
+    height: 16px;
+    width: 16px;
+    left: 7.8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+  }
+}
