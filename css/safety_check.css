@@ -95,7 +95,7 @@ form dl dt {
 .input_radio:checked + span::after {
   display: block;
 }
-@media (max-width: 748px) {
+@media (max-width: 640px) { /* レスポンシブ対応コード(スマホサイズ) */
   p {
     font-size: 15px;
     text-align: center;
