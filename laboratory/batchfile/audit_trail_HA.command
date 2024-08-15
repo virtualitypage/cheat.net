@@ -4,6 +4,7 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 current_dir=$(echo $current_dir | sed 's/\/@COMMAND//g')
 src_dir="$current_dir/archive"
 yesterday=$(TZ=UTC-9 date -v -1d '+%Y-%m-%d')
+yesterday_date=$(TZ=UTC-9 date -v -1d '+%m/%d')
 date=$(find $src_dir/$yesterday -type f -name CPU_temp_*.log)
 year=$(basename "$date" | sed -e 's/CPU_temp_//g' -e 's/^\(.\{4\}\).*/\1/')
 month=$(basename "$date" | sed -e 's/CPU_temp_//g' -e 's/^\(.\{7\}\).*/\1/')
@@ -19,6 +20,7 @@ function audit_trail_high_availability () {
   cpu_usage_A="$drive/cpu_usage/$month_"
   cpu_usage_B="$github/cpu_usage/$month_"
 
+  setfile -m "$yesterday_date/$year 23:50" "$cpu_usage_temp" "$cpu_usage_util"
   echo "rsync --archive --human-readable --progress \"$cpu_usage_temp\" $cpu_usage_A"
   rsync --archive --human-readable --progress "$cpu_usage_temp" $cpu_usage_A
   echo
@@ -37,6 +39,7 @@ function audit_trail_high_availability () {
   process_A="$drive/process/$month_"
   process_B="$github/process/$month_"
 
+  setfile -m "$yesterday_date/$year 23:50" "$process"
   echo "rsync --archive --human-readable --progress \"$process\" $process_A"
   rsync --archive --human-readable --progress "$process" $process_A
   echo
