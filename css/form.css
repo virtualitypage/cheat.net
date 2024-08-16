@@ -8,6 +8,11 @@ p {
   text-align: center;
 }
 
+.adguard_description {
+  font-size: 13px;
+  text-align: center;
+}
+
 form dl {
   display: flex;
   align-items: center;
@@ -27,7 +32,7 @@ form dl dt {
 
 .form_body_AdGuard {
   position: absolute;
-  top: 750px;
+  top: 800px;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -128,6 +133,11 @@ form dl dt {
 /* PC Only */
 @media (min-width: 1024px) {
   p {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .adguard_description {
     font-size: 20px;
     text-align: center;
   }
