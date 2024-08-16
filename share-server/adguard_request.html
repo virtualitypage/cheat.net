@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>AdGuard Home ドメイン申請フォーム</title>
+    <link rel="stylesheet" href="../css/form.css">
+    <script>
+      let submitted = false;
+      const onloadFrame = () => {
+        if (submitted) {
+          window.location = "adguard_request_ok.html";
+        }
+      }
+    </script>
+  </head>
+<body>
+  <form action="https://docs.google.com/forms/u/0/d/e/1FAIpQLScIW_tFuQfjJoINxOW82Et1aht5AGuemVttl4sAgNpzdU5rUw/formResponse" method="post" target="hidden-iframe" onsubmit="submitted = true;">
+    <h1 style="text-align: center; margin-top: 40px">AdGuard Home ドメイン申請フォーム</h1>
+    <p>Wi-Fi "GL-MT3000-5GHz" のネットワークで稼働中の広告ブロックアプリ "AdGuard Home" への<br>ドメイン申請を行えます。主に、特定のサイトにアクセス出来ない時に使用できます。</p>
+    <div class="form_body_AdGuard">
+      <dl>
+        <dt class="form_label_AdGuard">ドメイン名またはURLを入力して下さい</dt>
+        <dd><input class="box_calc" type="text" name="entry.2145982928" placeholder="https://example.com"></dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">上記ドメインを登録・解除するか選択して下さい</dt>
+        <dd>
+          <label class="label_radio">
+            <input type="radio" name="entry.456194741" value="登録" required class="input_radio">
+            <span class="radio_span">登録</span>
+          </label>
+          <label class="label_radio">
+            <input type="radio" name="entry.1673667340" value="削除" required class="input_radio">
+            <span class="radio_span">削除</span>
+          </label>
+        </dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">ドメイン名またはURLを入力して下さい</dt>
+        <dd><input class="box_calc" type="text" name="entry.2145982928" placeholder="https://example.com"></dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">上記ドメインを登録・解除するか選択して下さい</dt>
+        <dd>
+          <label class="label_radio">
+            <input type="radio" name="entry.15954888" value="登録" class="input_radio">
+            <span class="radio_span">登録</span>
+          </label>
+          <label class="label_radio">
+            <input type="radio" name="entry.1028294438" value="削除" class="input_radio">
+            <span class="radio_span">削除</span>
+          </label>
+        </dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">ドメイン名またはURLを入力して下さい</dt>
+        <dd><input class="box_calc" type="text" name="entry.2145982928" placeholder="https://example.com"></dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">上記ドメインを登録・解除するか選択して下さい</dt>
+        <dd>
+          <label class="label_radio">
+            <input type="radio" name="entry.31778546" value="登録" class="input_radio">
+            <span class="radio_span">登録</span>
+          </label>
+          <label class="label_radio">
+            <input type="radio" name="entry.1046785006" value="削除" class="input_radio">
+            <span class="radio_span">削除</span>
+          </label>
+        </dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">ドメイン名またはURLを入力して下さい</dt>
+        <dd><input class="box_calc" type="text" name="entry.2145982928" placeholder="https://example.com"></dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">上記ドメインを登録・解除するか選択して下さい</dt>
+        <dd>
+          <label class="label_radio">
+            <input type="radio" name="entry.1157761334" value="登録" class="input_radio">
+            <span class="radio_span">登録</span>
+          </label>
+          <label class="label_radio">
+            <input type="radio" name="entry.42607425" value="削除" class="input_radio">
+            <span class="radio_span">削除</span>
+          </label>
+        </dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">ドメイン名またはURLを入力して下さい</dt>
+        <dd><input class="box_calc" type="text" name="entry.2145982928" placeholder="https://example.com"></dd>
+      </dl>
+      <dl>
+        <dt class="form_label_AdGuard">上記ドメインを登録・解除するか選択して下さい</dt>
+        <dd>
+          <label class="label_radio">
+            <input type="radio" name="entry.155173817" value="登録" class="input_radio">
+            <span class="radio_span">登録</span>
+          </label>
+          <label class="label_radio">
+            <input type="radio" name="entry.1951768137" value="削除" class="input_radio">
+            <span class="radio_span">削除</span>
+          </label>
+        </dd>
+      </dl>
+      <div class="form_submit">
+        <button type="submit">送信する</button>
+      </div>
+    </div>
+  </form>
+  <iframe name="hidden-iframe" style="display: none;" onload="onloadFrame()"></iframe>
+</body>

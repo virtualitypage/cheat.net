@@ -11,6 +11,7 @@ p {
 form dl {
   display: flex;
   align-items: center;
+  padding: 10px;
 }
 
 form dl dt {
@@ -19,7 +20,14 @@ form dl dt {
 
 .form_body {
   position: absolute;
-  top: 400px;
+  top: 430px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.form_body_AdGuard {
+  position: absolute;
+  top: 750px;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -28,6 +36,13 @@ form dl dt {
   font-size: 25px;
   display: flex;
   align-items: center;
+}
+
+.form_label_AdGuard {
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  width: 380px;
 }
 
 .box_calc {
@@ -121,10 +136,24 @@ form dl dt {
     height: calc(1em + 20px);
   }
 
+  .form_body_AdGuard {
+    position: absolute;
+    top: 750px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   .form_label {
     font-size: 20px;
     display: flex;
     align-items: center;
+  }
+
+  .form_label_AdGuard {
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    width: 380px;
   }
 
   .radio_span {
