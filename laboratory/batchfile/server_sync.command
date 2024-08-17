@@ -40,30 +40,30 @@ function server_sync () {
   src_mail="$log_dir/mail/"
 
   # internalサーバ(Samba)の親ディレクトリ
-  dev="$dst_volume/dev"                                     # "開発用ファイル" 保管ディレクトリ
-  media_photos="$dst_volume/media/photos"                   # "写真" 保管ディレクトリ
-  media_red_zone="$dst_volume/media/red_zone"               # "防犯カメラ写真" 保管ディレクトリ
-  footage_2023="$dst_volume/usr/local/footage/2023"         # "2023年度 防犯カメラ映像" 保管ディレクトリ
-  footage_2024="$dst_volume/usr/local/footage/2024"         # "2024年度 防犯カメラ映像" 保管ディレクトリ
-  web_archive="$dst_volume/usr/local/web_archive"           # "webサイトの圧縮ファイル" 保管ディレクトリ
-  arch="$dst_volume/usr/share/arch"                         # "アーキテクチャ" 保管ディレクトリ
-  config="$dst_volume/usr/share/config"                     # "コンフィグ関連ファイル" 保管ディレクトリ
-  pdf="$dst_volume/usr/share/pdf"                           # "PDFファイル" 保管ディレクトリ
-  src="$dst_volume/usr/src"                                 # "ソースコード" 保管ディレクトリ
-  src_apple="$dst_volume/usr/src/apple"                     # "AppleScriptのソースコード" 保管ディレクトリ
-  src_google="$dst_volume/usr/src/google"                   # "Google Apps Scriptのソースコード" 保管ディレクトリ
-  src_shell="$dst_volume/usr/src/shell"                     # "shell scriptのソースコード" 保管ディレクトリ
-  securityLog_2023="$dst_volume/var/log/securityLog/2023"   # "2023年度 防犯カメラ記録" 保管ディレクトリ
-  securityLog_2024="$dst_volume/var/log/securityLog/2024"   # "2024年度 防犯カメラ記録" 保管ディレクトリ
-  stat_text_2023="$dst_volume/var/log/stat_text/2023"       # "2023年度 防犯カメラ記録 status" 保管ディレクトリ
-  stat_text_2024="$dst_volume/var/log/stat_text/2024"       # "2024年度 防犯カメラ記録 status" 保管ディレクトリ
-  stdout="$dst_volume/var/log/stdout"                       # "コマンドログ" 保管ディレクトリ
-  talk="$dst_volume/var/log/talk"                           # "グループLINEのトーク履歴" 保管ディレクトリ
-  cpu_usage="$dst_volume/var/log/gl-mt3000/cpu_usage"       # "GL-MT3000のCPUログ" 保管ディレクトリ
-  disk_usage="$dst_volume/var/log/gl-mt3000/disk_usage"     # "GL-MT3000のディスクログ" 保管ディレクトリ
-  process="$dst_volume/var/log/gl-mt3000/process"           # "GL-MT3000のプロセスキルログ" 保管ディレクトリ
-  traffic_stat="$dst_volume/var/log/gl-mt3000/traffic_stat" # "GL-MT3000のトラフィックログ" 保管ディレクトリ
-  mail="$dst_volume/var/mail"                               # "メールファイル" 保管ディレクトリ
+  dev="$dst_volume/dev"                                                 # "開発用ファイル" 保管ディレクトリ
+  media_photos="$dst_volume/media/photos"                               # "写真" 保管ディレクトリ
+  media_red_zone="$dst_volume/media/red_zone"                           # "防犯カメラ写真" 保管ディレクトリ
+  footage_2023="$dst_volume/usr/local/footage/2023"                     # "2023年度 防犯カメラ映像" 保管ディレクトリ
+  footage_2024="$dst_volume/usr/local/footage/2024"                     # "2024年度 防犯カメラ映像" 保管ディレクトリ
+  web_archive="$dst_volume/usr/local/web_archive"                       # "webサイトの圧縮ファイル" 保管ディレクトリ
+  arch="$dst_volume/usr/share/arch"                                     # "アーキテクチャ" 保管ディレクトリ
+  config="$dst_volume/usr/share/config"                                 # "コンフィグ関連ファイル" 保管ディレクトリ
+  pdf="$dst_volume/usr/share/pdf"                                       # "PDFファイル" 保管ディレクトリ
+  src="$dst_volume/usr/src"                                             # "ソースコード" 保管ディレクトリ
+  src_apple="$dst_volume/usr/src/apple"                                 # "AppleScriptのソースコード" 保管ディレクトリ
+  src_google="$dst_volume/usr/src/google"                               # "Google Apps Scriptのソースコード" 保管ディレクトリ
+  src_shell="$dst_volume/usr/src/shell"                                 # "shell scriptのソースコード" 保管ディレクトリ
+  securityLog_2023="$dst_volume/var/log/securityLog/2023"               # "2023年度 防犯カメラ記録" 保管ディレクトリ
+  securityLog_2024="$dst_volume/var/log/securityLog/2024"               # "2024年度 防犯カメラ記録" 保管ディレクトリ
+  stat_text_2023="$dst_volume/var/log/stat_text/2023"                   # "2023年度 防犯カメラ記録 status" 保管ディレクトリ
+  stat_text_2024="$dst_volume/var/log/stat_text/2024"                   # "2024年度 防犯カメラ記録 status" 保管ディレクトリ
+  stdout="$dst_volume/var/log/stdout"                                   # "コマンドログ" 保管ディレクトリ
+  talk="$dst_volume/var/log/talk"                                       # "グループLINEのトーク履歴" 保管ディレクトリ
+  cpu_usage="$dst_volume/var/log/audit_trail/gl-mt3000/cpu_usage"       # "GL-MT3000のCPUログ" 保管ディレクトリ
+  disk_usage="$dst_volume/var/log/audit_trail/gl-mt3000/disk_usage"     # "GL-MT3000のディスクログ" 保管ディレクトリ
+  process="$dst_volume/var/log/audit_trail/gl-mt3000/process"           # "GL-MT3000のプロセスキルログ" 保管ディレクトリ
+  traffic_stat="$dst_volume/var/log/audit_trail/gl-mt3000/traffic_stat" # "GL-MT3000のトラフィックログ" 保管ディレクトリ
+  mail="$dst_volume/var/mail"                                           # "メールファイル" 保管ディレクトリ
 
   # internalサーバ(Samba)に転送
   echo "rsync --archive --human-readable --progress \"$src_dev\" $dev"
