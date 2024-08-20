@@ -38,9 +38,9 @@ traffic_logger () {
     ip -s link show $int >> "$dir_int/${int}_$month.log"
     echo >> "$dir_int/${int}_$month.log"
     sed -i.bak -e 's/mcast   /mcast/g' -e 's/collsns /collsns/g' -e 's/link\/none /link\/none/g' "$dir_int/${int}_$month.log"
+    rm "$dir_int/${int}_$month.log.bak"
     i=$((i + 1))
   done
-  rm "$dir_int/${int}_$month.log.bak"
 }
 
 cpu_logger () {

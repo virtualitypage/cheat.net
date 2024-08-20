@@ -4,7 +4,7 @@
 date=$(TZ=UTC-9 date '+%Y-%m-%d')
 
 send_mailer () {
-  cd /etc/
+  cd /etc || exit
   tar -zcf "archive_$date.tar.gz" archive
   mutt -s "Test mail" -a archive_$date.tar.gz -- youguigujing42@gmail.com < test.mail
   sleep 3
