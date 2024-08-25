@@ -40,8 +40,8 @@ systemlog_convert () {
 }
 
 mac_table_entry () {
-  mac_table="04:d3:b5:f3:f6:a7 fc:87:43:48:63:7a b8:9a:2a:7d:79:7c 34:e8:94:8b:e1:96 54:f2:94:48:44:39 6e:c3:98:cd:28:cd 58:40:4e:e4:d8:b2 8c:85:90:b9:18:32 fa:30:ea:61:6c:be 8a:b7:1e:87:01:4e"
-  host_table="alisa_HUAWEI_P30_lite ayako_HUAWEI_P30_lite DESKTOP-CL4OL20 DESKTOP-TCDB3LJ hideki_HUAWEI_P30_lite hideki_OPPO-A79-5G iMac-Kochi MacBook-Pro tetsuo_iPhone_SE yuki_iPhone_11_Pro_Max"
+  mac_table="04:d3:b5:f3:f6:a7 6e:68:04:37:8e:18 fc:87:43:48:63:7a b8:9a:2a:7d:79:7c 34:e8:94:8b:e1:96 54:f2:94:48:44:39 6e:c3:98:cd:28:cd 58:40:4e:e4:d8:b2 8c:85:90:b9:18:32 fa:30:ea:61:6c:be 8a:b7:1e:87:01:4e"
+  host_table="arisa_HUAWEI_P30_lite arisa_Redmi-Note-13 ayako_HUAWEI_P30_lite DESKTOP-CL4OL20 DESKTOP-TCDB3LJ hideki_HUAWEI_P30_lite hideki_OPPO-A79-5G iMac-Kochi MacBook-Pro tetsuo_iPhone_SE yuki_iPhone_11_Pro_Max"
   while IFS=, read -r col1 col2; do
     case "$col2" in
       *MacTableInsertEntry*)
