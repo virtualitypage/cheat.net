@@ -52,7 +52,7 @@ EOF
 
 function enqueue () {
   main_file="$date_dir status.txt"
-  cd $HOME/Desktop || exit
+  cd "$HOME/Desktop" || exit
 
   if [ ! -e "$date_dir" ]; then
     mkdir "$date_dir"
@@ -70,19 +70,16 @@ function enqueue () {
       mp4_search_result=$(find "$file" -type f -iname '*.mp4' 2>/dev/null) # .mp4 ファイルを検索(大文字小文字を区別しない)
       if [ -n "$mp4_search_result" ]; then
         mp4_files+=("$mp4_search_result")
-        files_found_mp4=true
         echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
       fi
       mov_search_result=$(find "$file" -type f -iname '*.mov' 2>/dev/null) # .mov ファイルを検索(大文字小文字を区別しない)
       if [ -n "$mov_search_result" ]; then
         mov_files+=("$mov_search_result")
-        files_found_mov=true
         echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
       fi
       avi_search_result=$(find "$file" -type f -iname '*.avi' 2>/dev/null) # .avi ファイルを検索(大文字小文字を区別しない)
       if [ -n "$avi_search_result" ]; then
         avi_files+=("$avi_search_result")
-        files_found_avi=true
         echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
       fi
     fi
@@ -90,23 +87,35 @@ function enqueue () {
   echo
   echo -e "\033[1;36mINFO: 動画ファイルのエンキュー処理を実行します…\033[0m"
   echo "rsync --archive --human-readable --progress $src_volume/* $queue"
-  rsync --archive --human-readable --progress $src_volume/* "$queue"
 
-  while [ $? -ne 0 ]; do
+  if rsync --archive --human-readable --progress $src_volume/* "$queue"; then
+    echo -e "\033[1;36mINFO: DISK \"$DISK\" 内のファイルを削除しています…\033[0m"
+    echo "rm $src_volume/*"
+  else
     echo
     echo -e "\033[1;33mWARNING: rsync コマンドが異常終了しました。3秒後に同期処理を再度実行します\033[0m"
     sleep 3
     echo "rsync --archive --human-readable --progress $src_volume/* $queue"
     rsync --archive --human-readable --progress $src_volume/* "$queue"
-  done
-  echo
+  fi
 
-  if [ $? -eq 0 ]; then
-    echo -e "\033[1;36mINFO: DISK \"$DISK\" 内のファイルを削除しています…\033[0m"
-    echo "rm $src_volume/*"
-    rm $src_volume/*
+  if rm $src_volume/* 2>/dev/null; then
     echo
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" 内のファイルを削除しました\033[0m"
+  else
+    echo
+    echo -e "\033[1;31mERROR: $src_volume 配下のファイルが削除できませんでした。対象のファイルを含むディレクトリを検索して再度実行します\033[0m"
+    echo
+    target_dir=$(find "$src_file" -type f -iname '*.avi' 2>/dev/null)
+    target_dir=$(dirname "$target_dir")
+    echo "rm $target_dir/*"
+    if rm "$target_dir/*" 2>/dev/null; then
+      echo
+      echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" 内のファイルを削除しました\033[0m"
+    else
+      echo
+      echo -e "\033[1;32mERROR: $src_file を格納するディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
+    fi
   fi
 
   echo
@@ -151,24 +160,75 @@ function dequeue () {
       fi
     fi
   done
+
+  if [ "$files_found_mp4" = true ]; then
+    first_file=true
+    echo -e "\033[1;36mINFO: 動画ファイル(mp4)のステータスを記録しています…\033[0m"
+    for mp4_file in "${mp4_files[@]}"; do
+      mp4_file=$(basename "$mp4_file")
+      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$dst_volume/$date_dir/$mp4_file")
+      if [ "$first_file" = true ]; then
+        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
+        echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$date_dir status.txt\033[0m"
+        first_file=false
+      else
+        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
+        echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$date_dir status.txt\033[0m"
+      fi
+    done
+  fi
+
+  if [ "$files_found_mov" = true ]; then
+    first_file=true
+    echo -e "\033[1;36mINFO: 動画ファイル(mov)のステータスを記録しています…\033[0m"
+    for mov_file in "${mov_files[@]}"; do
+      mov_file=$(basename "$mov_file")
+      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$dst_volume/$date_dir/$mov_file")
+      if [ "$first_file" = true ]; then
+        echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
+        echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$date_dir status.txt\033[0m"
+        first_file=false
+      else
+        echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
+        echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$date_dir status.txt\033[0m"
+      fi
+    done
+  fi
+
+  if [ "$files_found_avi" = true ]; then
+    first_file=true
+    echo -e "\033[1;36mINFO: 動画ファイル(avi)のステータスを記録しています…\033[0m"
+    for avi_file in "${avi_files[@]}"; do
+      avi_file=$(basename "$avi_file")
+      avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$dst_volume/$date_dir/$avi_file")
+      if [ "$first_file" = true ]; then
+        echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
+        echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$date_dir status.txt\033[0m"
+        first_file=false
+      else
+        echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
+        echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$date_dir status.txt\033[0m"
+      fi
+    done
+  fi
+
   echo
   echo -e "\033[1;36mINFO: 動画ファイルを SERVER \"$SERVER\" に移動しています…\033[0m"
   echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
-  rsync --archive --human-readable --progress $queue/* "$dst_volume/$date_dir"
+  rsync --archive --human-readable --progress "$queue/*" "$dst_volume/$date_dir"
 
-  while [ $? -ne 0 ]; do
+  if rsync --archive --human-readable --progress "$queue/*" "$dst_volume/$date_dir"; then
+    echo -e "\033[1;36mINFO: デキュー領域 \"$queue\" を削除しています…\033[0m"
+    echo "rm -rf $queue"
+  else
     echo
     echo -e "\033[1;33mWARNING: rsync コマンドが異常終了しました。3秒後に同期処理を再度実行します\033[0m"
     sleep 3
     echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
-    rsync --archive --human-readable --progress $queue/* "$dst_volume/$date_dir"
-  done
-  echo
+    rsync --archive --human-readable --progress "$queue/*" "$dst_volume/$date_dir"
+  fi
 
-  if [ $? -eq 0 ]; then
-    echo -e "\033[1;36mINFO: デキュー領域 \"$queue\" を削除しています…\033[0m"
-    echo "rm -rf $queue"
-    rm -rf $queue
+  if rm -rf "$queue" 2>/dev/null; then
     echo
     echo -e "\033[1;32mSUCCESS: デキュー領域 \"$queue\" を削除しました\033[0m"
   fi
