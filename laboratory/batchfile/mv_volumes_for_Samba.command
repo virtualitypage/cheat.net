@@ -54,8 +54,10 @@ function ps_check () {
   local pid_array
   pid_array=$(pgrep -f "$0" | awk 'NR>1 { print $1 }') # pgrep で出力された PID の2行目以降を取得
   while IFS= read -r pid; do
+  if [ -n "$pid_array" ]; then
     echo -e "\033[1;33mWARNING: kill $pid\033[0m"
     kill "$pid" 2>/dev/null
+  fi
   done <<< "$pid_array" # pid_array の内容を while ループに渡す
 }
 
@@ -276,7 +278,7 @@ if [ -e $src_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
     echo
-    sleep 1
+    sleep 0.5
     ps_check
     enqueue
     dequeue
@@ -284,11 +286,15 @@ if [ -e $src_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;31mERROR: SERVER \"$SERVER\" にアクセス出来ません。サーバーにアクセスされているか確認して再度実行してください。\033[0m"
     echo -e "\033[1;36mHINT: ショートカット \"Internal Injection\" をクリックしてサーバーにアクセス。\033[0m"
+    sleep 0.5
+    ps_check
     echo
     exit 1
   fi
 elif [ ! -e $src_volume ]; then
   echo -e "\033[1;31mERROR: 転送元であるDISK \"$DISK\" が存在しません。ドライブがマウントされているか確認して再度実行してください。\033[0m"
   echo
+  sleep 0.5
+  ps_check
   exit 1
 fi
