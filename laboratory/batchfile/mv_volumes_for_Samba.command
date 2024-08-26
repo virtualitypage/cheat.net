@@ -50,6 +50,15 @@ EOF
   echo "$message" | perl -pe 'chomp if eof' >> "$logfile"
 }
 
+function ps_check () {
+  local pid_array
+  pid_array=$(pgrep -f "$0" | awk 'NR>1 { print $1 }') # pgrep で出力された PID の2行目以降を取得
+  while IFS= read -r pid; do
+    echo -e "\033[1;33mWARNING: kill $pid\033[0m"
+    kill "$pid" 2>/dev/null
+  done <<< "$pid_array" # pid_array の内容を while ループに渡す
+}
+
 function enqueue () {
   main_file="$date_dir status.txt"
   cd "$HOME/Desktop" || exit
@@ -93,7 +102,7 @@ function enqueue () {
     echo "rm $src_volume/*"
   else
     echo
-    echo -e "\033[1;33mWARNING: rsync コマンドが異常終了しました。3秒後に同期処理を再度実行します\033[0m"
+    echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に同期処理を再度実行します\033[0m"
     sleep 3
     echo "rsync --archive --human-readable --progress $src_volume/* $queue"
     rsync --archive --human-readable --progress $src_volume/* "$queue"
@@ -222,7 +231,7 @@ function dequeue () {
     echo "rm -rf $queue"
   else
     echo
-    echo -e "\033[1;33mWARNING: rsync コマンドが異常終了しました。3秒後に同期処理を再度実行します\033[0m"
+    echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に同期処理を再度実行します\033[0m"
     sleep 3
     echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
     rsync --archive --human-readable --progress "$queue/*" "$dst_volume/$date_dir"
@@ -267,6 +276,8 @@ if [ -e $src_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
     echo
+    sleep 1
+    ps_check
     enqueue
     dequeue
   elif [ -e $src_volume ] && [ ! -e $dst_volume ]; then
