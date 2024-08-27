@@ -10,7 +10,7 @@ securityCamera_Rec=$(basename "$main_file")
 rm "$current_dir"/._*
 
 function generate_logfile () {
-  while IFS= read -r line; do
+  while IFS= read -r line || [[ -n $line ]]; do
     message=$(
       cat << EOF
 日時：$line
