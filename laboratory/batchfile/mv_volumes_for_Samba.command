@@ -239,11 +239,9 @@ function dequeue () {
     rsync --archive --human-readable --progress "$queue/*" "$dst_volume/$date_dir"
   fi
 
-  if rm -rf "$queue" 2>/dev/null; then
-    echo
-    echo -e "\033[1;32mSUCCESS: デキュー領域 \"$queue\" を削除しました\033[0m"
-  fi
-
+  rm -rf "$queue" 2>/dev/null
+  echo
+  echo -e "\033[1;32mSUCCESS: デキュー領域 \"$queue\" を削除しました\033[0m"
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
   echo "・$today_string" >> "$destination/$disk_free"
