@@ -43,6 +43,13 @@ form dl dt {
   align-items: center;
 }
 
+/* textarea {
+  width: 300px;
+  line-height: 1.5;
+  field-sizing: content;
+  min-height: 2lh;
+} */
+
 .form_label_AdGuard {
   font-size: 25px;
   display: flex;
