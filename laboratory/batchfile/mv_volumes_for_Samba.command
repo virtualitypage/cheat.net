@@ -109,7 +109,7 @@ function enqueue () {
     echo -e "\033[1;36mINFO: 動画ファイル(mp4)のステータスを記録しています…\033[0m"
     for mp4_file in "${mp4_files[@]}"; do
       mp4_file=$(basename "$mp4_file")
-      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume/$date_dir/$mp4_file")
+      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume/$mp4_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
         echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
@@ -125,7 +125,7 @@ function enqueue () {
     echo -e "\033[1;36mINFO: 動画ファイル(mov)のステータスを記録しています…\033[0m"
     for mov_file in "${mov_files[@]}"; do
       mov_file=$(basename "$mov_file")
-      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume/$date_dir/$mov_file")
+      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume/$mov_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
         echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
@@ -141,7 +141,7 @@ function enqueue () {
     echo -e "\033[1;36mINFO: 動画ファイル(avi)のステータスを記録しています…\033[0m"
     for avi_file in "${avi_files[@]}"; do
       avi_file=$(basename "$avi_file")
-      avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume/$date_dir/$avi_file")
+      avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_volume/$avi_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
         echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
