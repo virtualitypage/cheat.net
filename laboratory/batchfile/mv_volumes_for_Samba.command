@@ -1,6 +1,7 @@
 #!/bin/bash
 
 today=$(date '+%Y-%m-%d')
+datestr=$(date '+%Y/%m/%d %H:%M:%S')
 today_string=$(date '+%Y年%-m月%-d日')
 
 src_volume="/Volumes/Untitled/DCIM/100MEDIA"
@@ -102,7 +103,6 @@ function enqueue () {
   done
   echo
 
-  # メモ：コードに問題はない。これは1回だけ実行される為、$main_fileに同一のデータが入ることは無い
   # Untitled にて発見された動画ファイルのステータスを記録
   if [ "$files_found_mp4" = true ]; then
     first_file=true
@@ -245,7 +245,6 @@ function dequeue () {
   echo -e "\033[1;36mINFO: 動画ファイルを SERVER \"$SERVER\" に移動しています…\033[0m"
   echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
 
-  # メモ：コマンドが正常終了するまで実行されていない。失敗しても再度実行されず次の処理に移っている
   # 動画ファイルをデキュー領域から Internal に移動させる。コマンド実行に3回失敗した場合、強制終了する
   RETRY_COUNT=0
   while [ $RETRY_COUNT -lt 3 ]; do
@@ -297,8 +296,10 @@ success=$(curl -I $URL 2>/dev/null | head -n 1)
 failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
 
 if [ "$success" ]; then
+  echo "> $datestr" >> "$logfile"
   echo -e "\033[1;32mSUCCESS: $success\033[0m"
 elif [ "$failure" == "Could not resolve host" ]; then
+  echo "> $datestr" >> "$logfile"
   echo -e "\033[1;31mNETWORK ERROR: Google Drive にアクセス出来ませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
   echo
   exit 1
