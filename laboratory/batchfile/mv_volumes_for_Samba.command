@@ -273,7 +273,15 @@ function dequeue () {
     exit 1
   fi
 
-  # Internal のディスク容量を記録
+  # Untitled・Internal のディスク容量を記録
+  echo
+  echo -e "\033[1;36mINFO: DISK \"$DISK\" のディスク容量を記録しています…\033[0m"
+  echo "・$today_string" >> "$destination/$disk_free"
+  echo "df -H $src_volume >> $destination/$disk_free"
+  df -H $src_volume >> "$destination/$disk_free"
+  echo >> "$destination/$disk_free"
+  echo
+  echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
   echo "・$today_string" >> "$destination/$disk_free"
@@ -324,7 +332,7 @@ if [ -e $src_volume ]; then
     exit 1
   fi
 elif [ ! -e $src_volume ]; then
-  echo -e "\033[1;31mERROR: 転送元であるDISK \"$DISK\" が存在しません。ドライブがマウントされているか確認して再度実行してください。\033[0m"
+  echo -e "\033[1;31mERROR: 転送元である DISK \"$DISK\" が存在しません。ドライブがマウントされているか確認して再度実行してください。\033[0m"
   echo
   sleep 0.5
   ps_check
