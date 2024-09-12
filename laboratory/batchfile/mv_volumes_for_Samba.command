@@ -1,7 +1,6 @@
 #!/bin/bash
 
 today=$(date '+%Y-%m-%d')
-datestr=$(date '+%Y/%m/%d %H:%M:%S')
 today_string=$(date '+%Y年%-m月%-d日')
 
 src_volume="/Volumes/Untitled/DCIM/100MEDIA"
@@ -311,7 +310,8 @@ if [ "$success" ]; then
   echo "$hostname:~ $users$ $0 ; exit;" >> "$logfile"
   echo -e "\033[1;32mSUCCESS: $success\033[0m"
 elif [ "$failure" == "Could not resolve host" ]; then
-  echo "> $datestr" >> "$logfile"
+  tail -n 1 /var/log/system.log | awk '{print "Last login:", $1, $2, $3, "on", $NF}' >> "$logfile"
+  echo "$hostname:~ $users$ $0 ; exit;" >> "$logfile"
   echo -e "\033[1;31mNETWORK ERROR: Google Drive にアクセス出来ませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
   echo
   exit 1
