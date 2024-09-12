@@ -306,12 +306,12 @@ hostname=$(hostname)
 users=$(users)
 
 if [ "$success" ]; then
-  tail -n 1 /var/log/system.log | awk '{print "Last login:", $1, $2, $3, "on", $NF}' >> "$logfile"
-  echo "$hostname:~ $users$ $0 ; exit;" >> "$logfile"
+  tail -n 1 /var/log/system.log | awk '{print "Last login:", $1, $2, $3, "on", $NF}' >> "$logfile" # chmod 777 /var/log/system.log (元は rw-r----- [630])
+  echo "$users@$hostname ~ % $0 ; exit;" >> "$logfile"
   echo -e "\033[1;32mSUCCESS: $success\033[0m"
 elif [ "$failure" == "Could not resolve host" ]; then
   tail -n 1 /var/log/system.log | awk '{print "Last login:", $1, $2, $3, "on", $NF}' >> "$logfile"
-  echo "$hostname:~ $users$ $0 ; exit;" >> "$logfile"
+  echo "$users@$hostname ~ % $0 ; exit;" >> "$logfile"
   echo -e "\033[1;31mNETWORK ERROR: Google Drive にアクセス出来ませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
   echo
   exit 1
