@@ -303,8 +303,12 @@ URL="https://drive.google.com/drive/my-drive"
 success=$(curl -I $URL 2>/dev/null | head -n 1)
 failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
 
+hostname=$(hostname)
+users=$(users)
+
 if [ "$success" ]; then
-  echo "> $datestr" >> "$logfile"
+  tail -n 1 /var/log/system.log | awk '{print "Last login:", $1, $2, $3, "on", $NF}' >> "$logfile"
+  echo "$hostname:~ $users$ $0 ; exit;" >> "$logfile"
   echo -e "\033[1;32mSUCCESS: $success\033[0m"
 elif [ "$failure" == "Could not resolve host" ]; then
   echo "> $datestr" >> "$logfile"
