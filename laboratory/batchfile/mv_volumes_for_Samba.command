@@ -316,6 +316,7 @@ if [ -e $src_volume ]; then
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
     echo "・$today_string" >> "$destination/$disk_free"
     df -H $src_volume >> "$destination/$disk_free"
+    echo >> "$destination/$disk_free"
     echo
     sleep 0.5
     ps_check
