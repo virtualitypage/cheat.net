@@ -302,7 +302,7 @@ URL="https://drive.google.com/drive/my-drive"
 success=$(curl -I $URL 2>/dev/null | head -n 1)
 failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
 
-hostname=$(hostname)
+hostname=$(hostname | sed 's/.local//g')
 users=$(users)
 
 if [ "$success" ]; then
