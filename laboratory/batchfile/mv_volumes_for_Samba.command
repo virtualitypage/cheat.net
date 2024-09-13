@@ -8,6 +8,7 @@ dst_volume="/Volumes/Internal/var/cache"
 destination="$HOME/Library/CloudStorage/GoogleDrive-ganbanlife@gmail.com/.shortcut-targets-by-id/1mZyi1kb7Iepj2zVvRgVo_BGJAmlC8GKY/共有フォルダ/動画用フォルダ"
 archive="/Volumes/Internal/var/cache/archive"
 logfile="$destination/mv_volumes_$today.log"
+stdout="/Volumes/Internal/var/log/stdout"
 
 src_file="DSCF0001.AVI"
 date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_volume/$src_file)
@@ -272,18 +273,9 @@ function dequeue () {
     exit 1
   fi
 
-  # Untitled・Internal のディスク容量を記録
-  echo
-  echo -e "\033[1;36mINFO: DISK \"$DISK\" のディスク容量を記録しています…\033[0m"
-  echo "・$today_string" >> "$destination/$disk_free"
-  echo "df -H $src_volume >> $destination/$disk_free"
-  df -H $src_volume >> "$destination/$disk_free"
-  echo >> "$destination/$disk_free"
-  echo
-  echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
+  # Internal のディスク容量を記録
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
-  echo "・$today_string" >> "$destination/$disk_free"
   echo "df -H $dst_volume >> $destination/$disk_free"
   df -H $dst_volume >> "$destination/$disk_free"
   echo >> "$destination/$disk_free"
@@ -294,6 +286,7 @@ function dequeue () {
   echo -e "\033[1;32mデキュー領域 \"$queue\" 内のファイルは $dst_volume/$date_dir に格納されています。\033[0m"
   stream_editor
   end_point
+  rsync "$logfile" $stdout
 }
 
 exec > >(tee -a "$logfile")
@@ -321,6 +314,8 @@ if [ -e $src_volume ]; then
   if [ -e $dst_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
+    echo "・$today_string" >> "$destination/$disk_free"
+    df -H $src_volume >> "$destination/$disk_free"
     echo
     sleep 0.5
     ps_check
