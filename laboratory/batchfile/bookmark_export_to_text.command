@@ -3,7 +3,7 @@
 current_dir=$(cd "$(dirname "$0")" && pwd)
 today=$(TZ=UTC-9 date '+%Y_%m_%d')
 main_file="$current_dir/bookmarks_$today.txt"
-sub_file="$current_dir/bookmarks.html"
+sub_file=$(find "$current_dir" -type f -name "bookmarks_*.html")
 
 if [ -e "$sub_file" ]; then
   echo -e "\033[1;32mSUCCESS: $sub_file は有効です。\033[0m"

@@ -23,7 +23,7 @@ else
 fi
 
 # initial settings (client)
-init_client () {
+function init_client () {
   id_rsa=id_rsa
   RNG="$HOME/random"
   cd ~/.ssh || exit
@@ -52,7 +52,7 @@ init_client () {
 }
 
 # initial settings (server)
-init_server () {
+function init_server () {
   port=$(grep -o "#Port 22" "$sshd_config")
   if [ "$port" == "#Port 22" ]; then
     echo -e "\033[1;38m$sshd_config\033[0m"
@@ -85,7 +85,7 @@ init_server () {
 }
 
 # server only
-connect_server () {
+function connect_server () {
   gip=$(curl -s inet-ip.info)
   echo -e "\033[1;38mGlobal IP: $gip\033[0m"
   echo
@@ -103,7 +103,7 @@ EOF
 }
 
 # client only
-connect_client () {
+function connect_client () {
   if [ -e "$config_file" ]; then
     read -p "実行者はクライアント側(接続元)の人間ですか: " authentication
     if [ "$authentication" == "yes" ] || [ "$authentication" == "y" ] || [ "$authentication" == "はい" ]; then
