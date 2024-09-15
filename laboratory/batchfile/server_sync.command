@@ -7,136 +7,30 @@ SERVER="Internal"
 logfile=$src_volume/server_sync_"$today".log
 
 function server_sync () {
-  # Google Drive 共有フォルダのパス
-  local_dir="$src_volume/usr/local"
-  share_dir="$src_volume/usr/share"
-  src_dir="$src_volume/usr/src"
-  log_dir="$src_volume/var/log"
-  audit_dir="$src_volume/var/log/audit_trail"
-
+  # Google Drive 共有フォルダ "Internal" の親ディレクトリ
   src_dev="$src_volume/dev/"
-  src_media_photos="$src_volume/media/photos/"
-  src_media_red_zone="$src_volume/media/red_zone/"
-  src_footage_2023="$local_dir/footage/2023/"
-  src_footage_2024="$local_dir/footage/2024/"
-  src_web_archive="$local_dir/web_archive/"
-  src_arch="$share_dir/arch/"
-  src_config="$share_dir/config/"
-  src_pdf="$share_dir/pdf/"
-  src_code="$src_dir/"
-  src_code_apple="$src_dir/apple/"
-  src_code_google="$src_dir/google/"
-  src_code_shell="$src_dir/shell/"
-  src_securityLog_2023="$log_dir/securityLog/2023/"
-  src_securityLog_2024="$log_dir/securityLog/2024/"
-  src_stat_text_2023="$log_dir/stat_text/2023/"
-  src_stat_text_2024="$log_dir/stat_text/2024/"
-  src_stdout="$log_dir/stdout/"
-  src_talk="$log_dir/talk/"
-  src_cpu_usage="$audit_dir/gl-mt3000/cpu_usage/"
-  src_disk_usage="$audit_dir/gl-mt3000/disk_usage/"
-  src_process="$audit_dir/gl-mt3000/process/"
-  src_traffic_stat="$audit_dir/gl-mt3000/traffic_stat/"
-  src_mail="$log_dir/mail/"
+  src_media="$src_volume/media/"
+  src_usr="$src_volume/usr/"
+  src_var="$src_volume/var/"
 
   # internalサーバ(Samba)の親ディレクトリ
-  dev="$dst_volume/dev"                                                 # "開発用ファイル" 保管ディレクトリ
-  media_photos="$dst_volume/media/photos"                               # "写真" 保管ディレクトリ
-  media_red_zone="$dst_volume/media/red_zone"                           # "防犯カメラ写真" 保管ディレクトリ
-  footage_2023="$dst_volume/usr/local/footage/2023"                     # "2023年度 防犯カメラ映像" 保管ディレクトリ
-  footage_2024="$dst_volume/usr/local/footage/2024"                     # "2024年度 防犯カメラ映像" 保管ディレクトリ
-  web_archive="$dst_volume/usr/local/web_archive"                       # "webサイトの圧縮ファイル" 保管ディレクトリ
-  arch="$dst_volume/usr/share/arch"                                     # "アーキテクチャ" 保管ディレクトリ
-  config="$dst_volume/usr/share/config"                                 # "コンフィグ関連ファイル" 保管ディレクトリ
-  pdf="$dst_volume/usr/share/pdf"                                       # "PDFファイル" 保管ディレクトリ
-  src="$dst_volume/usr/src"                                             # "ソースコード" 保管ディレクトリ
-  src_apple="$dst_volume/usr/src/apple"                                 # "AppleScriptのソースコード" 保管ディレクトリ
-  src_google="$dst_volume/usr/src/google"                               # "Google Apps Scriptのソースコード" 保管ディレクトリ
-  src_shell="$dst_volume/usr/src/shell"                                 # "shell scriptのソースコード" 保管ディレクトリ
-  securityLog_2023="$dst_volume/var/log/securityLog/2023"               # "2023年度 防犯カメラ記録" 保管ディレクトリ
-  securityLog_2024="$dst_volume/var/log/securityLog/2024"               # "2024年度 防犯カメラ記録" 保管ディレクトリ
-  stat_text_2023="$dst_volume/var/log/stat_text/2023"                   # "2023年度 防犯カメラ記録 status" 保管ディレクトリ
-  stat_text_2024="$dst_volume/var/log/stat_text/2024"                   # "2024年度 防犯カメラ記録 status" 保管ディレクトリ
-  stdout="$dst_volume/var/log/stdout"                                   # "コマンドログ" 保管ディレクトリ
-  talk="$dst_volume/var/log/talk"                                       # "グループLINEのトーク履歴" 保管ディレクトリ
-  cpu_usage="$dst_volume/var/log/audit_trail/gl-mt3000/cpu_usage"       # "GL-MT3000のCPUログ" 保管ディレクトリ
-  disk_usage="$dst_volume/var/log/audit_trail/gl-mt3000/disk_usage"     # "GL-MT3000のディスクログ" 保管ディレクトリ
-  process="$dst_volume/var/log/audit_trail/gl-mt3000/process"           # "GL-MT3000のプロセスキルログ" 保管ディレクトリ
-  traffic_stat="$dst_volume/var/log/audit_trail/gl-mt3000/traffic_stat" # "GL-MT3000のトラフィックログ" 保管ディレクトリ
-  mail="$dst_volume/var/mail"                                           # "メールファイル" 保管ディレクトリ
+  dst_dev="$dst_volume/dev"
+  dst_media="$dst_volume/media"
+  dst_usr="$dst_volume/usr"
+  dst_var="$dst_volume/var"
 
   # internalサーバ(Samba)に転送
-  echo "rsync --archive --human-readable --progress \"$src_dev\" $dev"
-  rsync --archive --human-readable --progress "$src_dev" $dev
+  echo "rsync --archive --human-readable --progress --recursive \"$src_dev\" $dst_dev"
+  rsync --archive --human-readable --progress --recursive "$src_dev" $dst_dev
   echo
-  echo "rsync --archive --human-readable --progress \"$src_media_photos\" $media_photos"
-  rsync --archive --human-readable --progress "$src_media_photos" $media_photos
+  echo "rsync --archive --human-readable --progress --recursive \"$src_media\" $dst_media"
+  rsync --archive --human-readable --progress --recursive "$src_media" $dst_media
   echo
-  echo "rsync --archive --human-readable --progress \"$src_media_red_zone\" $media_red_zone"
-  rsync --archive --human-readable --progress "$src_media_red_zone" $media_red_zone
+  echo "rsync --archive --human-readable --progress --recursive \"$src_usr\" $dst_usr"
+  rsync --archive --human-readable --progress --recursive "$src_usr" $dst_usr
   echo
-  echo "rsync --archive --human-readable --progress \"$src_footage_2023\" $footage_2023"
-  rsync --archive --human-readable --progress "$src_footage_2023" $footage_2023
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_footage_2024\" $footage_2024"
-  rsync --archive --human-readable --progress "$src_footage_2024" $footage_2024
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_web_archive\" $web_archive"
-  rsync --archive --human-readable --progress "$src_web_archive" $web_archive
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_arch\" $arch"
-  rsync --archive --human-readable --progress "$src_arch" $arch
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_config\" $config"
-  rsync --archive --human-readable --progress "$src_config" $config
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_pdf\" $pdf"
-  rsync --archive --human-readable --progress "$src_pdf" $pdf
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_code\" $src"
-  rsync --archive --human-readable --progress "$src_code" $src
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_code_apple\" $src_apple"
-  rsync --archive --human-readable --progress "$src_code_apple" $src_apple
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_code_google\" $src_google"
-  rsync --archive --human-readable --progress "$src_code_google" $src_google
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_code_shell\" $src_shell"
-  rsync --archive --human-readable --progress "$src_code_shell" $src_shell
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_securityLog_2023\" $securityLog_2023"
-  rsync --archive --human-readable --progress "$src_securityLog_2023" $securityLog_2023
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_securityLog_2024\" $securityLog_2024"
-  rsync --archive --human-readable --progress "$src_securityLog_2024" $securityLog_2024
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_stat_text_2023\" $stat_text_2023"
-  rsync --archive --human-readable --progress "$src_stat_text_2023" $stat_text_2023
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_stat_text_2024\" $stat_text_2024"
-  rsync --archive --human-readable --progress "$src_stat_text_2024" $stat_text_2024
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_stdout\" $stdout"
-  rsync --archive --human-readable --progress "$src_stdout" $stdout
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_talk\" $talk"
-  rsync --archive --human-readable --progress "$src_talk" $talk
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_cpu_usage\" $cpu_usage"
-  rsync --archive --human-readable --progress "$src_cpu_usage" $cpu_usage
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_disk_usage\" $disk_usage"
-  rsync --archive --human-readable --progress "$src_disk_usage" $disk_usage
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_process\" $process"
-  rsync --archive --human-readable --progress "$src_process" $process
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_traffic_stat\" $traffic_stat"
-  rsync --archive --human-readable --progress "$src_traffic_stat" $traffic_stat
-  echo
-  echo "rsync --archive --human-readable --progress \"$src_mail\" $mail"
-  rsync --archive --human-readable --progress "$src_mail" $mail
+  echo "rsync --archive --human-readable --progress --recursive \"$src_var\" $dst_var"
+  rsync --archive --human-readable --progress --recursive "$src_var" $dst_var
   echo
   echo -e "\033[1;32mALL SUCCESSFUL: ファイルの同期処理が正常に終了しました。\033[0m"
   echo
