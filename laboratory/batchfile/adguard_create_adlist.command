@@ -3,7 +3,7 @@
 current_dir=$(cd "$(dirname "$0")" && pwd)
 main_file="$current_dir/Advertisement_disallow.csv"
 sub_file="$current_dir/editOnly.csv"
-mid_file=$(find "$current_dir" -type f -name "bookmarks_*")
+mid_file=$(find "$current_dir" -type f -name "bookmarks_*.txt")
 
 function create_adlist () {
   awk '/\[広告\]/ {p=1} p' "$mid_file" > "$sub_file"
