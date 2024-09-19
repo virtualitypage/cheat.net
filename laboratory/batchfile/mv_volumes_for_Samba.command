@@ -11,7 +11,7 @@ logfile="$destination/mv_volumes_$today.log"
 stdout="/Volumes/Internal/var/log/stdout"
 
 src_file="DSCF0001.AVI"
-date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_volume/$src_file)
+date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_volume/$src_file 2>/dev/null)
 queue="$HOME/Desktop/$date_dir"
 disk_free="diskFree.log"
 
@@ -25,6 +25,24 @@ files_found_mp4=false
 files_found_mov=false
 files_found_avi=false
 
+function motd () {
+  uname=$(uname -v | awk '{print $2, $3, $4, $5, $6, $7, $8, $9, $10}' | sed 's/;//g')
+  tail -n 1 /var/log/system.log | awk '{print "Current login:", $1, $2, $3, "on", $NF}' >> "$logfile" # chmod 777 /var/log/system.log (元は rw-r----- [630])
+  cat << 'EOF' >> "$logfile"
+
+                        ___  ____
+  _ __ ___   __ _  ___ / _ \/ ___|
+ | '_ ` _ \ / _` |/ __| | | \___ \
+ | | | | | | (_| | (__| |_| |___) |
+ |_| |_| |_|\__,_|\___|\___/|____/
+
+ ---------------------------------------------------
+ uname
+ ---------------------------------------------------
+EOF
+  echo "$users@$hostname ~ % $0 ; exit;" >> "$logfile"
+}
+
 function stream_editor () {
   sed -i '' 's/\[1;31m//g' "$logfile"
   sed -i '' 's/\[1;32m//g' "$logfile"
@@ -32,6 +50,7 @@ function stream_editor () {
   sed -i '' 's/\[1;36m//g' "$logfile"
   sed -i '' 's/\[0m//g' "$logfile"
   sed -i '' 's/building file list ... /building file list .../g' "$logfile"
+  sed -i '' "s/uname/$uname/g" "$logfile"
 }
 
 function end_point () {
@@ -292,21 +311,26 @@ function dequeue () {
 exec > >(tee -a "$logfile")
 
 URL="https://drive.google.com/drive/my-drive"
-success=$(curl -I $URL 2>/dev/null | head -n 1)
-failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
+code=$(curl -I $URL 2>/dev/null | head -n 1)
 
 hostname=$(hostname | sed 's/.local//g')
 users=$(users)
 
-if [ "$success" ]; then
-  tail -n 1 /var/log/system.log | awk '{print "Current login:", $1, $2, $3, "on", $NF}' >> "$logfile" # chmod 777 /var/log/system.log (元は rw-r----- [630])
-  echo "$users@$hostname ~ % $0 ; exit;" >> "$logfile"
-  echo -e "\033[1;32mSUCCESS: $success\033[0m"
-elif [ "$failure" == "Could not resolve host" ]; then
-  tail -n 1 /var/log/system.log | awk '{print "Current login:", $1, $2, $3, "on", $NF}' >> "$logfile"
-  echo "$users@$hostname ~ % $0 ; exit;" >> "$logfile"
+motd
+
+if [[ "$code" =~ "HTTP/2 302" ]] || [[ "$code" =~ "HTTP/2 304" ]]; then
+  echo -e "\033[1;32mSUCCESS: $code\033[0m"
+elif [[ "$code" =~ "HTTP/2 404" ]]; then
+  echo -e "\033[1;31mCLIENT ERROR: Google Drive の URL が無効です。URL を確認して再度実行してください。\033[0m"
+  echo
+  stream_editor
+  end_point
+  exit 1
+else
   echo -e "\033[1;31mNETWORK ERROR: Google Drive にアクセス出来ませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
   echo
+  stream_editor
+  end_point
   exit 1
 fi
 
@@ -326,9 +350,11 @@ if [ -e $src_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;31mERROR: SERVER \"$SERVER\" にアクセス出来ません。サーバーにアクセスされているか確認して再度実行してください。\033[0m"
     echo -e "\033[1;36mHINT: ショートカット \"Internal Injection\" をクリックしてサーバーにアクセス。\033[0m"
+    echo
     sleep 0.5
     ps_check
-    echo
+    stream_editor
+    end_point
     exit 1
   fi
 elif [ ! -e $src_volume ]; then
@@ -336,5 +362,7 @@ elif [ ! -e $src_volume ]; then
   echo
   sleep 0.5
   ps_check
+  stream_editor
+  end_point
   exit 1
 fi
