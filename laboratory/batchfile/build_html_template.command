@@ -5,7 +5,7 @@ dir_name="$current_dir/HTML_TEMPLATE"
 
 function success_msg () {
   echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
-  echo -e "\033[1;32mHTMLファイルは $dir_name に格納されています。\033[0m"
+  echo -e "\033[1;32mHTML ファイルは $dir_name に格納されています。\033[0m"
   echo
 }
 
@@ -1759,7 +1759,7 @@ EOF
 echo -e "\033[1;36m$templateList\033[0m"
 echo
 while true; do
-  read -p "上記からHTMLテンプレートを選択して下さい(末尾に\"-sample\"追加でサンプルHTML生成): " template
+  read -p "上記から HTML テンプレートを選択して下さい(末尾に\"-sample\"追加でサンプルHTML生成): " template
   case $template in
     blog*)
       html_template_blog
@@ -1790,7 +1790,7 @@ while true; do
       break
     ;;
     *)
-      echo -e "\033[1;31mERROR: そのようなHTMLテンプレートは存在しません(終了する場合は「exit」を入力)\033[0m"
+      echo -e "\033[1;31mERROR: そのような HTML テンプレートは存在しません(終了する場合は「exit」を入力)\033[0m"
       echo
       continue
     ;;

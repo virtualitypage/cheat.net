@@ -11,7 +11,7 @@ sub_file=source.txt
 first_line=$(head -n 1 "$current_dir/$src_file") # テキストファイルの1行目を読み込む
 
 function create_source_file () {
-  cat << EOF > "$current_dir"/$sub_file
+  cat << EOF > "$current_dir/$sub_file"
 # variable
 
 ACCESS_KEY=
@@ -30,22 +30,9 @@ MAIL_ADDRESS=
 EOF
 }
 
-if [ ! -e $src_file ] || [ ! -f $src_file ]; then
-  echo -e "\033[1;31mERROR: ソースファイルが存在しない、またはパスの指定に誤りがあります。対象のファイルを $current_dir に生成します。\033[0m"
-  create_source_file
-  exit 1
-elif [[ ! $first_line =~ "# variable" ]]; then
-  echo -e "\033[1;31mERROR: ソースファイル $main_file は無効です。\033[0m"
-  echo -e "\033[1;31mERROR: ソースファイル $main_file の一行目に適切な修正を行って再度実行してください。\033[0m"
-  exit 1
-else
-  echo -e "\033[1;32mSUCCESS: ソースファイル $src_file は有効です。\033[0m"
-fi
-
 function terraform_code-basic () {
-
-  mkdir "$current_dir"/"$dir_name"
-  cd "$current_dir"/"$dir_name" || exit
+  mkdir "$current_dir/$dir_name"
+  cd "$current_dir/$dir_name" || exit
 
   cat << EOF >> iam.tf
 # IAM ユーザーを作成する(事前にコンソール上で「AdministratorAccess」という許可ポリシーを付与したユーザーを作成しておくこと)
@@ -249,6 +236,18 @@ source $(dirname "${BASH_SOURCE[0]}")/$src_file
 # else
 #   echo
 # fi
+
+if [ ! -e $src_file ] || [ ! -f $src_file ]; then
+  echo -e "\033[1;31mERROR: ソースファイルが存在しない、またはパスの指定に誤りがあります。対象のファイルを $current_dir に生成します。\033[0m"
+  create_source_file
+  exit 1
+elif [[ ! $first_line =~ "# variable" ]]; then
+  echo -e "\033[1;31mERROR: ソースファイル $main_file は無効です。\033[0m"
+  echo -e "\033[1;31mERROR: ソースファイル $main_file の一行目に適切な修正を行って再度実行してください。\033[0m"
+  exit 1
+else
+  echo -e "\033[1;32mSUCCESS: ソースファイル $src_file は有効です。\033[0m"
+fi
 
 if [[ $first_line =~ "# variable" ]]; then
   terraform_code-basic

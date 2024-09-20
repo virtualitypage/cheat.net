@@ -21,7 +21,7 @@ function selective_delete () {
     read -p "\"yes\" を入力して削除: " yesno
     if [ "$yesno" = "yes" ]; then
       echo "rm -rf /Volumes/$volume/.Trashes/*"
-      rm -rf /Volumes/"$volume"/.Trashes/*
+      rm -rf "/Volumes/$volume/.Trashes/*"
       progress_bar
       echo -e "\033[1;32mSUCCESS: $volume のゴミ箱を空にしました\033[0m"
       echo
@@ -33,14 +33,14 @@ function selective_delete () {
   elif [ "$section" = "選択削除" ]; then
     echo
     while true; do
-      read -p "削除したいファイル・ディレクトリを入力してください(終了する場合はEnterキー): " deleteFile
+      read -p "削除したいファイル・ディレクトリを入力してください(終了する場合は Enter キー): " deleteFile
       if [ -e "$deleteFile" ]; then
         echo
         echo -e "\033[1;33mCONFIRM: $volume のゴミ箱にある $deleteFile を削除します。よろしいですか？\033[0m"
         read -p "\"yes\" を入力して削除: " yesno
         if [ "$yesno" = "yes" ]; then
           echo "rm -rf /Volumes/$volume/.Trashes/$deleteFile"
-          rm -rf /Volumes/"$volume"/.Trashes/"$deleteFile"
+          rm -rf "/Volumes/$volume/.Trashes/$deleteFile"
           progress_bar
           echo -e "\033[1;32mSUCCESS: $volume のゴミ箱にある $deleteFile を削除しました\033[0m"
           echo
@@ -72,8 +72,8 @@ while true; do
   IFS=$'\n' # スペースをファイル名に含めるためにIFS(Internal Field Separator)を設定
   if [ -e "/Volumes/$volume" ]; then
     if [ -n "$volume" ]; then
-      cd /Volumes/"$volume"/.Trashes || exit
-      disk_use=$(du -sh /Volumes/"$volume"/.Trashes | cut -f1)
+      cd "/Volumes/$volume/.Trashes" || exit
+      disk_use=$(du -sh "/Volumes/$volume/.Trashes" | cut -f1)
       echo -e "\033[1;36mINFO: $volume のゴミ箱にて以下のファイルが検出されました。容量:${disk_use}B\033[0m"
       for file in ls $(ls -a); do
         files=$(basename "$file")

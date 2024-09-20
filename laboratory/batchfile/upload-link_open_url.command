@@ -7,7 +7,7 @@ twitter_csv="$current_dir/twitter.csv"
 nicovideo_csv="$current_dir/nicovideo.csv"
 
 function open_url_tiktok () {
-  sed -e '/Disable/ d' -e 's/,.*//g' "$tiktok_csv" > "$current_dir"/tiktok_readOnly.csv
+  sed -e '/Disable/ d' -e 's/,.*//g' "$tiktok_csv" > "$current_dir/tiktok_readOnly.csv"
   while IFS=, read -r url || [[ -n $url ]]; do
     open "$url"
     sleep 1

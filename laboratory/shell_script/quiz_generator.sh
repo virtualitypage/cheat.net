@@ -9,7 +9,7 @@ csv_file=$2
 txt_file=$3.txt
 
 function usage () {
-  echo "csvファイルからデータを抽出する、テキストで問題を作るwebサイト'https://quizgenerator.net'用スクリプト"
+  echo "csvファイルからデータを抽出する、テキストで問題を作る web サイト'https://quizgenerator.net'用スクリプト"
   echo "入力方法: $this { -t | -f }(-tで出題順のランダム化) [csvファイルパス] [ cisco | lpic | aws ](出力ファイル名)"
   echo "csvファイル1列目に[ 択一問題 | fill-in: | ma: ]のいずれか一つを入力する"
   echo "csvファイル2列目に問題文、3列目以降に選択肢を入力"
@@ -20,24 +20,20 @@ function usage () {
   exit 1
 }
 
-if [ -z "$1" ]; then
-  usage
-fi
-
 function shuffle_questions_true () {
   change=true
 }
 
 while getopts ":t:f:" opt; do
   case $opt in
-    t )
+    t)
       echo -e "\033[1;32mSUCCESE: 指定されたオプション -t により、出題順のランダム化が適用されます。\033[0m"
       shuffle_questions_true
     ;;
-    f )
+    f)
       echo -e "\033[1;32mSUCCESE: 指定されたオプション -f により、出題順のランダム化が無効になります。\033[0m"
     ;;
-    \? )
+    \?)
       echo -e "\033[1;31mERROR: 指定されたオプション $1 は無効です。\033[0m"
       echo -e "\033[1;31m指定可能なオプションは { -t | -f } です。\033[0m"
       exit 1
@@ -45,22 +41,26 @@ while getopts ":t:f:" opt; do
   esac
 done
 
+if [ -z "$1" ]; then
+  usage
+fi
+
 if [ -f "$1" ]; then
   echo -e "\033[1;31mERROR: オプションが指定されていません。\033[0m"
   echo -e "\033[1;31m指定可能なオプションは { -t | -f } です。\033[0m"
   exit 1
 fi
 
-if [[ -z "$2" ]]; then
-  echo -e "\033[1;31mERROR: csvファイルパスが指定されていません。csvファイルパスを入力して再度実行してください。\033[0m"
+if [ -z "$2" ]; then
+  echo -e "\033[1;31mERROR: csv ファイルパスが指定されていません。csvファイルパスを入力して再度実行してください。\033[0m"
   echo -e "\033[1;31mEXAMPLE: $HOME/xxx.csv\033[0m"
   exit 1
-elif [[ ! -f "$2" ]]; then
-  echo -e "\033[1;31mERROR: csvファイルパスの指定に誤りがあります。正しいファイルパスを入力して再度実行してください。\033[0m"
+elif [ ! -f "$2" ]; then
+  echo -e "\033[1;31mERROR: csv ファイルパスの指定に誤りがあります。正しいファイルパスを入力して再度実行してください。\033[0m"
   echo -e "\033[1;31mEXAMPLE: $HOME/xxx.csv\033[0m"
   exit 1
 else
-  echo -e "\033[1;32mSUCCESE: csvファイルパス $csv_file は有効です。\033[0m"
+  echo -e "\033[1;32mSUCCESE: csv ファイルパス $csv_file は有効です。\033[0m"
 fi
 
 if [ -z "$3" ]; then
@@ -71,7 +71,7 @@ else
   echo -e "\033[1;32mSUCCESE: 出力ファイル名は $txt_file です。\033[0m"
 fi
 
-# if [[ “${1:0:1}” == “-” ]]; then
+# if [ "${1:0:1}" == "-" ]; then
 #   shuffle_questions_true
 #   shift 1
 # fi
@@ -84,12 +84,8 @@ function quiz_generator () {
 EOF
 
   count=0
-
-  while IFS=, read -r col1 col2 col3 col4 col5 col6 col7
-  do
-
+  while IFS=, read -r col1 col2 col3 col4 col5 col6 col7; do
     count=$(echo "$count+1" | bc)
-
     if [ 択一問題 = "$col1" ]; then
       cat << EOF >> "$txt_file"
 問題 $count $col2
@@ -121,11 +117,10 @@ o:e. $col7
 EOF
     fi
   done < "$csv_file"
-
   echo -e "\033[1;32mALL SUCCESEFUL: ファイルの出力処理が正常に終了しました。\033[0m"
   echo -e "\033[1;32m$txt_file は $current_dir に格納されています。\033[0m"
 }
 
-if [[ -f $csv_file ]] && [ "$txt_file" ]; then
+if [ -f "$csv_file" ] && [ "$txt_file" ]; then
   quiz_generator
 fi

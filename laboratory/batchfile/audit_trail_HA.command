@@ -5,7 +5,7 @@ current_dir=$(echo $current_dir | sed 's/\/@COMMAND//g')
 src_dir="$current_dir/archive"
 yesterday=$(TZ=UTC-9 date -v -1d '+%Y-%m-%d')
 yesterday_date=$(TZ=UTC-9 date -v -1d '+%m/%d')
-date=$(find $src_dir/$yesterday -type f -name CPU_temp_*.log)
+date=$(find "$src_dir/$yesterday" -type f -name CPU_temp_*.log)
 year=$(basename "$date" | sed -e 's/CPU_temp_//g' -e 's/^\(.\{4\}\).*/\1/')
 month=$(basename "$date" | sed -e 's/CPU_temp_//g' -e 's/^\(.\{7\}\).*/\1/')
 month_=$(basename "$date" | sed -e 's/CPU_temp_//g' -e 's/^\(.\{7\}\).*/\1/' -e 's/-/_/g')

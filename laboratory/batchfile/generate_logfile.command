@@ -7,8 +7,6 @@ date=$(basename "$sub_file" | sed 's/ status.txt//g')
 main_file="$current_dir/securityCamera_Rec($date).txt"
 securityCamera_Rec=$(basename "$main_file")
 
-rm "$current_dir"/._*
-
 function generate_logfile () {
   while IFS= read -r line || [[ -n $line ]]; do
     message=$(
@@ -22,7 +20,7 @@ function generate_logfile () {
 EOF
     )
     echo "$message" >> "$main_file"
-    echo "" >> "$main_file"
+    echo >> "$main_file"
   done < "$sub_file"
 
   sed -i '' 's/DSCF.*-> //g' "$main_file"
@@ -40,6 +38,7 @@ EOF
 }
 
 if [ -f "$sub_file" ]; then
+  rm "$current_dir"/._*
   generate_logfile
 else
   echo -e "\033[1;31mERROR: status.txt が存在しない、または複数の status.txt が配置されています。単一のファイルのみ配置して下さい。\033[0m"

@@ -18,12 +18,8 @@ function usage () {
   exit 1
 }
 
-if [ -z "$1" ]; then
-  usage
-fi
-
 function create_source_file () {
-cat << EOF > $sub_file
+  cat << EOF > $sub_file
 # variable
 
 ACCESS_KEY=
@@ -41,6 +37,10 @@ ANOTHER_USER_GROUP=
 MAIL_ADDRESS=
 EOF
 }
+
+if [ -z "$1" ]; then
+  usage
+fi
 
 if [ ! -e "$1" ] || [ ! -f "$1" ]; then
   echo -e "\033[1;31mERROR: ソースファイルが存在しない、またはパスの指定に誤りがあります。対象のファイルを $current_dir に生成します。\033[0m"
@@ -63,11 +63,10 @@ else
 fi
 
 function terraform_code-basic () {
+  mkdir "$current_dir"/"$dir_name"
+  cd "$dir_name" || exit
 
-mkdir "$current_dir"/"$dir_name"
-cd "$dir_name" || exit
-
-cat << EOF >> iam.tf
+  cat << EOF >> iam.tf
 # IAM ユーザーを作成する(事前にコンソール上で「AdministratorAccess」といい許可ポリシーを付与したユーザーを作成しておくこと)
 # ユースケースで「コマンドラインインターフェイス (CLI)」を選択してアクセスキーとシークレットアクセスキーを設定する
 
@@ -155,7 +154,7 @@ resource "aws_iam_user_policy" "$ANOTHER_USER" {
 }
 EOF
 
-cat << EOF >> main.tf
+  cat << EOF >> main.tf
 terraform {
   required_providers {
     aws = {
@@ -174,12 +173,12 @@ provider "aws" {
 }
 EOF
 
-cat << EOF >> terraform.tfvars
+  cat << EOF >> terraform.tfvars
 aws_access_key = "$ACCESS_KEY"
 aws_secret_key = "$SECRET_KEY"
 EOF
 
-cat << EOF >> variables.tf
+  cat << EOF >> variables.tf
 variable "aws_access_key" {
   description    = "AWS_ACCESS_KEY_ID"
   type           = string
@@ -202,7 +201,7 @@ variable "profile" {
 }
 EOF
 
-cat << EOF >> aws-sso.tf
+  cat << EOF >> aws-sso.tf
 # IAM Identity Center の詳細画面にある情報を取得する
 
 data "aws_ssoadmin_instances" "this" {}
@@ -254,9 +253,8 @@ data "aws_ssoadmin_instances" "$ANOTHER_USER" {}
 #   value = data.aws_identitystore_user.$ANOTHER_USER.user_id
 # }
 EOF
-
-echo -e "\033[1;32mALL SUCCESEFUL: ファイルの出力処理が正常に終了しました。\033[0m"
-echo -e "\033[1;32m$dir_name は $current_dir/$dir_name に格納されています。\033[0m"
+  echo -e "\033[1;32mALL SUCCESEFUL: ファイルの出力処理が正常に終了しました。\033[0m"
+  echo -e "\033[1;32m$dir_name は $current_dir/$dir_name に格納されています。\033[0m"
 }
 
 source  $(dirname "${BASH_SOURCE[0]}")/$src_file

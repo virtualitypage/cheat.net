@@ -8,10 +8,6 @@ function usage () {
   exit 1
 }
 
-if [ -z "$1" ]; then
-  usage
-fi
-
 function python_install () {
   brew install python
   pip3 install PyInstaller
@@ -27,6 +23,10 @@ function python_uninstall () {
   pip3 uninstall PyInstaller
   echo -e "\033[1;32mALL SUCCESEFUL: pythonのアンインストールが正常に終了しました。\033[0m"
 }
+
+if [ -z "$1" ]; then
+  usage
+fi
 
 if [ "$1" = --install ]; then
   python_install

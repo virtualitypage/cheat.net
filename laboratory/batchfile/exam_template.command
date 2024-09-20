@@ -85,7 +85,7 @@ function create_dir () {
       </nav>
     </header>
 EOF
-      cat << EOF >> css/"$col4".css
+      cat << EOF >> "css/$col4.css"
 /* ブラウザがそれぞれ持っているCSSをリセットするための記述 */
 * {
   margin: 0;
@@ -179,15 +179,16 @@ footer {
 }
 EOF
       for i in {1..600}; do
-        tmp_functions+="function changeColor$i(idname){
+        js_code+="
+function changeColor$i(idname){
   var Object = document.getElementById(idname);
   Object.style.color = '#ff0000';
   Object.style.fontWeight = 'bold';
-}
-"
+}"
       done
-      cat << EOF >> js/"$col6".js
-$tmp_functions
+      cat << EOF >> "js/$col6.js"
+$js_code
+
 //PDFダウンロード時のアラート
 function pdf_alert() {
 	var a_pdf = document.getElementsByClassName('pdf-alert');
@@ -241,9 +242,7 @@ EOF
 
   # カウント変数(while文の外側に配置)
   count=0
-
   while IFS=, read -r col1 col2 col3 col4 col5 col6 col7 _ || [[ -n $col7 ]]; do
-
     if [ "$col1" = $multiple ]; then
       cat << EOF >> "$main_file"
       <p><b>問題 $count $col2:</b></p>

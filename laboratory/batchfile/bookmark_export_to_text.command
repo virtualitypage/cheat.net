@@ -5,13 +5,6 @@ today=$(TZ=UTC-9 date '+%Y_%m_%d')
 main_file="$current_dir/bookmarks_$today.txt"
 sub_file=$(find "$current_dir" -type f -name "bookmarks_*.html")
 
-if [ -e "$sub_file" ]; then
-  echo -e "\033[1;32mSUCCESS: $sub_file は有効です。\033[0m"
-elif [ ! -e "$sub_file" ]; then
-  echo -e "\033[1;31mERROR: $sub_file が存在しません。$sub_file を $current_dir に置いてから再度実行してください。\033[0m"
-  exit 1
-fi
-
 function bookmark_export_to_text () {
   url_pattern='A HREF="([^"]+)"[^>]*>([^<]+)</A>'
   folder_pattern='<H3[^>]*>([^<]+)</H3>'
@@ -38,6 +31,13 @@ function bookmark_export_to_text () {
   echo -e "\033[1;32m$main_file は $current_dir に格納されています。\033[0m"
   echo
 }
+
+if [ -e "$sub_file" ]; then
+  echo -e "\033[1;32mSUCCESS: $sub_file は有効です。\033[0m"
+elif [ ! -e "$sub_file" ]; then
+  echo -e "\033[1;31mERROR: $sub_file が存在しません。$sub_file を $current_dir に置いてから再度実行してください。\033[0m"
+  exit 1
+fi
 
 if [ -f "$sub_file" ]; then
   bookmark_export_to_text

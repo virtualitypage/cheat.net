@@ -33,12 +33,6 @@ function usage () {
   exit 1
 }
 
-if [ -z "$1" ]; then
-  usage
-fi
-
-# read $1
-
 function 1a () {
 cat << EOF > 揚げナスたれ漬け.txt
 揚げナスたれ漬け
@@ -745,6 +739,10 @@ cat << EOF > レシピ.txt
   ④山くらげが煮えてきた辺りでロールイカを入れる(長い間に入ると硬くなるためあまり煮ない)
 EOF
 }
+
+if [ -z "$1" ]; then
+  usage
+fi
 
 case $1 in
   "1")

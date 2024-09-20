@@ -830,7 +830,7 @@ EOF
 
 while true; do
   read -p "HTMLコードを構築したいファイルの名前を入力して下さい: " main_file
-  if [ -e "$current_dir"/"$main_file" ]; then
+  if [ -e "$current_dir/$main_file" ]; then
     if [ "$main_file" != "" ]; then
       cd "$current_dir" || exit
       build_HTML_ShellCode
@@ -840,7 +840,7 @@ while true; do
       echo
       continue
     fi
-  elif [ ! -e "$current_dir"/"$main_file" ]; then
+  elif [ ! -e "$current_dir/$main_file" ]; then
     echo -e "\033[1;33mWARNING: 指定されたファイル \"$main_file\" は存在しません。他のファイル名を入力してください\033[0m"
     echo
     continue

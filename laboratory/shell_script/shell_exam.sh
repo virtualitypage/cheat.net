@@ -207,6 +207,5 @@ done
 条件1 -a 条件2  AND条件
 条件1 -o 条件2  OR条件
 EOF
-
 echo -e "\033[1;32mALL SUCCESEFUL: ファイルの出力処理が正常に終了しました。\033[0m"
 echo -e "\033[1;32m作成されたファイルは $current_dir に格納されています。\033[0m"
