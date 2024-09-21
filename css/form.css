@@ -9,7 +9,7 @@ p {
 }
 
 .line-break {
-  display: none; /* 改行を無効化 */
+  display: block;
 }
 
 .adguard_description {
