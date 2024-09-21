@@ -2,7 +2,7 @@
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
 year=$(TZ=UTC-9 date '+%Y')
-sub_file=$(find "$current_dir" -type f -name "*$year*status.txt" 2> /dev/null)
+sub_file=$(find "$current_dir" -type f -name "*$year*status.txt" 2>/dev/null)
 date=$(basename "$sub_file" | sed 's/ status.txt//g')
 main_file="$current_dir/securityCamera_Rec($date).txt"
 securityCamera_Rec=$(basename "$main_file")

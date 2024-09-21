@@ -142,7 +142,7 @@ function rsync_clone_folder () {
       echo -e "\033[1;36mINFO: 一時フォルダ \"${directory}_TF\" から転送用フォルダ \"$today\" に動画ファイルを転送しています…\033[0m"
       echo "rsync --archive --human-readable --progress $src_volume/${directory}_TF/* $src_volume/$today"
       for file in "$src_volume/$directory"_TF/*; do # 送信対象のファイルをループで処理
-        rsync --archive --human-readable --progress "$file" $src_volume/"$today"
+        rsync --archive --human-readable --progress "$file" "$src_volume/$today"
         ((file_count++))                         # 送信対象のファイル数をインクリメント
         if [ $file_count -ge $file_limit ]; then # 送信対象のファイル数が制限に達したらループを終了
           break

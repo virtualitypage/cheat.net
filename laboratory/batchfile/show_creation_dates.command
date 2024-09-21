@@ -2,7 +2,7 @@
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
 directory=$current_dir
-main_file=$current_dir/status.txt
+main_file="$current_dir/status.txt"
 
 mp4_files=()
 mov_files=()

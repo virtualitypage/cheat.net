@@ -3,11 +3,11 @@
 current_dir=$(cd "$(dirname "$0")" && pwd)
 year=$(TZ=UTC-9 date '+%Y')
 
-main_file="$current_dir"/securityCamera_Log.txt
-main_copy="$current_dir"/securityCamera_Log_copy.txt
-main_file_unique="$current_dir"/securityCamera_manual.csv
+main_file="$current_dir/securityCamera_Log.txt"
+main_copy="$current_dir/securityCamera_Log_copy.txt"
+main_file_unique="$current_dir/securityCamera_manual.csv"
 sub_file=$(find "$current_dir" -type f -name "securityCamera_R*.txt" 2>/dev/null)
-mid_file="$current_dir"/securityCamera_InterimData.txt
+mid_file="$current_dir/securityCamera_InterimData.txt"
 
 function generate_logfile_edit () {
   cp "$main_file" "$current_dir/securityCamera_Log_copy.txt"
@@ -58,6 +58,6 @@ elif [ -n "$main_file" ] && [ -e "$main_file_unique" ]; then
   generate_logfile_edit
 else
   echo
-  echo -e "\033[1;31mERROR: securityCamera_manual.csv か \"securityCamera_R\"を含むファイル又はその両方が存在しません\033[0m"
+  echo -e "\033[1;31mERROR: securityCamera_manual.csv か \"securityCamera_R\" を含むファイル又はその両方が存在しません\033[0m"
   exit 1
 fi

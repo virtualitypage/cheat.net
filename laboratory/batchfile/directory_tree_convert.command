@@ -30,7 +30,7 @@ function dest_directory_tree_convert () {
   rm "$dest_file.tmp"
 }
 
-if [ "$origin" ] && [ "$dest" ] ; then
+if [ "$origin" ] && [ "$dest" ]; then
   origin_directory_tree_convert
   dest_directory_tree_convert
   echo

@@ -4,24 +4,6 @@ destination="$HOME/Library/CloudStorage/GoogleDrive-ganbanlife@gmail.com/.shortc
 config_file="$destination/config"
 sshd_config="/etc/ssh/sshd_config"
 
-URL="https://google.com"
-failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
-
-if [ "$failure" == "Could not resolve host" ]; then
-  echo
-  echo -e "\033[1;31mNETWORK ERROR: インターネットにアクセスできませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
-  echo
-  exit 1
-fi
-
-if [ -n "$destination" ]; then
-  sleep 0.1
-else
-  echo -e "\033[1;31mERROR: データの転送先が見つかりませんでした。Google Drive がマウントされているか確認して再度実行してください。\033[0m"
-  echo
-  exit 1
-fi
-
 # initial settings (client)
 function init_client () {
   id_rsa=id_rsa
@@ -97,7 +79,7 @@ Host iMac_Kochi
   User  # サーバのユーザ名
   IdentityFile ~/.ssh/id_rsa
 EOF
-)
+  )
   config=$(perl -pe 'chomp if eof' <<< "$config")
   echo "$config" | perl -pe 'chomp if eof' > "$config_file"
 }
@@ -122,6 +104,24 @@ function connect_client () {
     exit 1
   fi
 }
+
+URL="https://google.com"
+failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
+
+if [ "$failure" == "Could not resolve host" ]; then
+  echo
+  echo -e "\033[1;31mNETWORK ERROR: インターネットにアクセスできませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
+  echo
+  exit 1
+fi
+
+if [ -n "$destination" ]; then
+  sleep 0.1
+else
+  echo -e "\033[1;31mERROR: データの転送先が見つかりませんでした。Google Drive がマウントされているか確認して再度実行してください。\033[0m"
+  echo
+  exit 1
+fi
 
 string="これはSSH接続を行うためのプログラムです。オプションを指定してEnterキーを押してください"
 for ((i = 0; i < ${#string}; i++)); do

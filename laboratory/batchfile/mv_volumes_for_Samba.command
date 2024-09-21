@@ -26,7 +26,6 @@ files_found_mov=false
 files_found_avi=false
 
 function motd () {
-  uname=$(uname -v | awk '{print $2, $3, $4, $5, $6, $7, $8, $9, $10}' | sed 's/;//g')
   tail -n 1 /var/log/system.log | awk '{print "Current login:", $1, $2, $3, "on", $NF}' >> "$logfile" # chmod 777 /var/log/system.log (元は rw-r----- [630])
   cat << 'EOF' >> "$logfile"
 
@@ -44,6 +43,7 @@ EOF
 }
 
 function stream_editor () {
+  uname=$(uname -v | awk '{print $2, $3, $4, $5, $6, $7, $8, $9, $10}' | sed 's/;//g')
   sed -i '' 's/\[1;31m//g' "$logfile"
   sed -i '' 's/\[1;32m//g' "$logfile"
   sed -i '' 's/\[1;33m//g' "$logfile"

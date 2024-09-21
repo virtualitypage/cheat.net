@@ -1,7 +1,7 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-sub_file=$current_dir/output.csv
+sub_file="$current_dir/output.csv"
 
 function build_HTML_ShellCode () {
   span1="<span class=\"string\">$col1</span>"

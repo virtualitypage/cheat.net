@@ -335,7 +335,7 @@ EOF
 
 function html_template_hero () {
   main_file="$current_dir/source_hero.csv"
-    if [ "$template" = "hero-sample" ]; then
+  if [ "$template" = "hero-sample" ]; then
     cat << EOF > "$main_file"
 ページのタイトル名,見出し,コメント等の文章,ボタンクリック後の遷移先のリンク(ファイルパス等),ボタン名1,ボタンクリック後の遷移先のリンク(ファイルパス等),ボタン名2,画像ファイルのリンク(ファイルパス等)
 hero-sample,Lorem ipsum,Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.,,Starts,,Others,
@@ -773,7 +773,7 @@ EOF
                   </td>
                 </tr>"
     fi
-      cat << EOF >> "table.html"
+    cat << EOF >> "table.html"
 $templates
 EOF
   done < "$main_file"
@@ -1338,7 +1338,7 @@ EOF
                     </p>
                   </div>"
     fi
-      cat << EOF >> "timeline.html"
+    cat << EOF >> "timeline.html"
 $templates
 EOF
   done < "$main_file"

@@ -211,7 +211,7 @@ function automator_rsync_google_drive () {
   echo -e "\033[1;32mSUCCESS: 一時フォルダ \"$directory_TF\" から動画ファイルを削除しました\033[0m"
   # fi
   echo
-  cd $src_volume/"$today" || exit
+  cd "$src_volume/$today" || exit
   echo -e "\033[1;36mINFO: 転送用フォルダ \"$today\" にて動画ファイルを検索しています…\033[0m"
   for file in "$src_volume_path"/*; do
     if [ -f "$file" ]; then

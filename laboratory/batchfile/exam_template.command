@@ -61,8 +61,8 @@ function convert_to_csv () {
 function create_dir () {
   while IFS=, read -r col1 col2 col3 col4 col5 col6 col7 col8 col9 col10 _ || [[ -n $col10 ]]; do
     if [ "$col1" = "$dir_name" ] && [ "$col3" = "$css_name" ] && [ "$col5" = "$js_name" ] && [ "$col7" = "$back_link" ] && [ "$col9" = "$dlc_name" ]; then
-      mkdir -p "$current_dir"/"$col2"
-      cd "$current_dir"/"$col2" || exit
+      mkdir -p "$current_dir/$col2"
+      cd "$current_dir/$col2" || exit
       mkdir css js
       cat << EOF >> "$main_file"
 <!DOCTYPE html>
