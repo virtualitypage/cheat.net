@@ -36,7 +36,7 @@ form dl dt {
 
 .form_body_AdGuard {
   position: absolute;
-  top: 650px;
+  /* top: 800px; */
   left: 50%;
   transform: translate(-50%, -50%);
 }
