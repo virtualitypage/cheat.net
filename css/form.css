@@ -8,8 +8,12 @@ p {
   text-align: center;
 }
 
+.line-break {
+  display: none; /* 改行を無効化 */
+}
+
 .adguard_description {
-  font-size: 13px;
+  font-size: 15px;
   text-align: center;
 }
 
@@ -32,7 +36,7 @@ form dl dt {
 
 .form_body_AdGuard {
   position: absolute;
-  top: 800px;
+  top: 650px;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -51,7 +55,7 @@ form dl dt {
 } */
 
 .form_label_AdGuard {
-  font-size: 25px;
+  font-size: 20px;
   display: flex;
   align-items: center;
   width: 380px;
@@ -140,12 +144,16 @@ form dl dt {
 /* PC Only */
 @media (min-width: 1024px) {
   p {
-    font-size: 20px;
+    font-size: 15px;
     text-align: center;
   }
 
+  .line-break {
+    display: block; /* 改行を無効化 */
+  }
+
   .adguard_description {
-    font-size: 20px;
+    font-size: 15px;
     text-align: center;
   }
 
@@ -155,7 +163,7 @@ form dl dt {
 
   .form_body_AdGuard {
     position: absolute;
-    top: 750px;
+    top: 630px;
     left: 50%;
     transform: translate(-50%, -50%);
   }
@@ -167,7 +175,7 @@ form dl dt {
   }
 
   .form_label_AdGuard {
-    font-size: 25px;
+    font-size: 17px;
     display: flex;
     align-items: center;
     width: 380px;
