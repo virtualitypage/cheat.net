@@ -17,6 +17,13 @@ p {
   text-align: center;
 }
 
+.organize_description {
+  position: fixed;
+  font-size: 25px;
+  text-align: center;
+  padding: 10px;
+}
+
 form dl {
   display: flex;
   align-items: center;
@@ -41,6 +48,13 @@ form dl dt {
   transform: translate(-50%, -50%);
 }
 
+.form_body_organize {
+  position: absolute;
+  top: 3380px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .form_label {
   font-size: 25px;
   display: flex;
@@ -59,6 +73,13 @@ form dl dt {
   display: flex;
   align-items: center;
   width: 380px;
+}
+
+.form_label_organize {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  width: 300px;
 }
 
 .box_calc {
@@ -149,11 +170,16 @@ form dl dt {
   }
 
   .line-break {
-    display: block; /* 改行を無効化 */
+    display: none; /* 改行を無効化 */
   }
 
   .adguard_description {
     font-size: 15px;
+    text-align: center;
+  }
+
+  .organize_description {
+    font-size: 23px;
     text-align: center;
   }
 
@@ -168,6 +194,13 @@ form dl dt {
     transform: translate(-50%, -50%);
   }
 
+  .form_body_organize {
+    position: absolute;
+    top: 3400px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   .form_label {
     font-size: 20px;
     display: flex;
@@ -176,6 +209,13 @@ form dl dt {
 
   .form_label_AdGuard {
     font-size: 17px;
+    display: flex;
+    align-items: center;
+    width: 380px;
+  }
+
+  .form_label_organize {
+    font-size: 20px;
     display: flex;
     align-items: center;
     width: 380px;
