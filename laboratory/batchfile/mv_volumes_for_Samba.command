@@ -82,6 +82,18 @@ function ps_check () {
   done <<< "$pid_array" # pid_array の内容を while ループに渡す
 }
 
+function enqueue_info () {
+  num_files=$(ls -F $src_volume | grep -v / | wc -l)
+  total_time=$(echo "4 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+  current_time=$(date +%s) # 現在の時刻を取得
+  end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
+  end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
+  echo
+  echo -e "\033[1;36mINFO: 動画ファイルのエンキュー処理を実行します…\033[0m"
+  echo
+  echo -e "\033[1;36mINFO: エンキュー処理は \"$end_time\" に完了する見込みです\033[0m"
+}
+
 function enqueue () {
   main_file="$date_dir status.txt"
   cd "$HOME/Desktop" || exit
@@ -173,13 +185,11 @@ function enqueue () {
     done
   fi
 
-  echo
-  echo -e "\033[1;36mINFO: 動画ファイルのエンキュー処理を実行します…\033[0m"
-  echo "rsync --archive --human-readable --progress $src_volume/* $queue"
-
   # 動画ファイルのエンキュー処理。コマンド実行に3回失敗した場合、強制終了する
+  enqueue_info
   RETRY_COUNT=0
   while [ $RETRY_COUNT -lt 3 ]; do
+    echo "rsync --archive --human-readable --progress $src_volume/* $queue"
     if rsync --archive --human-readable --progress $src_volume/* "$queue"; then
       echo
       echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルのエンキュー処理が正常に終了しました。\033[0m"
@@ -189,10 +199,9 @@ function enqueue () {
     else
       RETRY_COUNT=$((RETRY_COUNT + 1))
       echo
-      echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に同期処理を再度実行します ($RETRY_COUNT/3)\033[0m"
+      echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に転送処理を再度実行します ($RETRY_COUNT/3)\033[0m"
       sleep 3
-      echo "rsync --archive --human-readable --progress $src_volume/* $queue"
-      rsync --archive --human-readable --progress $src_volume/* "$queue"
+      enqueue_info
     fi
   done
   if [ $RETRY_COUNT -ge 3 ]; then
@@ -262,10 +271,10 @@ function dequeue () {
   done
 
   echo
-  echo -e "\033[1;36mINFO: 動画ファイルを SERVER \"$SERVER\" に移動しています…\033[0m"
+  echo -e "\033[1;36mINFO: 動画ファイルを SERVER \"$SERVER\" に転送しています…\033[0m"
   echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
 
-  # 動画ファイルをデキュー領域から Internal に移動させる。コマンド実行に3回失敗した場合、強制終了する
+  # 動画ファイルをデキュー領域から Internal に転送させる。コマンド実行に3回失敗した場合、強制終了する
   RETRY_COUNT=0
   while [ $RETRY_COUNT -lt 3 ]; do
     if rsync --archive --human-readable --progress "$queue"/* "$dst_volume/$date_dir"; then
@@ -278,7 +287,7 @@ function dequeue () {
       break
     else
       echo
-      echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に同期処理を再度実行します ($RETRY_COUNT/3)\033[0m"
+      echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に転送処理を再度実行します ($RETRY_COUNT/3)\033[0m"
       sleep 3
       echo "rsync --archive --human-readable --progress $queue/* $dst_volume/$date_dir"
       rsync --archive --human-readable --progress "$queue"/* "$dst_volume/$date_dir"
@@ -289,7 +298,7 @@ function dequeue () {
     echo -e "\033[1;31m       ・転送先である SERVER \"$SERVER\" に接続されている\033[0m"
     echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$queue\" \"$dst_volume/$date_dir\" に齟齬が無い\033[0m"
     echo -e "\033[1;31m       ・デキュー領域 \"$queue\" 内に動画ファイルが存在する\033[0m"
-    echo -e "\033[1;31m       ・SERVER \"$SERVER\" 内に移動先 \"$dst_volume/$date_dir\" が存在する\033[0m"
+    echo -e "\033[1;31m       ・SERVER \"$SERVER\" 内に転送先 \"$dst_volume/$date_dir\" が存在する\033[0m"
     exit 1
   fi
 
@@ -302,7 +311,7 @@ function dequeue () {
   echo
   echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
   echo
-  echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルの同期処理が正常に終了しました。\033[0m"
+  echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルの転送処理が正常に終了しました。\033[0m"
   echo -e "\033[1;32mデキュー領域 \"$queue\" 内のファイルは $dst_volume/$date_dir に格納されています。\033[0m"
   stream_editor
   end_point
