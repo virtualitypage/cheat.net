@@ -26,7 +26,8 @@ files_found_mov=false
 files_found_avi=false
 
 function motd () {
-  tail -n 1 /var/log/system.log | awk '{print "Current login:", $1, $2, $3, "on", $NF}' >> "$logfile" # chmod 777 /var/log/system.log (元は rw-r----- [630])
+  ttys=$(who | awk 'NR==2 { print $2 }')
+  last | awk -v ttys="$ttys" 'NR>1 { print "Current login:", $3, $4, $5, $6, "on", ttys}' >> "$logfile"
   cat << 'EOF' >> "$logfile"
 
                         ___  ____
