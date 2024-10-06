@@ -1,7 +1,7 @@
 #!/bin/bash
 
 today=$(date '+%Y-%m-%d')
-today_string=$(date '+%Y年%-m月%-d日')
+timestamp=$(date '+%Y/%m/%d %H:%m:%d')
 
 src_volume="/Volumes/Untitled/DCIM/100MEDIA"
 dst_volume="/Volumes/Internal/var/cache"
@@ -13,7 +13,7 @@ stdout="/Volumes/Internal/var/log/stdout"
 src_file="DSCF0001.AVI"
 date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_volume/$src_file 2>/dev/null)
 queue="$HOME/Desktop/$date_dir"
-disk_free="diskFree.log"
+disk_free="$destination/diskFree.json"
 
 DISK="Untitled"
 SERVER="Internal"
@@ -314,9 +314,25 @@ function dequeue () {
   # Internal のディスク容量を記録
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
-  echo "df -H $dst_volume >> $destination/$disk_free"
-  df -H | awk 'NR==2 { print "ファイルシステム:", $1 "\n" "> サイズ:", $2"B" "\n" "> 使用量:", $3"B" "\n" "> 空き容量:", $4"B" "\n" "> 使用率:", $5 "\n" "> マウント先:", $9 }' $dst_volume >> "$destination/$disk_free"
-  echo >> "$destination/$disk_free"
+  echo "df -H $dst_volume >> $disk_free"
+  df -H $dst_volume | awk -v timestamp="$timestamp" 'NR==2 {
+    printf "  {\n"
+    printf "    \"タイムスタンプ\": \"%s\",\n", timestamp
+    printf "    \"ファイルシステム\": \"%s\",\n", $1
+    printf "    \"サイズ\": {\n"
+    printf "      \"容量\": \"%sB\",\n", $2
+    printf "      \"使用量\": \"%sB\",\n", $3
+    printf "      \"空き容量\": \"%sB\",\n", $4
+    printf "      \"使用率\": \"%s\"\n", $5
+    printf "    },\n"
+    printf "    \"マウント先\": \"%s\"\n", $9
+    printf "  },\n"
+    print "]"
+  }' >> "$disk_free"
+  closing_brace=$(grep -nB1 -nA1 ']' "$disk_free" | awk 'NR == 1 {gsub(/-/, ""); print $1 }')
+  square_brackets=$(grep -nA1 ']' "$disk_free" | awk 'NR <= 2 { gsub(/:\]|-\[/, ""); print $1 }' | sed '1s/$/,/' | tr -d '\n')
+  sed -i '' "${closing_brace}s/.*/  },/" "$disk_free" # 指定行を別の文字列に置換
+  sed -i '' "${square_brackets}d" "$disk_free" # 指定行を削除
   echo
   echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
   echo
@@ -357,9 +373,20 @@ if [ -e $src_volume ]; then
   if [ -e $dst_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
-    echo "・$today_string" >> "$destination/$disk_free"
-    df -H $src_volume | awk 'NR==2 { print "ファイルシステム:", $1 "\n" "> サイズ:", $2"B" "\n" "> 使用量:", $3"B" "\n" "> 空き容量:", $4"B" "\n" "> 使用率:", $5 "\n" "> マウント先:", $9 }' >> "$destination/$disk_free"
-    echo >> "$destination/$disk_free"
+    df -H $src_volume | awk -v timestamp="$timestamp" 'NR==2 {
+      printf "[\n"
+      printf "  {\n"
+      printf "    \"タイムスタンプ\": \"%s\",\n", timestamp
+      printf "    \"ファイルシステム\": \"%s\",\n", $1
+      printf "    \"サイズ\": {\n"
+      printf "      \"容量\": \"%sB\",\n", $2
+      printf "      \"使用量\": \"%sB\",\n", $3
+      printf "      \"空き容量\": \"%sB\",\n", $4
+      printf "      \"使用率\": \"%s\"\n", $5
+      printf "    },\n"
+      printf "    \"マウント先\": \"%s\"\n", $9
+      printf "  },\n"
+    }' >> "$disk_free"
     echo
     sleep 0.5
     ps_check
