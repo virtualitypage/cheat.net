@@ -315,7 +315,7 @@ function dequeue () {
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
   echo "df -H $dst_volume >> $destination/$disk_free"
-  df -H $dst_volume >> "$destination/$disk_free"
+  df -H | awk 'NR==2 { print "ファイルシステム:", $1 "\n" "> サイズ:", $2"B" "\n" "> 使用量:", $3"B" "\n" "> 空き容量:", $4"B" "\n" "> 使用率:", $5 "\n" "> マウント先:", $9 }' $dst_volume >> "$destination/$disk_free"
   echo >> "$destination/$disk_free"
   echo
   echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
@@ -358,7 +358,7 @@ if [ -e $src_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
     echo "・$today_string" >> "$destination/$disk_free"
-    df -H $src_volume >> "$destination/$disk_free"
+    df -H $src_volume | awk 'NR==2 { print "ファイルシステム:", $1 "\n" "> サイズ:", $2"B" "\n" "> 使用量:", $3"B" "\n" "> 空き容量:", $4"B" "\n" "> 使用率:", $5 "\n" "> マウント先:", $9 }' >> "$destination/$disk_free"
     echo >> "$destination/$disk_free"
     echo
     sleep 0.5
