@@ -2,6 +2,7 @@
 
 today=$(date '+%Y-%m-%d')
 timestamp=$(date '+%Y/%m/%d %H:%m:%d')
+time=$(date '%H:%m:%d')
 
 src_volume="/Volumes/Untitled/DCIM/100MEDIA"
 dst_volume="/Volumes/Internal/var/cache"
@@ -27,7 +28,7 @@ files_found_avi=false
 
 function motd () {
   ttys=$(who | awk 'NR==2 { print $2 }')
-  last | awk -v ttys="$ttys" 'NR>1 { print "Current login:", $3, $4, $5, $6, "on", ttys}' >> "$logfile"
+  LC_ALL=C last | awk -v ttys="$ttys" -v time="$time" 'NR>1 { print "Current login:", $3, $4, time, "on", ttys}' >> "$logfile"
   cat << 'EOF' >> "$logfile"
 
                         ___  ____
