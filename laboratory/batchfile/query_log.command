@@ -70,7 +70,7 @@ awk '{
 
 sed -e 's/許可/許可\n/g' -e 's/処理済/処理済\n/g' -e 's/ブロック済/ブロック済\n/g' "${main_file}_2.csv" > "$main_file.csv"
 sed -i '' 's/\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)/\",\1/g' "$main_file.csv"
-sed -i '' 's/\",204/204/g' "$main_file.csv"
+sed -i '' 's/\([0-9]\{2\}\:[0-9]\{2\}\:[0-9]\{2\}\),\"\"/\1"/g' "$main_file.csv"
 sed -i '' -e 's/127.0.0.1/\"127.0.0.1/g' -e 's/localhost/localhost\"/g' "$main_file.csv"
 sed -i '' '/^$/d' "$main_file.csv"
 rm "${main_file}_2.csv"
