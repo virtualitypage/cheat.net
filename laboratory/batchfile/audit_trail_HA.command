@@ -50,7 +50,7 @@ function audit_trail_high_availability () {
   echo
 
   # disk_usage
-  disk_metrics="$src_dir/disk_logger/disk_metrics_$month.log"
+  disk_metrics="$src_dir/disk_logger/disk_metrics_$month.json"
   disk_metrics_A="$drive/disk_usage/$year"
   disk_metrics_B="$github/disk_usage/$year"
 
