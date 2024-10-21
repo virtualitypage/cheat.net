@@ -44,7 +44,11 @@ awk '
       cp = $2
     }
 
-    if ($1 ~ /"Upstream"/) {
+    if ($0 ~ /"Upstream": "\[/) {
+      gsub(/.*"Upstream": "/, "", $1);
+      upstream = $2 ":" $3 ":" $4 ":" $5 ":" $6 ":" $7 ":" $8 ":" $9 ":" $10
+      gsub(/^ "|"$/, "", upstream);
+    } else if ($1 ~ /"Upstream"/) {
       gsub(/.*"Upstream":.*"/, "", $1);
       upstream = $2 ":" $3
       gsub(/^ "|"$/, "", upstream);
