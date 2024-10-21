@@ -2,7 +2,7 @@
 
 today=$(date '+%Y-%m-%d')
 timestamp=$(date '+%Y/%m/%d %H:%m:%d')
-time=$(date '%H:%m:%d')
+time=$(date '+%H:%m:%d')
 
 src_volume="/Volumes/Untitled/DCIM/100MEDIA"
 dst_volume="/Volumes/Internal/var/cache"
