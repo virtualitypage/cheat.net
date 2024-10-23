@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sub_file="/Volumes/Internal/var/log/audit_trail/gl-mt3000"
-sub_file=$(find "$sub_file" -maxdepth 1 -type f -iname 'querylog_*.json') # -maxdepth 1 でサブディレクトリを含めない検索を行う
+current_dir=$(cd "$(dirname "$0")" && pwd)
+sub_file=$(find "$current_dir" -maxdepth 1 -type f -iname 'querylog_*.json') # -maxdepth 1 でサブディレクトリを含めない検索を行う
 json_file=$(echo "$sub_file"| sed 's/.json//')
 main_file="$json_file.csv"
 

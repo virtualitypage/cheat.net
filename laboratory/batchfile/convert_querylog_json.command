@@ -1,10 +1,11 @@
 #!/bin/bash
 
-sub_file="/Volumes/Internal/var/log/audit_trail/gl-mt3000/querylog.json"
+current_dir=$(cd "$(dirname "$0")" && pwd)
+sub_file=$(find "$current_dir" -maxdepth 1 -type f -iname 'querylog_*.json') # -maxdepth 1 でサブディレクトリを含めない検索を行う
 date=$(head -n 1 "$sub_file" | awk -F\" '{print $4}' | cut -dT -f1)
-main_file="/Volumes/Internal/var/log/audit_trail/gl-mt3000/querylog_$date.json"
+main_file="$current_dir/querylog_$date.json"
 
-cp $sub_file "$main_file"
+cp "$sub_file" "$main_file"
 
 head_square_brackets=$(head -n 1 "$main_file")
 if [ "[" != "$head_square_brackets" ]; then
