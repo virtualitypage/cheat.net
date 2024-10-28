@@ -137,7 +137,7 @@ EOF
         store_name="キッチン725"
       fi
       col2=$(echo "$col2" | sed 's/modified: //g')
-      if [ "$col2" = YYYY/MM/DD ] || [ "$col2" = 更新予定無し ]; then
+      if [ "$col2" = YYYY/MM/DD ] || [ "$col2" = "NO RENEWAL SCHEDULE" ]; then
         code=$(
           cat << EOF
                     <tr class="borderLine borderColor bgColor">
