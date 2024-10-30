@@ -204,10 +204,9 @@ sed -i '' -e 's/\" (/ (/g' \
           -e 's/処理済み (キャッシュからの配信)\"/処理済み (キャッシュからの配信)/g' \
           -e 's/(キャッシュからの配信)\"\"/(キャッシュからの配信)\"/g' "$main_file"
 
-# ls -l /etc/AdGuardHome/data/filters 配下のファイルと同一
+# cat /etc/AdGuardHome/config.yaml の "filters:" を参照
 sed -i '' -e 's/1720874115/Advertisement/g' \
           -e 's/1720874116/PhishingSite/g' \
           -e 's/1720874117/ScamSite/g' \
-          -e 's/1720874118/QueryLog_Deny/g' \
-          -e 's/1720874119/QueryLog_Allow/g' \
-          -e 's/1722950284/Allow_domain/g' "$main_file"
+          -e 's/1720874118/Reject_Domain/g' \
+          -e 's/1722950284/Accept_Domain/g' "$main_file"
