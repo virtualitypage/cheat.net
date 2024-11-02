@@ -1,7 +1,6 @@
 #!/bin/bash
 
 today=$(date '+%Y-%m-%d')
-timestamp=$(date '+%Y/%m/%d %H:%m:%d')
 time=$(date '+%H:%m:%d')
 
 src_volume="/Volumes/Untitled/DCIM/100MEDIA"
@@ -313,6 +312,7 @@ function dequeue () {
   fi
 
   # Internal のディスク容量を記録
+  timestamp=$(date '+%Y/%m/%d %H:%m:%d')
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
   echo "df -H $dst_volume >> $disk_free"
@@ -374,6 +374,7 @@ if [ -e $src_volume ]; then
   if [ -e $dst_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
+    timestamp=$(date '+%Y/%m/%d %H:%m:%d')
     df -H $src_volume | awk -v timestamp="$timestamp" 'NR==2 {
       printf "[\n"
       printf "  {\n"
