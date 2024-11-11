@@ -209,4 +209,6 @@ sed -i '' -e 's/1720874115/Advertisement/g' \
           -e 's/1720874116/PhishingSite/g' \
           -e 's/1720874117/ScamSite/g' \
           -e 's/1720874118/Reject_Domain/g' \
+          -e 's/1731151222/Reject_Link/g' \
+          -e 's/1731151223/Restricted_Domain/g' \
           -e 's/1722950284/Accept_Domain/g' "$main_file"
