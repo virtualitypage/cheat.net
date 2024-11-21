@@ -16,7 +16,7 @@ function setting_Internal-server () {
   # usr/local
   mkdir -p "$current_dir/usr/local" && cd $_
   mkdir footage && cd $_
-  mkdir 2023 2024
+  mkdir 2023 2024 2025
   mkdir "$current_dir/usr/local/web_archive"
   setfile -m "3/1/2024 0:00" "$current_dir/usr"
   setfile -m "3/1/2024 0:00" "$current_dir/usr/local"
@@ -26,7 +26,7 @@ function setting_Internal-server () {
 
   # usr/share
   mkdir -p "$current_dir/usr/share" && cd $_
-  mkdir arch config pdf
+  mkdir analysis arch config pdf
   setfile -m "3/1/2024 0:00" "$current_dir/usr/share"
   setfile -m "3/1/2024 0:00" "$current_dir/usr/share/*"
 
@@ -41,22 +41,22 @@ function setting_Internal-server () {
   setfile -m "3/1/2024 0:00" "$current_dir/var/"
   setfile -m "3/1/2024 0:00" "$current_dir/var/cache"
 
-  # var/audit_trail/gl-mt3000
-  mkdir -p "$current_dir/var/audit_trail/gl-mt3000" && cd $_
-  mkdir cpu_usage disk_usage process traffic_stat
-  setfile -m "3/1/2024 0:00" "$current_dir/var/audit_trail/*"
-  setfile -m "3/1/2024 0:00" "$current_dir/var/audit_trail/gl-mt3000/*"
+  # var/data/gl-mt3000
+  mkdir -p "$current_dir/var/data/gl-mt3000" && cd $_
+  mkdir cpu_usage disk_usage msmtp_log process query_log traffic_stat
+  setfile -m "3/1/2024 0:00" "$current_dir/var/data/*"
+  setfile -m "3/1/2024 0:00" "$current_dir/var/data/gl-mt3000/*"
 
   # var/log/securityLog
   mkdir -p "$current_dir/var/log/securityLog" && cd $_
-  mkdir 2023 2024
+  mkdir 2023 2024 2025
   setfile -m "3/1/2024 0:00" "$current_dir/var/log/"
   setfile -m "3/1/2024 0:00" "$current_dir/var/log/securityLog"
   setfile -m "3/1/2024 0:00" "$current_dir/var/log/securityLog/*"
 
   # var/log/stat_text
   mkdir -p "$current_dir/var/log/stat_text" && cd $_
-  mkdir 2023 2024
+  mkdir 2023 2024 2025
   setfile -m "3/1/2024 0:00" "$current_dir/var/log/stat_text"
   setfile -m "3/1/2024 0:00" "$current_dir/var/log/stat_text/*"
 

@@ -13,7 +13,7 @@ function server_sync () {
   src_usr="$src_volume/usr/"
   src_var="$src_volume/var/"
 
-  # internalサーバ(Samba)の親ディレクトリ
+  # internal サーバ(Samba)の親ディレクトリ
   dst_dev="$dst_volume/dev"
   dst_media="$dst_volume/media"
   dst_usr="$dst_volume/usr"
