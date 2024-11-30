@@ -48,10 +48,10 @@ function mirrativ () {
   sed -i '' -e '$a \
   }' -e 's/,   //g' "${count_file}_A.txt"
   cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
-  sed -i '' -e '1s/^/repeat 5 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 6 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
   cat "${count_file}_B.txt" > "$main_file"
 
-  # 個数が 6〜10 のドメインをまとめる
+  # 個数が 6〜9 のドメインをまとめる
   grep -E "^[6-9]:" "$count_file.txt" > "${count_file}_A.txt"
   sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
   sed -i '' -e '$a \
@@ -60,13 +60,86 @@ function mirrativ () {
   sed -i '' -e '1s/^/repeat 10 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
   cat "${count_file}_B.txt" >> "$main_file"
 
-  # 個数が 11〜99 のドメインを追加
-  grep -E "^[1-9][0-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  # 個数が 10〜15 のドメインをまとめる
+  grep -E "^[1][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[1][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 16 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 16〜19 のドメインをまとめる
+  grep -E "^[1][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[1][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 20 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 20〜25 のドメインをまとめる
+  grep -E "^[2][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[2][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 26 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 26〜29 のドメインをまとめる
+  grep -E "^[2][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[2][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 30 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 30〜35 のドメインをまとめる
+  grep -E "^[3][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[3][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 36 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 36〜39 のドメインをまとめる
+  grep -E "^[3][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[3][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 40 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 40〜45 のドメインをまとめる
+  grep -E "^[4][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[4][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 46 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 46〜49 のドメインを追加
+  grep -E "^[4][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[4][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 50 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 50〜99 のドメインを追加
+  grep -E "^[5][0-9]:" "$count_file.txt" > "${count_file}_A.txt"
   cat "${count_file}_A.txt" >> "$main_file"
 
   # 個数が 100〜999 のドメインを追加
   grep -E "^[1-9][0-9][0-9]:" "$count_file.txt" > "${count_file}_A.txt"
   cat "${count_file}_A.txt" >> "$main_file"
+  main_file=$(basename "$main_file")
 }
 
 function easebar () {
@@ -91,10 +164,10 @@ function easebar () {
   sed -i '' -e '$a \
   }' -e 's/,   //g' "${count_file}_A.txt"
   cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
-  sed -i '' -e '1s/^/repeat 5 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 6 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
   cat "${count_file}_B.txt" > "$main_file"
 
-  # 個数が 6〜10 のドメインをまとめる
+  # 個数が 6〜9 のドメインをまとめる
   grep -E "^[6-9]:" "$count_file.txt" > "${count_file}_A.txt"
   sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
   sed -i '' -e '$a \
@@ -103,8 +176,196 @@ function easebar () {
   sed -i '' -e '1s/^/repeat 10 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
   cat "${count_file}_B.txt" >> "$main_file"
 
-  # 個数が 11〜99 のドメインを追加
-  grep -E "^[1-9][0-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  # 個数が 10〜15 のドメインをまとめる
+  grep -E "^[1][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[1][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 16 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 16〜19 のドメインをまとめる
+  grep -E "^[1][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[1][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 20 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 20〜25 のドメインをまとめる
+  grep -E "^[2][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[2][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 26 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 26〜29 のドメインをまとめる
+  grep -E "^[2][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[2][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 30 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 30〜35 のドメインをまとめる
+  grep -E "^[3][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[3][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 36 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 36〜39 のドメインをまとめる
+  grep -E "^[3][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[3][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 40 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 40〜45 のドメインをまとめる
+  grep -E "^[4][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[4][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 46 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 46〜49 のドメインを追加
+  grep -E "^[4][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[4][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 50 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 50〜99 のドメインを追加
+  grep -E "^[5][0-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  cat "${count_file}_A.txt" >> "$main_file"
+
+  # 個数が 100〜999 のドメインを追加
+  grep -E "^[1-9][0-9][0-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  cat "${count_file}_A.txt" >> "$main_file"
+  main_file=$(basename "$main_file")
+}
+
+function netease () {
+  mkdir "$current_dir/netease"
+  count_file="$current_dir/netease/Querylog_Analysis_netease"
+  main_file="${file_name}_netease.com.txt"
+
+  array=()
+  while IFS= read -r csv; do
+    array+=("$csv")
+  done < <(grep "netease.com" "$uniq_file")
+
+  for domain in "${array[@]}"; do
+    count=$(grep -o "$domain" "$query_file" | wc -l | awk '{ print $1 }')
+    echo "$count: $domain" >> "$count_file.csv"
+  done
+  sort -n "$count_file.csv" > "$count_file.txt"
+
+  # 個数が 1〜5 のドメインをまとめる
+  grep -E "^[1-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[1-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 6 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" > "$main_file"
+
+  # 個数が 6〜9 のドメインをまとめる
+  grep -E "^[6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 10 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 10〜15 のドメインをまとめる
+  grep -E "^[1][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[1][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 16 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 16〜19 のドメインをまとめる
+  grep -E "^[1][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[1][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 20 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 20〜25 のドメインをまとめる
+  grep -E "^[2][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[2][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 26 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 26〜29 のドメインをまとめる
+  grep -E "^[2][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[2][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 30 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 30〜35 のドメインをまとめる
+  grep -E "^[3][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[3][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 36 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 36〜39 のドメインをまとめる
+  grep -E "^[3][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[3][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 40 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 40〜45 のドメインをまとめる
+  grep -E "^[4][0-5]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[4][0-5]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 46 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 46〜49 のドメインを追加
+  grep -E "^[4][6-9]:" "$count_file.txt" > "${count_file}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain to {"/g' -e 's/[4][6-9]: /"/g' -e 's/$/", /g' "${count_file}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${count_file}_A.txt"
+  cat "${count_file}_A.txt" | tr -d '\n' > "${count_file}_B.txt"
+  sed -i '' -e '1s/^/repeat 50 times\n/' -e 's/,   //g' -e 's/}/}\n\n/g' "${count_file}_B.txt"
+  cat "${count_file}_B.txt" >> "$main_file"
+
+  # 個数が 50〜99 のドメインを追加
+  grep -E "^[5][0-9]:" "$count_file.txt" > "${count_file}_A.txt"
   cat "${count_file}_A.txt" >> "$main_file"
 
   # 個数が 100〜999 のドメインを追加
@@ -120,10 +381,12 @@ function success_message () {
   echo -e "\033[1;32m$query_file: DNS クエリ分析用 csv ファイル\033[0m"
   echo -e "\033[1;32m${main_file}_mirrativ.com.txt: Apple Script 用 mirrativ.com definition list\033[0m"
   echo -e "\033[1;32m${main_file}_easebar.com.txt: Apple Script 用 easebar.com definition list\033[0m"
+  echo -e "\033[1;32m${main_file}_netease.com.txt: Apple Script 用 netease.com definition list\033[0m"
   echo
-  rm -r "$stat_file" "$uniq_file" "$domain_file" "$current_dir/mirrativ" "$current_dir/easebar"
+  rm -r "$stat_file" "$uniq_file" "$domain_file" "$current_dir/mirrativ" "$current_dir/easebar" "$current_dir/netease"
 }
 
 mirrativ
 easebar
+netease
 success_message
