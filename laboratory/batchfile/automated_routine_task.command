@@ -65,14 +65,28 @@ function automated_routine_task () {
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ]; then
     open "$command_dir/Querylog Analysis - 192.168.8.117.csv"
     sleep 2
-    # 作成済クエリログ分析ファイルを編集①
-    echo "osascript $ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing).scpt"
-    osascript "$ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing).scpt"
-    echo
-    # 作成済クエリログ分析ファイルを編集②
-    echo "osascript $command_dir/Querylog_Analysis_Target_Domain.scpt"
-    osascript "$command_dir/Querylog_Analysis_Target_Domain.scpt"
-    echo -e "\033[1;32mSUCCESS: querylog_analyzer.command の実行完了\033[0m"; echo
+    echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_15inch.scpt\033[0m"
+    echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_27inch.scpt\033[0m"
+    read -p "{ 15inch | 27inch }: " mode
+    if [ "$mode" = "15inch" ]; then
+      # 作成済クエリログ分析ファイルを編集①
+      echo "osascript $ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_15inch.scpt"
+      osascript "$ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_15inch.scpt"
+      echo
+      # 作成済クエリログ分析ファイルを編集②
+      echo "osascript $command_dir/Querylog_Analysis_Target_Domain_15inch.scpt"
+      osascript "$command_dir/Querylog_Analysis_Target_Domain_15inch.scpt"
+      echo -e "\033[1;32mSUCCESS: querylog_analyzer.command の実行完了\033[0m"; echo
+    else
+      # 作成済クエリログ分析ファイルを編集①
+      echo "osascript $ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_27inch.scpt"
+      osascript "$ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_27inch.scpt"
+      echo
+      # 作成済クエリログ分析ファイルを編集②
+      echo "osascript $command_dir/Querylog_Analysis_Target_Domain_27inch.scpt"
+      osascript "$command_dir/Querylog_Analysis_Target_Domain_27inch.scpt"
+      echo -e "\033[1;32mSUCCESS: querylog_analyzer.command の実行完了\033[0m"; echo
+    fi
   fi
 }
 
