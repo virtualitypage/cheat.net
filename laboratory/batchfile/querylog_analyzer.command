@@ -51,23 +51,23 @@ main_file_27inch="$current_dir/Querylog_Analysis_Target_Domain_27inch.scpt"
 code_15inch=$(
   cat << EOF
 on targetQuery_variable(urlList)
-	tell application "Numbers"
-		activate
-		repeat with currentURL in urlList
-			set the clipboard to currentURL
-			tell application "System Events"
-				keystroke "f" using {command down}
-				keystroke "v" using command down
-				repeat variable times -- match repeat count to number of domains
-					do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
-					delay 0.5
-					do shell script "/usr/local/bin/cliclick tc:870,780 c:. c:." -- select red
-					delay 1
-					keystroke "g" using {command down}
-				end repeat
-			end tell
-		end repeat
-	end tell
+  tell application "Numbers"
+    activate
+    repeat with currentURL in urlList
+      set the clipboard to currentURL
+      tell application "System Events"
+        keystroke "f" using {command down}
+        keystroke "v" using command down
+        repeat variable times -- match repeat count to number of domains
+          do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
+          delay 0.5
+          do shell script "/usr/local/bin/cliclick tc:870,780 c:. c:." -- select red
+          delay 1
+          keystroke "g" using {command down}
+        end repeat
+      end tell
+    end repeat
+  end tell
 end targetQuery_variable
 EOF
 )
@@ -106,13 +106,28 @@ end tell
 EOF
 )
 
-# 個数が 1〜5 のドメインをまとめる
-if grep -E "^[1-5]:" "$counter.txt" 1>/dev/null; then
+# 個数が 1 のドメインをまとめる
+if grep -E "^1:" "$counter.txt" 1>/dev/null; then
   echo -e "$code_15inch\n" > "$main_file_15inch"
   echo -e "$code_27inch\n" > "$main_file_27inch"
-  grep -E "^[1-5]:" "$counter.txt" > "${counter}_A.txt"
+  grep -E "^1:" "$counter.txt" > "${counter}_A.txt"
+  sed -i '' 's/variable/2/g' "$main_file_15inch" "$main_file_27inch"
+  sed -i '' -e '1s/.*: /set TargetDomain2 to {"/g' -e 's/1: /"/g' -e 's/$/", /g' "${counter}_A.txt"
+  sed -i '' -e '$a \
+  }' -e 's/,   //g' "${counter}_A.txt"
+  cat "${counter}_A.txt" | tr -d '\n' > "${counter}_B.txt"
+  sed -i '' 's/,   }/}\n\ntargetQuery_2(TargetDomain2)\n/g' "${counter}_B.txt"
+  cat "${counter}_B.txt" >> "$main_file_15inch"
+  cat "${counter}_B.txt" >> "$main_file_27inch"
+fi
+
+# 個数が 2〜5 のドメインをまとめる
+if grep -E "^[2-5]:" "$counter.txt" 1>/dev/null; then
+  echo -e "$code_15inch\n" > "$main_file_15inch"
+  echo -e "$code_27inch\n" > "$main_file_27inch"
+  grep -E "^[2-5]:" "$counter.txt" > "${counter}_A.txt"
   sed -i '' 's/variable/6/g' "$main_file_15inch" "$main_file_27inch"
-  sed -i '' -e '1s/.*: /set TargetDomain6 to {"/g' -e 's/[1-5]: /"/g' -e 's/$/", /g' "${counter}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain6 to {"/g' -e 's/[2-5]: /"/g' -e 's/$/", /g' "${counter}_A.txt"
   sed -i '' -e '$a \
   }' -e 's/,   //g' "${counter}_A.txt"
   cat "${counter}_A.txt" | tr -d '\n' > "${counter}_B.txt"
