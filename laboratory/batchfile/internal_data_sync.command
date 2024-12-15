@@ -1,17 +1,17 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-current_dir=$(echo $current_dir | sed 's/\/@COMMAND//g')
 src_dir="$current_dir/archive"
 yesterday=$(TZ=UTC-9 date -v -1d '+%Y-%m-%d')
 yesterday_date=$(TZ=UTC-9 date -v -1d '+%m/%d')
-date=$(find $src_dir/$yesterday -type f -name CPU_temp_*.log)
+date=$(find "$src_dir/$yesterday" -type f -name CPU_temp_*.log)
 year=$(basename "$date" | sed -e 's/CPU_temp_//g' -e 's/^\(.\{4\}\).*/\1/')
 month=$(basename "$date" | sed -e 's/CPU_temp_//g' -e 's/^\(.\{7\}\).*/\1/')
 month_=$(basename "$date" | sed -e 's/CPU_temp_//g' -e 's/^\(.\{7\}\).*/\1/' -e 's/-/_/g')
 
 drive="$HOME/Library/CloudStorage/GoogleDrive-youguigujing42@gmail.com/マイドライブ/共有フォルダ/Internal/var/log/data/gl-mt3000"
-github="$current_dir/GitHub/GL-MT3000_Internal/var/log/data/gl-mt3000"
+github_path=$(find /Volumes/virtual_env -type d -name "GitHub" 2>/dev/null | awk 'NR == 1')
+github="$github_path/GL-MT3000_Internal/var/log/data/gl-mt3000"
 
 function internal_data_sync () {
   # cpu_usage
@@ -64,7 +64,7 @@ function internal_data_sync () {
   # msmtp
   msmtp="$src_dir/msmtp_$month.json"
   msmtp_A="$drive/msmtp_$month.json"
-  msmtp_B="$github/msmtp_log/msmtp_$month.json"
+  msmtp_B="$github/msmtp_log/$year/msmtp_$month.json"
 
   echo "rsync --archive --human-readable --progress \"$msmtp\" $msmtp_A"
   rsync --archive --human-readable --progress "$msmtp" $msmtp_A
@@ -136,7 +136,7 @@ URL="https://drive.google.com/drive/my-drive"
 success=$(curl -I $URL 2>/dev/null | head -n 1)
 failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
 
-if [ "$success" ] && [ -e "$src_volume" ]; then
+if [ "$success" ]; then
   echo -e "\033[1;32mSUCCESS: $success\033[0m"
 elif [ "$failure" == "Could not resolve host" ]; then
   echo -e "\033[1;31mNETWORK ERROR: Google Drive にアクセス出来ませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
