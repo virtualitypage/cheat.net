@@ -13,7 +13,7 @@ function sessionStatistics () {
       middle=$(basename "$mid_file")
       echo "$middle" >> "$main_file"
       while IFS= read -r line; do
-        count=$(grep -x "$line" "$mid_file.tmp" | wc -l)
+        count=$(grep --line-regexp "$line" "$mid_file.tmp" | wc -l)
         log=$(
           cat << EOF
 $line,$count

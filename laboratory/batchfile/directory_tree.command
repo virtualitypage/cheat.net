@@ -6,7 +6,7 @@ main_file="$dir_name.txt"
 
 function directory_tree () {
   cd "$current_dir" || exit
-  tree | sed 's/──//g; s/│/｜/g;' | grep -vE "directories|files" > "$current_dir/$main_file"
+  tree | sed 's/──//g; s/│/｜/g;' | grep --invert-match --extended-regexp "directories|files" > "$current_dir/$main_file"
   echo -e "\033[1;32mALL SUCCESSFUL: ディレクトリ構成の出力処理が正常に終了しました。\033[0m"
   echo -e "\033[1;32m$main_file は $current_dir に格納されています。\033[0m"
 }

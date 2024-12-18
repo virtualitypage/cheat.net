@@ -6,8 +6,8 @@ stat_file="$current_dir/Querylog_Analysis_stat.csv"
 target="$current_dir/target_domain.csv"
 counter="$current_dir/count"
 
-read -p "クエリログファイルを指定して下さい: " sub_file
-read -p "分析対象のIPアドレスを入力して下さい: " ip_addr
+read -prompt "クエリログファイルを指定して下さい: " sub_file
+read -prompt "分析対象のIPアドレスを入力して下さい: " ip_addr
 
 query_file="$current_dir/Querylog Analysis - $ip_addr.csv"
 echo "時刻,総クエリ数,ドメイン" > "$query_file"
@@ -337,11 +337,11 @@ function success_message () {
 }
 
 # 以下のコードは別のスクリプトからアクセスした場合、実行されない
-read -p "Querylog_Analysis_Target_Domain.scpt を実行しますか？: " yesno
+read -prompt "Querylog_Analysis_Target_Domain.scpt を実行しますか？: " yesno
 if [ "$yesno" = "yes" ]; then
   echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_15inch.scpt\033[0m"
   echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_27inch.scpt\033[0m"
-  read -p "{ 15inch | 27inch }: " mode
+  read -prompt "{ 15inch | 27inch }: " mode
   if [ "$mode" = "15inch" ]; then
     echo "osascript $main_file_15inch"
     osascript "$main_file_15inch"

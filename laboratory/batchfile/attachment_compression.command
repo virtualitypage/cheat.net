@@ -13,18 +13,18 @@ file_date_YM="${file_date_YMD%-*}" # %で末尾から一致する箇所を検索
 SetFile_today=$(date -j -f "%Y/%m/%d" "$date" +"%m/%d/%Y")
 SetFile_tomorrow=$(date -v+1d -j -f "%Y/%m/%d" "$date" +"%m/%d/%Y")
 
-setfile -m "$SetFile_today 23:59" "$archive/$file_date_YMD"/*
-setfile -d "$SetFile_today 23:59" "$archive/$file_date_YMD"/*
+SetFile -m "$SetFile_today 23:59" "$archive/$file_date_YMD"/*
+SetFile -d "$SetFile_today 23:59" "$archive/$file_date_YMD"/*
 
-setfile -m "$SetFile_today 23:50" "$archive/$file_date_YMD"/CPU_*.log "$archive/$file_date_YMD"/process_*.log
-setfile -d "$SetFile_today 23:50" "$archive/$file_date_YMD"/CPU_*.log "$archive/$file_date_YMD"/process_*.log
+SetFile -m "$SetFile_today 23:50" "$archive/$file_date_YMD"/CPU_*.log "$archive/$file_date_YMD"/process_*.log
+SetFile -d "$SetFile_today 23:50" "$archive/$file_date_YMD"/CPU_*.log "$archive/$file_date_YMD"/process_*.log
 
-setfile -m "$SetFile_today 23:59" "$archive/interface_logger/br-lan_$file_date_YM.log" "$archive/interface_logger/eth0_$file_date_YM.log" "$archive/interface_logger/lo_$file_date_YM.log" "$archive/interface_logger/rax0_$file_date_YM.log" "$archive/interface_logger/tailscale0_$file_date_YM.log"
-setfile -d "$SetFile_today 23:59" "$archive/interface_logger/br-lan_$file_date_YM.log" "$archive/interface_logger/eth0_$file_date_YM.log" "$archive/interface_logger/lo_$file_date_YM.log" "$archive/interface_logger/rax0_$file_date_YM.log" "$archive/interface_logger/tailscale0_$file_date_YM.log"
+SetFile -m "$SetFile_today 23:59" "$archive/interface_logger/br-lan_$file_date_YM.log" "$archive/interface_logger/eth0_$file_date_YM.log" "$archive/interface_logger/lo_$file_date_YM.log" "$archive/interface_logger/rax0_$file_date_YM.log" "$archive/interface_logger/tailscale0_$file_date_YM.log"
+SetFile -d "$SetFile_today 23:59" "$archive/interface_logger/br-lan_$file_date_YM.log" "$archive/interface_logger/eth0_$file_date_YM.log" "$archive/interface_logger/lo_$file_date_YM.log" "$archive/interface_logger/rax0_$file_date_YM.log" "$archive/interface_logger/tailscale0_$file_date_YM.log"
 
 cd "$current_dir" || exit
 tar -zcf "archive_$file_date_YMD.tar.gz" archive
-setfile -m "$SetFile_tomorrow 00:00" "archive_$file_date_YMD.tar.gz"
-setfile -d "$SetFile_tomorrow 00:00" "archive_$file_date_YMD.tar.gz"
+SetFile -m "$SetFile_tomorrow 00:00" "archive_$file_date_YMD.tar.gz"
+SetFile -d "$SetFile_tomorrow 00:00" "archive_$file_date_YMD.tar.gz"
 
 mv "archive_$file_date_YMD.tar.gz" "$GoogleDrivePath/old"

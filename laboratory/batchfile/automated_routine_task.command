@@ -16,8 +16,8 @@ function automated_routine_task () {
 
   echo -e "\033[1;36mINFO: tar アーカイブを $current_dir に展開中...\033[0m"
   cd "$current_dir" || exit
-  tar -zxvf "archive_$yesterday.tar.gz" 2>/dev/null
-  tar -zxvf "querylog_$yesterday.json.tar.gz" 2>/dev/null
+  tar -zxf "archive_$yesterday.tar.gz" 2>/dev/null
+  tar -zxf "querylog_$yesterday.json.tar.gz" 2>/dev/null
 
   echo -e "\033[1;32mSUCCESS: tar アーカイブを $current_dir に展開完了\033[0m"; echo
 
@@ -27,14 +27,14 @@ function automated_routine_task () {
      "archive/$yesterday/23_59_59/MacTableEntry.csv" \
      "archive/$yesterday/23_59_59/system.csv" "archive/$yesterday"
 
-  rm -r "archive/$yesterday/23_59_59" \
-        "archive/$today" \
-        "archive_$yesterday.tar.gz" \
-        "querylog_$yesterday.json.tar.gz"
+  rm --recursive "archive/$yesterday/23_59_59" \
+                 "archive/$today" \
+                 "archive_$yesterday.tar.gz" \
+                 "querylog_$yesterday.json.tar.gz"
 
   for ((i = 1; i <= 23; i++)); do
     j=$(printf "%02d\n" $i)
-    rm -r "archive/$yesterday/${j}_00_00" 2>/dev/null
+    rm --recursive "archive/$yesterday/${j}_00_00" 2>/dev/null
   done
 
   # ファイルの末尾にある空行を置換により削除

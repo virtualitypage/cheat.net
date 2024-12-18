@@ -13,12 +13,12 @@ function progress_bar () {
 }
 
 function selective_delete () {
-  read -p "以下のオプションから一つ選択してください
+  read -prompt "以下のオプションから一つ選択してください
   { 全削除 | 選択削除 | 終了 }
 > " section
   if [ "$section" = "全削除" ]; then
     echo -e "\033[1;33mCONFIRM: $volume のゴミ箱を空にします。よろしいですか？\033[0m"
-    read -p "\"yes\" を入力して削除: " yesno
+    read -prompt "\"yes\" を入力して削除: " yesno
     if [ "$yesno" = "yes" ]; then
       echo "rm -rf /Volumes/$volume/.Trashes/*"
       rm -rf "/Volumes/$volume/.Trashes/*"
@@ -33,11 +33,11 @@ function selective_delete () {
   elif [ "$section" = "選択削除" ]; then
     echo
     while true; do
-      read -p "削除したいファイル・ディレクトリを入力してください(終了する場合は Enter キー): " deleteFile
+      read -prompt "削除したいファイル・ディレクトリを入力してください(終了する場合は Enter キー): " deleteFile
       if [ -e "$deleteFile" ]; then
         echo
         echo -e "\033[1;33mCONFIRM: $volume のゴミ箱にある $deleteFile を削除します。よろしいですか？\033[0m"
-        read -p "\"yes\" を入力して削除: " yesno
+        read -prompt "\"yes\" を入力して削除: " yesno
         if [ "$yesno" = "yes" ]; then
           echo "rm -rf /Volumes/$volume/.Trashes/$deleteFile"
           rm -rf "/Volumes/$volume/.Trashes/$deleteFile"
@@ -68,14 +68,14 @@ function selective_delete () {
 }
 
 while true; do
-  read -p "ディスク名を指定してください: " volume
+  read -prompt "ディスク名を指定してください: " volume
   IFS=$'\n' # スペースをファイル名に含めるためにIFS(Internal Field Separator)を設定
   if [ -e "/Volumes/$volume" ]; then
     if [ -n "$volume" ]; then
       cd "/Volumes/$volume/.Trashes" || exit
       disk_use=$(du -sh "/Volumes/$volume/.Trashes" | cut -f1)
       echo -e "\033[1;36mINFO: $volume のゴミ箱にて以下のファイルが検出されました。容量:${disk_use}B\033[0m"
-      for file in ls $(ls -a); do
+      for file in ls $(ls --all); do
         files=$(basename "$file")
         if [ -d "$files" ]; then
           echo -e "\033[1;34m> $files\033[0m"

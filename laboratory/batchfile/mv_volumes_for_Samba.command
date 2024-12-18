@@ -44,7 +44,7 @@ EOF
 }
 
 function stream_editor () {
-  uname=$(uname -v | awk '{print $2, $3, $4, $5, $6, $7, $8, $9, $10}' | sed 's/;//g')
+  uname=$(uname --kernel-version | awk '{print $2, $3, $4, $5, $6, $7, $8, $9, $10}' | sed 's/;//g')
   sed -i '' 's/\[1;31m//g' "$logfile"
   sed -i '' 's/\[1;32m//g' "$logfile"
   sed -i '' 's/\[1;33m//g' "$logfile"
@@ -83,7 +83,7 @@ function ps_check () {
 }
 
 function enqueue_info () {
-  num_files=$(ls -F $src_volume | grep -v / | wc -l)
+  num_files=$(ls -F $src_volume | grep --invert-match / | wc --lines)
   total_time=$(echo "4 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
@@ -95,7 +95,7 @@ function enqueue_info () {
 }
 
 function dequeue_info () {
-  num_files=$(ls -F "$queue" | grep -v / | wc -l)
+  num_files=$(ls -F "$queue" | grep --invert-match / | wc --lines)
   total_time=$(echo "6 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
@@ -115,8 +115,8 @@ function enqueue () {
   elif [ ! -d "$date_dir" ]; then
     echo -e "\033[1;36mINFO: \"$date_dir\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
     mkdir archive
-    echo "mv -v $queue $archive"
-    mv -v "$queue" $archive
+    echo "mv --verbose $queue $archive"
+    mv --verbose "$queue" $archive
     mkdir "$date_dir"
     echo
   fi
@@ -254,8 +254,8 @@ function dequeue () {
   elif [ ! -d "$date_dir" ]; then
     echo -e "\033[1;36mINFO: \"$date_dir\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
     mkdir archive
-    echo "mv -v $dst_volume/$date_dir $archive"
-    mv -v "$dst_volume/$date_dir" $archive
+    echo "mv -verbose $dst_volume/$date_dir $archive"
+    mv --verbose "$dst_volume/$date_dir" $archive
     mkdir "$date_dir"
     echo
   fi

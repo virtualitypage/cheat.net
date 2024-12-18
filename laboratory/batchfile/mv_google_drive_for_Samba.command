@@ -85,18 +85,18 @@ function rsync_clone_folder () {
     echo
     echo -e "\033[1;36mINFO: \"$today\" は転送用フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
     mkdir $src_volume/archive
-    echo "mv -v $src_volume_path $archive"
-    mv -v "$src_volume_path" $archive
+    echo "mv --verbose $src_volume_path $archive"
+    mv --verbose "$src_volume_path" $archive
     echo
     echo -e "\033[1;36mINFO: 転送用フォルダ \"$today\" を作成中...\033[0m"
-    echo "mkdir -v $src_volume_path"
-    mkdir -v "$src_volume_path"
+    echo "mkdir --verbose $src_volume_path"
+    mkdir --verbose "$src_volume_path"
     ls -ld "$src_volume_path" # ディレクトリのみ表示
   elif [ ! -e "$src_volume_path" ]; then
     echo
     echo -e "\033[1;36mINFO: 転送用フォルダ \"$today\" を作成中...\033[0m"
-    echo "mkdir -v $src_volume_path"
-    mkdir -v "$src_volume_path"
+    echo "mkdir --verbose $src_volume_path"
+    mkdir --verbose "$src_volume_path"
     ls -ld "$src_volume_path" # ディレクトリのみ表示
   elif [ -d "$src_volume_path" ]; then
     echo
@@ -121,7 +121,7 @@ function rsync_clone_folder () {
   rm_file_count=0
 
   while true; do
-    read -p "複製したいフォルダの名前を入力して下さい: " directory
+    read -prompt "複製したいフォルダの名前を入力して下さい: " directory
     echo "複製したいフォルダの名前を入力して下さい: $directory" >> "$logfile"
     if [ "$directory" == "$today" ]; then
       echo -e "\033[1;33mWARNING: 転送用フォルダ \"$today\" は複製できません。他のフォルダ名を入力してください\033[0m"
@@ -352,11 +352,11 @@ function automator_rsync_google_drive () {
 
   if [ -z "$(ls "$src_volume_path" 2>/dev/null)" ] && [ -z "$(ls "$src_volume/$directory_TF" 2>/dev/null)" ]; then
     echo -e "\033[1;36mINFO: SERVER \"$SERVER\" から転送用フォルダ \"$today\" と一時フォルダ \"$directory_TF\" を削除しています…\033[0m"
-    echo "rmdir -v $src_volume_path"
-    rmdir -v "$src_volume_path"
+    echo "rmdir --verbose $src_volume_path"
+    rmdir --verbose "$src_volume_path"
     echo
-    echo "rmdir -v $src_volume/$directory_TF"
-    rmdir -v "$src_volume/$directory"_TF
+    echo "rmdir --verbose $src_volume/$directory_TF"
+    rmdir --verbose "$src_volume/$directory"_TF
     echo
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" から転送用フォルダ \"$today\" と一時フォルダ \"$directory_TF\" を削除しました\033[0m"
     echo
@@ -476,7 +476,7 @@ function mv_google_drive () {
   fi
 
   disk_limit="19532000" # duからすれば10GB
-  disk_usage=$(du -s "$src_volume_path" | cut -f1)
+  disk_usage=$(du --summarize "$src_volume_path" | cut -f1)
 
   if [ "$disk_usage" -gt $disk_limit ]; then
     echo -e "\033[1;33m#####################################################\033[0m"
@@ -515,8 +515,8 @@ function mv_google_drive () {
   echo
   if [ -e "$src_volume/$today.zip" ]; then
     echo -e "\033[1;36mINFO: SERVER \"$SERVER\" から \"$today.zip\" を削除しています…\033[0m"
-    echo "rm -v $src_volume/$today.zip"
-    rm -v $src_volume/"$today".zip
+    echo "rm --verbose $src_volume/$today.zip"
+    rm --verbose $src_volume/"$today".zip
     echo
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" から \"$today.zip\" を削除しました\033[0m"
     echo
@@ -527,11 +527,11 @@ function mv_google_drive () {
 
   if [ -z "$(ls "$src_volume_path" 2>/dev/null)" ] && [ -z "$(ls "$src_volume/$directory_TF" 2>/dev/null)" ]; then
     echo -e "\033[1;36mINFO: SERVER \"$SERVER\" から転送用フォルダ \"$today\" と一時フォルダ \"$directory_TF\" を削除しています…\033[0m"
-    echo "rmdir -v $src_volume_path"
-    rmdir -v "$src_volume_path"
+    echo "rmdir --verbose $src_volume_path"
+    rmdir --verbose "$src_volume_path"
     echo
-    echo "rmdir -v $src_volume/$directory_TF"
-    rmdir -v $src_volume/"$directory"_TF
+    echo "rmdir --verbose $src_volume/$directory_TF"
+    rmdir --verbose $src_volume/"$directory"_TF
     echo
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" から転送用フォルダ \"$today\" と一時フォルダ \"$directory_TF\" を削除しました\033[0m"
     echo

@@ -1,9 +1,8 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-sub_file=$(find "$current_dir" -maxdepth 1 -type f -iname 'querylog_*.json') # -maxdepth 1 でサブディレクトリを含めない検索を行う
-json_file=$(echo "$sub_file"| sed 's/.json//')
-main_file="$json_file.csv"
+sub_file=$(find "$current_dir" -maxdepth 1 -type f -iname "querylog_*.json") # -maxdepth 1 でサブディレクトリを含めない検索を行う
+main_file="${sub_file//.json/.csv}" # sed 's/.json/.csv/g' と同義
 
 awk '
   BEGIN {

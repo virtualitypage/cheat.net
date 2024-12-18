@@ -20,8 +20,8 @@ function audit_trail_high_availability () {
   cpu_usage_A="$drive/cpu_usage/$month_"
   cpu_usage_B="$github/cpu_usage/$month_"
 
-  echo "setfile -m \"$yesterday_date/$year 23:50\" \"$cpu_usage_temp\" \"$cpu_usage_util\""
-  setfile -m "$yesterday_date/$year 23:50" "$cpu_usage_temp" "$cpu_usage_util"
+  echo "SetFile -m \"$yesterday_date/$year 23:50\" \"$cpu_usage_temp\" \"$cpu_usage_util\""
+  SetFile -m "$yesterday_date/$year 23:50" "$cpu_usage_temp" "$cpu_usage_util"
   echo "rsync --archive --human-readable --progress \"$cpu_usage_temp\" $cpu_usage_A"
   rsync --archive --human-readable --progress "$cpu_usage_temp" $cpu_usage_A
   echo
@@ -40,8 +40,8 @@ function audit_trail_high_availability () {
   process_A="$drive/process/$month_"
   process_B="$github/process/$month_"
 
-  echo "setfile -m \"$yesterday_date/$year 23:50\" \"$process\""
-  setfile -m "$yesterday_date/$year 23:50" "$process"
+  echo "SetFile -m \"$yesterday_date/$year 23:50\" \"$process\""
+  SetFile -m "$yesterday_date/$year 23:50" "$process"
   echo "rsync --archive --human-readable --progress \"$process\" $process_A"
   rsync --archive --human-readable --progress "$process" $process_A
   echo

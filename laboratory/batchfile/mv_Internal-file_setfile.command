@@ -15,14 +15,14 @@ function setfiling () {
     footage="$current_dir/2023年${i}月 防犯カメラ映像(タイムスタンプ).pdf"
     securityLog="$current_dir/2023年${i}月 防犯カメラ記録.pdf"
     if [ -e "$securityLog" ]; then
-      setfile -m "${date}/2023 0:00" "$securityLog"
-      echo "setfile -m \"${date}/2023 0:00\" \"$securityLog\""
-      mv -v "$securityLog" "$internal/$securityLog_2023" 2>/dev/null
+      SetFile -m "${date}/2023 0:00" "$securityLog"
+      echo "SetFile -m \"${date}/2023 0:00\" \"$securityLog\""
+      mv --verbose "$securityLog" "$internal/$securityLog_2023" 2>/dev/null
     fi
     if [ -e "$footage" ]; then
-      setfile -m "${date}/2023 0:00" "$footage"
-      echo "setfile -m \"${date}/2023 0:00\" \"$footage\""
-      mv -v "$footage" "$internal/$footage_2023" 2>/dev/null
+      SetFile -m "${date}/2023 0:00" "$footage"
+      echo "SetFile -m \"${date}/2023 0:00\" \"$footage\""
+      mv --verbose "$footage" "$internal/$footage_2023" 2>/dev/null
     fi
   done
 
@@ -32,14 +32,14 @@ function setfiling () {
     footage="$current_dir/2024年${i}月 防犯カメラ映像(タイムスタンプ).pdf"
     securityLog="$current_dir/2024年${i}月 防犯カメラ記録.pdf"
     if [ -e "$securityLog" ]; then
-      setfile -m "${date}/2024 0:00" "$securityLog"
-      echo "setfile -m \"${date}/2024 0:00\" \"$securityLog\""
-      mv -v "$securityLog" "$internal/$securityLog_2024" 2>/dev/null
+      SetFile -m "${date}/2024 0:00" "$securityLog"
+      echo "SetFile -m \"${date}/2024 0:00\" \"$securityLog\""
+      mv --verbose "$securityLog" "$internal/$securityLog_2024" 2>/dev/null
     fi
     if [ -e "$footage" ]; then
-      setfile -m "${date}/2024 0:00" "$footage"
-      echo "setfile -m \"${date}/2024 0:00\" \"$footage\""
-      mv -v "$footage" "$internal/$footage_2024" 2>/dev/null
+      SetFile -m "${date}/2024 0:00" "$footage"
+      echo "SetFile -m \"${date}/2024 0:00\" \"$footage\""
+      mv --verbose "$footage" "$internal/$footage_2024" 2>/dev/null
     fi
   done
 }

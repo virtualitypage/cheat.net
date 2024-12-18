@@ -7,7 +7,7 @@ top_blocked="$current_dir/top_blocked_domains.csv"
 accept_domain="$current_dir/accept_domains.txt"
 reject_domain="$current_dir/reject_domains.txt"
 
-read -p "クエリログが格納されたディレクトリを指定して下さい: " dir
+read -prompt "クエリログが格納されたディレクトリを指定して下さい: " dir
 
 rm "$current_dir/$dir/ダッシュボード-表1-1-1.csv" \
    "$current_dir/$dir/ダッシュボード-表1.csv" \

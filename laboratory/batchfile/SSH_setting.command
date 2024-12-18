@@ -10,13 +10,13 @@ function init_client () {
   RNG="$HOME/random"
   cd ~/.ssh || exit
   if [ -e "id_rsa" ] || [ -e "id_rsa.pub" ]; then
-    read -p "公開鍵か秘密鍵、またはその両方が既に存在しています。上書きしますか？(y/n)?: " yesno
+    read -prompt "公開鍵か秘密鍵、またはその両方が既に存在しています。上書きしますか？(y/n)?: " yesno
     if [ "$yesno" == "y" ]; then
       rm id_rsa 2>/dev/null ; rm id_rsa.pub 2>/dev/null
       openssl rand -base64 32 > "$RNG" ; chmod 400 "$RNG"
       read -r passphrase < "$RNG"
       echo "$passphrase" | ssh-keygen -t rsa -N "$passphrase" -f "$id_rsa"
-      rm -f "$RNG"
+      rm --force "$RNG"
       rsync id_rsa.pub "$destination"
       echo
     else
@@ -27,7 +27,7 @@ function init_client () {
     openssl rand -base64 32 > "$RNG" ; chmod 400 "$RNG"
     read -r passphrase < "$RNG"
     echo "$passphrase" | ssh-keygen -t rsa -N "$passphrase" -f "$id_rsa"
-    rm -f "$RNG"
+    rm --force "$RNG"
     rsync id_rsa.pub "$destination"
     echo
   fi
@@ -45,9 +45,9 @@ function init_server () {
   if [ -e "id_rsa.pub" ] && [ -e "$destination"/id_rsa.pub ]; then
     read -p "公開鍵が既に存在しています。上書きしますか？(y/n)?: " yesno
     if [ "$yesno" == "y" ]; then
-      mv -f "$destination"/id_rsa.pub ~/.ssh
+      mv --force "$destination"/id_rsa.pub ~/.ssh
       cat id_rsa.pub > authorized_keys
-      chmod -v 600 authorized_keys
+      chmod --verbose 600 authorized_keys
       echo
     else
       echo
@@ -58,10 +58,10 @@ function init_server () {
     echo -e "\033[1;31m       クライアント側で init_client を実行した上で再度実行してください。\033[0m"
     echo
   else
-    mv -f "$destination"/id_rsa.pub ~/.ssh
+    mv --force "$destination"/id_rsa.pub ~/.ssh
     cat id_rsa.pub > authorized_keys
     echo
-    chmod -v 600 authorized_keys
+    chmod --verbose 600 authorized_keys
     echo
   fi
 }
@@ -87,7 +87,7 @@ EOF
 # client only
 function connect_client () {
   if [ -e "$config_file" ]; then
-    read -p "実行者はクライアント側(接続元)の人間ですか: " authentication
+    read -prompt "実行者はクライアント側(接続元)の人間ですか: " authentication
     if [ "$authentication" == "yes" ] || [ "$authentication" == "y" ] || [ "$authentication" == "はい" ]; then
       mv -fv "$config_file" ~/.ssh
       echo -e "\033[1;38mconfig ファイルの更新完了\033[0m"
@@ -163,7 +163,7 @@ echo -e "\033[1;38m$message\033[0m"
 echo
 
 while true; do
-  read -p "OPTION を指定してください: " option
+  read -prompt "OPTION を指定してください: " option
   case "$option" in
     init_client)
       echo

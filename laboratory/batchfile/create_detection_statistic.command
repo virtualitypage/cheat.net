@@ -4,7 +4,7 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 sub_file="$current_dir/sort.csv"
 mid_file="$current_dir/count.csv"
 
-read -p "> " stat_file
+read -prompt "> " stat_file
 
 year=$(echo "$stat_file" | sed 's/-/ /g' | awk '{ print $1 }')
 month=$(echo "$stat_file" | sed 's/-/ /g' | awk '{ printf "%02d", $2 }')
