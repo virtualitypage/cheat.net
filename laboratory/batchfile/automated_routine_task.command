@@ -3,7 +3,8 @@
 today=$(date '+%Y-%m-%d')
 yesterday=$(date -v -1d +"%Y-%m-%d")
 current_dir=$(cd "$(dirname "$0")" && pwd)
-GoogleDrivePath="$HOME/Library/CloudStorage/GoogleDrive-youguigujing42@gmail.com/マイドライブ/共有フォルダ/添付ファイル"
+GoogleDrivePath=$(find "$HOME/Library/CloudStorage" -type d -name "GoogleDrive-*@gmail.com" 2>/dev/null)
+GoogleDrivePath=$(find "$GoogleDrivePath" -type d -name "添付ファイル" 2>/dev/null | awk 'NR == 1')
 ScriptEditorPath="$HOME/Library/Mobile Documents/com~apple~ScriptEditor2/Documents"
 
 function automated_routine_task () {
@@ -20,7 +21,7 @@ function automated_routine_task () {
 
   echo -e "\033[1;32mSUCCESS: tar アーカイブを $current_dir に展開完了\033[0m"; echo
 
-  echo -e "\033[1;36mINFO: archive 配下のファイルを整理中...\033[0m"
+  echo -e "\033[1;36mINFO: archive 配下のファイルを整理・転送中...\033[0m"
   mv "archive/$yesterday/23_59_59/system_23_59_59.log" "archive/$yesterday/system.log"
   mv "archive/$yesterday/23_59_59/authpriv.csv" \
      "archive/$yesterday/23_59_59/MacTableEntry.csv" \
@@ -36,7 +37,24 @@ function automated_routine_task () {
     rm -r "archive/$yesterday/${j}_00_00" 2>/dev/null
   done
 
-  echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理完了\033[0m"; echo
+  # ファイルの末尾にある空行を置換により削除
+  tmpfile=$(mktemp)
+  find "archive/$yesterday" -type f -maxdepth 1 > "$tmpfile"
+  while IFS= read -r log_file || [[ -n $log_file ]]; do
+    body=$(cat "$log_file")
+    body=$(perl -pe 'chomp if eof' <<< "$body")
+    echo "$body" | perl -pe 'chomp if eof' >> "$log_file.tmp"
+    mv "$log_file.tmp" "$log_file"
+  done < "$tmpfile"
+  mv archive/interface_logger/log_only.csv "$current_dir"
+  rm "$tmpfile" "archive/.DS_Store" "archive/$yesterday/.DS_Store"
+
+  # archive を圧縮・転送
+  yesterday_slash="${yesterday//-//}" # sed 's|-|/|g' と同義
+  echo -e "$yesterday_slash" | "$command_dir/attachment_compression.command"
+  "$command_dir/internal_data_sync.command"
+
+  echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
   command_dir=$(find "$current_dir" -type f -name "convert_querylog_json.command" 2>/dev/null | awk 'NR == 1' | sed 's/\/convert_querylog_json.command//g')
@@ -88,6 +106,11 @@ function automated_routine_task () {
       echo -e "\033[1;32mSUCCESS: querylog_analyzer.command の実行完了\033[0m"; echo
     fi
   fi
+
+  # 一日のクエリ統計ファイルを作成
+  echo -e "\033[1;36mINFO: querylog_statistics.command を実行中...\033[0m"
+  echo -e "querylog_$yesterday.csv" | "$command_dir/querylog_statistics.command" # 複数行の入力をパイプやファイルを使って実行
+  echo -e "\033[1;32mSUCCESS: querylog_statistics.command の実行完了\033[0m"; echo
 }
 
 URL="https://drive.google.com/drive/my-drive"
