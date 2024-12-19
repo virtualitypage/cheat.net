@@ -17,12 +17,12 @@ function setfiling () {
     if [ -e "$securityLog" ]; then
       SetFile -m "${date}/2023 0:00" "$securityLog"
       echo "SetFile -m \"${date}/2023 0:00\" \"$securityLog\""
-      mv --verbose "$securityLog" "$internal/$securityLog_2023" 2>/dev/null
+      mv -v "$securityLog" "$internal/$securityLog_2023" 2>/dev/null
     fi
     if [ -e "$footage" ]; then
       SetFile -m "${date}/2023 0:00" "$footage"
       echo "SetFile -m \"${date}/2023 0:00\" \"$footage\""
-      mv --verbose "$footage" "$internal/$footage_2023" 2>/dev/null
+      mv -v "$footage" "$internal/$footage_2023" 2>/dev/null
     fi
   done
 
@@ -34,12 +34,12 @@ function setfiling () {
     if [ -e "$securityLog" ]; then
       SetFile -m "${date}/2024 0:00" "$securityLog"
       echo "SetFile -m \"${date}/2024 0:00\" \"$securityLog\""
-      mv --verbose "$securityLog" "$internal/$securityLog_2024" 2>/dev/null
+      mv -v "$securityLog" "$internal/$securityLog_2024" 2>/dev/null
     fi
     if [ -e "$footage" ]; then
       SetFile -m "${date}/2024 0:00" "$footage"
       echo "SetFile -m \"${date}/2024 0:00\" \"$footage\""
-      mv --verbose "$footage" "$internal/$footage_2024" 2>/dev/null
+      mv -v "$footage" "$internal/$footage_2024" 2>/dev/null
     fi
   done
 }

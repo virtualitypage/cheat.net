@@ -7,7 +7,7 @@ origin_file="$dest/Origin Directory Tree.csv"
 dest_file="$dest/CLI - Directory Tree-表1.csv"
 
 function origin_directory_tree_convert () {
-  cp --recursive "$origin" "$dest"
+  cp -r "$origin" "$dest"
   dir_table=("bin" "dev" "etc" "lib" "overlay" "rom" "sbin" "sys" "tmp" "usr" "www")
   for i in {1..11}; do
     dir="${dir_table[$i - 1]}"

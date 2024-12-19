@@ -27,14 +27,14 @@ function automated_routine_task () {
      "archive/$yesterday/23_59_59/MacTableEntry.csv" \
      "archive/$yesterday/23_59_59/system.csv" "archive/$yesterday"
 
-  rm --recursive "archive/$yesterday/23_59_59" \
+  rm -r "archive/$yesterday/23_59_59" \
                  "archive/$today" \
                  "archive_$yesterday.tar.gz" \
                  "querylog_$yesterday.json.tar.gz"
 
   for ((i = 1; i <= 23; i++)); do
     j=$(printf "%02d\n" $i)
-    rm --recursive "archive/$yesterday/${j}_00_00" 2>/dev/null
+    rm -r "archive/$yesterday/${j}_00_00" 2>/dev/null
   done
 
   # ファイルの末尾にある空行を置換により削除
@@ -47,9 +47,11 @@ function automated_routine_task () {
     mv "$log_file.tmp" "$log_file"
   done < "$tmpfile"
   mv archive/interface_logger/log_only.csv "$current_dir"
-  rm "$tmpfile" "archive/.DS_Store" "archive/$yesterday/.DS_Store"
+  rm "$tmpfile" "archive/.DS_Store" "archive/$yesterday/.DS_Store" 2>/dev/null
 
   # archive を圧縮・転送
+  command_dir=$(find "$current_dir" -type f -name "attachment_compression.command" 2>/dev/null | awk 'NR == 1' | sed 's/\/attachment_compression.command//g')
+  cd "$command_dir" || exit
   yesterday_slash="${yesterday//-//}" # sed 's|-|/|g' と同義
   echo -e "$yesterday_slash" | "$command_dir/attachment_compression.command"
   "$command_dir/internal_data_sync.command"
@@ -57,7 +59,6 @@ function automated_routine_task () {
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
-  command_dir=$(find "$current_dir" -type f -name "convert_querylog_json.command" 2>/dev/null | awk 'NR == 1' | sed 's/\/convert_querylog_json.command//g')
   sed -i '' -e "/$today/q" -e "/$today/d" "$current_dir/querylog.json"
 
   if mv "$current_dir/querylog.json" "$command_dir"; then
@@ -77,15 +78,14 @@ function automated_routine_task () {
 
   # クエリログ分析のためのファイルを作成
   echo -e "\033[1;36mINFO: querylog_analyzer.command を実行中...\033[0m"
-  cd "$command_dir" || exit
   echo -e "querylog_$yesterday.csv\n192.168.8.117" | "$command_dir/querylog_analyzer.command" # 複数行の入力をパイプやファイルを使って実行
-  read -p "Querylog_Analysis_Target_Domain.scpt を実行しますか？ { yes | y | no }: " yesno
+  read -prompt "Querylog_Analysis_Target_Domain.scpt を実行しますか？ { yes | y | no }: " yesno
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ]; then
     open "$command_dir/Querylog Analysis - 192.168.8.117.csv"
     sleep 2
     echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_15inch.scpt\033[0m"
     echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_27inch.scpt\033[0m"
-    read -p "{ 15inch | 27inch }: " mode
+    read -prompt "{ 15inch | 27inch }: " mode
     if [ "$mode" = "15inch" ]; then
       # 作成済クエリログ分析ファイルを編集①
       echo "osascript $ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_15inch.scpt"
@@ -115,7 +115,7 @@ function automated_routine_task () {
 
 URL="https://drive.google.com/drive/my-drive"
 success=$(curl -I $URL 2>/dev/null | head -n 1)
-failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
+failure=$(curl -I $URL 2>&1 | grep --only-matching "Could not resolve host")
 
 if [ "$success" ]; then
   echo -e "\033[1;32mSUCCESS: $success\033[0m"

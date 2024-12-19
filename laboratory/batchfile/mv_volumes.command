@@ -53,8 +53,8 @@ function mv_volumes () {
   elif [ ! -d "$date_dir" ]; then
     echo -e "\033[1;36mINFO: \"$date_dir\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
     mkdir archive
-    echo "mv --verbose $dst_volume/$date_dir $archive"
-    mv --verbose "$dst_volume/$date_dir" $archive
+    echo "mv -v $dst_volume/$date_dir $archive"
+    mv -v "$dst_volume/$date_dir" $archive
     mkdir "$date_dir"
     echo
   fi

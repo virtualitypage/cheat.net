@@ -16,7 +16,7 @@ function init_client () {
       openssl rand -base64 32 > "$RNG" ; chmod 400 "$RNG"
       read -r passphrase < "$RNG"
       echo "$passphrase" | ssh-keygen -t rsa -N "$passphrase" -f "$id_rsa"
-      rm --force "$RNG"
+      rm -f "$RNG"
       rsync id_rsa.pub "$destination"
       echo
     else
@@ -27,7 +27,7 @@ function init_client () {
     openssl rand -base64 32 > "$RNG" ; chmod 400 "$RNG"
     read -r passphrase < "$RNG"
     echo "$passphrase" | ssh-keygen -t rsa -N "$passphrase" -f "$id_rsa"
-    rm --force "$RNG"
+    rm -f "$RNG"
     rsync id_rsa.pub "$destination"
     echo
   fi
@@ -45,9 +45,9 @@ function init_server () {
   if [ -e "id_rsa.pub" ] && [ -e "$destination"/id_rsa.pub ]; then
     read -p "公開鍵が既に存在しています。上書きしますか？(y/n)?: " yesno
     if [ "$yesno" == "y" ]; then
-      mv --force "$destination"/id_rsa.pub ~/.ssh
+      mv -f "$destination"/id_rsa.pub ~/.ssh
       cat id_rsa.pub > authorized_keys
-      chmod --verbose 600 authorized_keys
+      chmod -v 600 authorized_keys
       echo
     else
       echo
@@ -58,10 +58,10 @@ function init_server () {
     echo -e "\033[1;31m       クライアント側で init_client を実行した上で再度実行してください。\033[0m"
     echo
   else
-    mv --force "$destination"/id_rsa.pub ~/.ssh
+    mv -f "$destination"/id_rsa.pub ~/.ssh
     cat id_rsa.pub > authorized_keys
     echo
-    chmod --verbose 600 authorized_keys
+    chmod -v 600 authorized_keys
     echo
   fi
 }

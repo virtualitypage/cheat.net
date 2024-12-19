@@ -75,7 +75,7 @@ while true; do
       cd "/Volumes/$volume/.Trashes" || exit
       disk_use=$(du -sh "/Volumes/$volume/.Trashes" | cut -f1)
       echo -e "\033[1;36mINFO: $volume のゴミ箱にて以下のファイルが検出されました。容量:${disk_use}B\033[0m"
-      for file in ls $(ls --all); do
+      for file in ls $(ls -a); do
         files=$(basename "$file")
         if [ -d "$files" ]; then
           echo -e "\033[1;34m> $files\033[0m"
