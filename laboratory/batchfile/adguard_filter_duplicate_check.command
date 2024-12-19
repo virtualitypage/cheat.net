@@ -12,7 +12,7 @@ sed -i '' '/^$/d' "$domain_txt"
 
 while IFS= read -r domain || [[ -n $domain ]]; do
   result=$(grep --line-number "$domain" $guard/*)
-  result_count=$(echo "$result" | wc --lines | awk '{ print $1 }')
+  result_count=$(echo "$result" | wc -l | awk '{ print $1 }')
   if [ "$result_count" -ne 1 ]; then
     echo "$result"
     echo -e "\033[1;31mduplicate count: $result_count\033[0m"

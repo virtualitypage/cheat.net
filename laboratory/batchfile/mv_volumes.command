@@ -161,7 +161,7 @@ exec > >(tee -a "$logfile")
 
 URL="https://drive.google.com/drive/my-drive"
 success=$(curl -I $URL 2>/dev/null | head -n 1)
-failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
+failure=$(curl -I $URL 2>&1 | grep --only-matching "Could not resolve host")
 
 if [ "$success" ]; then
   echo -e "\033[1;32mSUCCESS: $success\033[0m"

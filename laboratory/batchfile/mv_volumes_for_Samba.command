@@ -83,7 +83,7 @@ function ps_check () {
 }
 
 function enqueue_info () {
-  num_files=$(ls -F $src_volume | grep -v / | wc --lines)
+  num_files=$(ls -F $src_volume | grep -v / | wc -l)
   total_time=$(echo "4 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
@@ -95,7 +95,7 @@ function enqueue_info () {
 }
 
 function dequeue_info () {
-  num_files=$(ls -F "$queue" | grep -v / | wc --lines)
+  num_files=$(ls -F "$queue" | grep -v / | wc -l)
   total_time=$(echo "6 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算

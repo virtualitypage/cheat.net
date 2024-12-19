@@ -5,7 +5,7 @@ archive="$current_dir/archive"
 GoogleDrivePath=$(find "$HOME/Library/CloudStorage" -type d -name "GoogleDrive-*@gmail.com" 2>/dev/null)
 GoogleDrivePath=$(find "$GoogleDrivePath" -type d -name "添付ファイル" 2>/dev/null | awk 'NR == 1')
 
-read -prompt "archive ファイルの作成日時を入力してください [ YYYY/MM/DD ]: " date
+read -rp "archive ファイルの作成日時を入力してください [ YYYY/MM/DD ]: " date
 
 file_date_YMD="${date////-}" # sed 's|/|-|g' と同義
 file_date_YM="${file_date_YMD%-*}" # %で末尾から一致する箇所を検索、-DDの部分を削除

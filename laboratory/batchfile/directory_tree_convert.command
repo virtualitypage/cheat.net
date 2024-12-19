@@ -20,7 +20,7 @@ function origin_directory_tree_convert () {
 }
 
 function dest_directory_tree_convert () {
-  cat "$dest_file" | tr -d '\r' > "$dest_file.tmp"
+  < "$dest_file" tr -d '\r' > "$dest_file.tmp"
   LC_ALL=C sed -e 's/^/"/g' -e 's/$/"/g' "$dest_file.tmp" > "$dest_file"
   sed -i '' 's/,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,//g' "$dest_file"
   sed -i '' 's/,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,//g' "$dest_file"

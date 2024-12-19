@@ -121,7 +121,7 @@ function rsync_clone_folder () {
   rm_file_count=0
 
   while true; do
-    read -prompt "複製したいフォルダの名前を入力して下さい: " directory
+    read -rp "複製したいフォルダの名前を入力して下さい: " directory
     echo "複製したいフォルダの名前を入力して下さい: $directory" >> "$logfile"
     if [ "$directory" == "$today" ]; then
       echo -e "\033[1;33mWARNING: 転送用フォルダ \"$today\" は複製できません。他のフォルダ名を入力してください\033[0m"
@@ -561,7 +561,7 @@ exec > >(tee -a "$logfile")
 
 URL="https://drive.google.com/drive/my-drive"
 success=$(curl -I $URL 2>/dev/null | head -n 1)
-failure=$(curl -I $URL 2>&1 | grep -o "Could not resolve host")
+failure=$(curl -I $URL 2>&1 | grep --only-matching "Could not resolve host")
 
 if [ "$success" ]; then
   echo -e "\033[1;32mSUCCESS: $success\033[0m"

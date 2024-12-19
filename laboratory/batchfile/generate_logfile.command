@@ -24,13 +24,11 @@ EOF
   done < "$sub_file"
 
   sed -i '' 's/DSCF.*-> //g' "$main_file"
-  sed -i '' 's/01月/1月/g' "$main_file" ; sed -i '' 's/02月/2月/g' "$main_file" ; sed -i '' 's/03月/3月/g' "$main_file" ; sed -i '' 's/04月/4月/g' "$main_file"
-  sed -i '' 's/05月/5月/g' "$main_file" ; sed -i '' 's/06月/6月/g' "$main_file" ; sed -i '' 's/07月/7月/g' "$main_file" ; sed -i '' 's/08月/8月/g' "$main_file"
-  sed -i '' 's/09月/9月/g' "$main_file"
-
-  sed -i '' 's/01日/1日/g' "$main_file" ; sed -i '' 's/02日/2日/g' "$main_file" ; sed -i '' 's/03日/3日/g' "$main_file" ; sed -i '' 's/04日/4日/g' "$main_file"
-  sed -i '' 's/05日/5日/g' "$main_file" ; sed -i '' 's/06日/6日/g' "$main_file" ; sed -i '' 's/07日/7日/g' "$main_file" ; sed -i '' 's/08日/8日/g' "$main_file"
-  sed -i '' 's/09日/9日/g' "$main_file"
+  for i in {0..9}; do
+    j=$(printf "%02d" "$i")
+    sed -i '' "s/${j}月/${i}月/g" "$main_file"
+    sed -i '' "s/${j}日/${i}日/g" "$main_file"
+  done
 
   echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
   echo -e "\033[1;32m$securityCamera_Rec は $current_dir に格納されています。\033[0m"

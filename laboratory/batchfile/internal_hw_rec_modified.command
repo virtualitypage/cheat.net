@@ -9,11 +9,11 @@ mkv_files=()
 cd "$sub_file" || exit
 
 ls -ldR */*/* | awk '{ print $9 }'
-read -prompt "ディレクトリパスを入力: $sub_file/" directory
+read -rp "ディレクトリパスを入力: $sub_file/" directory
 
 cd "$directory" || exit
 
-read -prompt "リネームしますか？ { y | yes | no }: " yesno
+read -rp "リネームしますか？ { y | yes | no }: " yesno
 
 if [ "$yesno" = y ] || [ "$yesno" = yes ]; then
   rename -s "_2a (video-converter.com)" "" *

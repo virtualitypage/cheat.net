@@ -171,7 +171,7 @@ EOF
 echo -e "\033[1;36m$templateList\033[0m"
 echo
 while true; do
-  read -p "上記から関数を選択して下さい: " template
+  read -rp "上記から関数を選択して下さい: " template
   case $template in
     diff_check)
       diff_check

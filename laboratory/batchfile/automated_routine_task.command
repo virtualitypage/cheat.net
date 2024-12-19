@@ -79,13 +79,13 @@ function automated_routine_task () {
   # クエリログ分析のためのファイルを作成
   echo -e "\033[1;36mINFO: querylog_analyzer.command を実行中...\033[0m"
   echo -e "querylog_$yesterday.csv\n192.168.8.117" | "$command_dir/querylog_analyzer.command" # 複数行の入力をパイプやファイルを使って実行
-  read -prompt "Querylog_Analysis_Target_Domain.scpt を実行しますか？ { yes | y | no }: " yesno
+  read -rp "Querylog_Analysis_Target_Domain.scpt を実行しますか？ { yes | y | no }: " yesno
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ]; then
     open "$command_dir/Querylog Analysis - 192.168.8.117.csv"
     sleep 2
     echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_15inch.scpt\033[0m"
     echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_27inch.scpt\033[0m"
-    read -prompt "{ 15inch | 27inch }: " mode
+    read -rp "{ 15inch | 27inch }: " mode
     if [ "$mode" = "15inch" ]; then
       # 作成済クエリログ分析ファイルを編集①
       echo "osascript $ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_15inch.scpt"
