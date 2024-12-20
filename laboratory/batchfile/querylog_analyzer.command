@@ -146,7 +146,7 @@ if grep --extended-regexp "^3:" "$counter.txt" 1>/dev/null; then
   echo -e "$code_27inch\n" >> "$main_file_27inch"
   grep --extended-regexp "^3:" "$counter.txt" > "${counter}_A.txt"
   sed -i '' 's/variable/4/g' "$main_file_15inch" "$main_file_27inch"
-  sed -i '' -e '1s/.*: /set TargetDomain4 to {"/g' -e 's3: /"/g' -e 's/$/", /g' "${counter}_A.txt"
+  sed -i '' -e '1s/.*: /set TargetDomain4 to {"/g' -e 's/3: /"/g' -e 's/$/", /g' "${counter}_A.txt"
   sed -i '' -e '$a \
   }' -e 's/,   //g' "${counter}_A.txt"
   < "${counter}_A.txt" tr -d '\n' > "${counter}_B.txt"
@@ -383,15 +383,14 @@ rm "$stat_file" "$uniq_file" "$target" "$target.tmp" "$counter.txt" "${counter}_
 
 function success_message () {
   echo -e "\033[1;32mALL SUCCESSFUL: ファイルの出力処理が正常に終了しました。\033[0m"
-  echo -e "\033[1;32m$query_file: DNS クエリ分析用 csv ファイル\033[0m"
-  echo -e "\033[1;32m$main_file_15inch\033[0m"
-  echo -e "\033[1;32m$main_file_27inch\033[0m"
   echo
 }
 
 # 以下のコードは別のスクリプトからアクセスした場合、実行されない
-read -rp "Querylog_Analysis_Target_Domain.scpt を実行しますか？: " yesno
-if [ "$yesno" = "yes" ]; then
+read -rp "Querylog_Analysis_Target_Domain.scpt を実行しますか？ { yes | y | no }: " yesno
+if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ]; then
+  open "$query_file"
+  sleep 2
   echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_15inch.scpt\033[0m"
   echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_27inch.scpt\033[0m"
   read -rp "{ 15inch | 27inch }: " mode
@@ -406,4 +405,7 @@ if [ "$yesno" = "yes" ]; then
   fi
 else
   success_message
+  echo -e "\033[1;32m$query_file: DNS クエリ分析用 csv ファイル\033[0m"
+  echo -e "\033[1;32m$main_file_15inch\033[0m"
+  echo -e "\033[1;32m$main_file_27inch\033[0m"
 fi
