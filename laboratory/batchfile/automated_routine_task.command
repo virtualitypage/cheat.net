@@ -60,6 +60,13 @@ function automated_routine_task () {
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
   sed -i '' -e "/$today/q" -e "/$today/d" "$current_dir/querylog.json"
+  sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "$current_dir/querylog.json" | awk '{ print length(), $0 }' | sort -nr | sed '/^5[0-5]/q' | awk '{ print $2 }' | sort -u > "$current_dir/cover_up.txt"
+
+  while IFS= read -r line; do
+    num=$(grep -c "\"QH\":\"$line\"" "$current_dir/querylog.json")
+    echo "揉み消しドメイン($num): $line"
+    sed -i '' "/$line/d" "$current_dir/querylog.json"
+  done < "$current_dir/cover_up.txt"
 
   if mv "$current_dir/querylog.json" "$command_dir"; then
     : # then の中を省略(何もしない)
