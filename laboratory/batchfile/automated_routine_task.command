@@ -56,6 +56,17 @@ function automated_routine_task () {
   echo -e "$yesterday_slash" | "$command_dir/attachment_compression.command"
   "$command_dir/internal_data_sync.command"
 
+  # MacTableEntry.csv をベースに Connection Statistics.numbers 用のファイルを作成
+  sed -e 's/^.*(): //g' -e 's/"//g' "archive/$yesterday/MacTableEntry.csv" | sort -u > "$current_dir/MacTableEntry"
+  while IFS= read -r line; do
+    echo "$line" >> "$current_dir/Connection Statistics.csv"
+    grep "MacTableInsertEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "$current_dir/InsertEntry"
+    grep "MacTableDeleteEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "$current_dir/DeleteEntry"
+    paste -d , "$current_dir/InsertEntry" "$current_dir/DeleteEntry" >> "$current_dir/Connection Statistics.csv"
+  done < "$current_dir/MacTableEntry"
+  sed -i '' 's/,/,〜,/g' "$current_dir/Connection Statistics.csv"
+  rm "$current_dir/InsertEntry" "$current_dir/DeleteEntry" "$current_dir/MacTableEntry"
+
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
