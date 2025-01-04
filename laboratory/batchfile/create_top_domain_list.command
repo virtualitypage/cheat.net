@@ -15,27 +15,31 @@ rm "$current_dir/$dir/ダッシュボード-表1-1-1.csv" \
 
 while IFS= read -r -d '' csv; do
   sed -i '' -e '/,,,,,/q' -e '/,,,,,/d' "$csv"
-  tr -d '\n' < "$csv" >> "$all_queries.tmp"
+  echo "$csv"
+  awk 'BEGIN { ORS=""; } # 出力の区切り文字を空に設定
+    {
+    gsub("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2},\"", "", $0)
+    gsub("種類: .*ステータス: ", "", $0)
+    gsub("種類: .*$", "", $0)
+    gsub("ステータス: ", "", $0)
+    gsub("許可.*$", "許可", $0)
+    gsub("ブロック済.*$", "ブロック済", $0)
+    gsub("処理済み.*$", "処理済み", $0)
+
+    if ($0 != "") { # 行が空でなければ出力
+      print $0
+    }
+  }' "$csv" >> "$all_queries"
 done < <(find "$current_dir/$dir" -type f -name "*.csv*" -print0)
 
 # sed -i '' '/Top queried domains,,,,Top blocked domains,,/q' "$all_queries.tmp"
 
-awk '{
-  if ($0 ~ /^[0-9][0-9][0-9][0-9]/) {
-    gsub("^.*[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]\,\"", "", $0)
-    gsub("種類.*ステータス\: ", ",", $0);
-    gsub("許可.*$", "許可", $0);
-    gsub("ブロック済.*$", "ブロック済 " $0);
-    gsub("処理済み.*$", "処理済み", $0);
-    print $0;
-  }
-}' "$all_queries.tmp" > "$all_queries"
-
+sed -i '' -e 's/許可/許可\n/g' -e 's/ブロック済/ブロック済\n/g' -e 's/処理済み/処理済み\n/g' "$all_queries"
 sort --unique "$all_queries" > "$current_dir/domains.txt"
 
-grep "許可" "$current_dir/domains.txt" | sed 's/,許可//g' >> "$accept_domain.tmp"
-grep "処理済み" "$current_dir/domains.txt" | sed 's/,処理済み//g' >> "$accept_domain.tmp"
-grep "ブロック済" "$current_dir/domains.txt" | sed 's/,ブロック済//g' >> "$reject_domain.tmp"
+grep "許可" "$current_dir/domains.txt" | sed 's/許可.*//g' >> "$accept_domain.tmp"
+grep "処理済み" "$current_dir/domains.txt" | sed 's/処理済み.*//g' >> "$accept_domain.tmp"
+grep "ブロック済" "$current_dir/domains.txt" | sed 's/ブロック済.*//g' >> "$reject_domain.tmp"
 
 sort --unique "$accept_domain.tmp" > "$accept_domain"
 sort --unique "$reject_domain.tmp" > "$reject_domain"
