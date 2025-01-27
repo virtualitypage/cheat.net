@@ -1,9 +1,19 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-sub_file=$(find "$current_dir" -maxdepth 1 -type f -iname 'querylog_*.json') # -maxdepth 1 でサブディレクトリを含めない検索を行う
+sub_file=$(find "$current_dir" -maxdepth 1 -type f -iname 'querylog*.json') # -maxdepth 1 でサブディレクトリを含めない検索を行う
 date=$(head -n 1 "$sub_file" | awk -F\" '{print $4}' | cut -dT -f1)
 main_file="$current_dir/querylog_$date.json"
+
+sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "$sub_file" | awk '{ print length(), $0 }' | sort -nr | grep "^[5-9][0-9]" | awk '{ print $2 }' | sort -u > "$current_dir/cover_up.txt"
+sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "$sub_file" | awk '{ print length(), $0 }' | sort -nr | grep "^[1-9][0-9][0-9]" | awk '{ print $2 }' | sort -u >> "$current_dir/cover_up.txt"
+
+while IFS= read -r line; do
+  num=$(grep -c "\"QH\":\"$line\"" "$sub_file")
+  length=$(echo "$line" | awk '{ print length() $2 }')
+  echo "(length: $length / count: $num): $line"
+  sed -i '' "/$line/d" "$sub_file"
+done < "$current_dir/cover_up.txt"
 
 cp "$sub_file" "$main_file"
 

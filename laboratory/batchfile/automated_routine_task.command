@@ -1,6 +1,10 @@
 #!/bin/bash
 
 today=$(date '+%Y-%m-%d')
+today_slash=$(date '+%Y-%m-%d' | sed 's|-|/|g');
+year=$(TZ=UTC-9 date '+%Y')
+month=$(TZ=UTC-9 date '+%m' | sed 's/^0//')
+day=$(TZ=UTC-9 date '+%d' | sed 's/^0//')
 yesterday=$(date -v -1d +"%Y-%m-%d")
 current_dir=$(cd "$(dirname "$0")" && pwd)
 GoogleDrivePath=$(find "$HOME/Library/CloudStorage" -type d -name "GoogleDrive-*@gmail.com" 2>/dev/null)
@@ -46,7 +50,7 @@ function automated_routine_task () {
     echo "$body" | perl -pe 'chomp if eof' >> "$log_file.tmp"
     mv "$log_file.tmp" "$log_file"
   done < "$tmpfile"
-  mv archive/interface_logger/log_only.csv "$current_dir"
+  mv archive/interface_logger/log_only.csv archive
   rm "$tmpfile" "archive/.DS_Store" "archive/$yesterday/.DS_Store" 2>/dev/null
 
   # archive を圧縮・転送
@@ -59,23 +63,27 @@ function automated_routine_task () {
   # MacTableEntry.csv をベースに Connection Statistics.numbers 用のファイルを作成
   sed -e 's/^.*(): //g' -e 's/"//g' "archive/$yesterday/MacTableEntry.csv" | sort -u > "$current_dir/MacTableEntry"
   while IFS= read -r line; do
-    echo "$line" >> "$current_dir/Connection Statistics.csv"
+    echo "$line" >> "archive/Connection Statistics.csv"
     grep "MacTableInsertEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "$current_dir/InsertEntry"
     grep "MacTableDeleteEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "$current_dir/DeleteEntry"
-    paste -d , "$current_dir/InsertEntry" "$current_dir/DeleteEntry" >> "$current_dir/Connection Statistics.csv"
+    paste -d , "$current_dir/InsertEntry" "$current_dir/DeleteEntry" >> "archive/Connection Statistics.csv"
   done < "$current_dir/MacTableEntry"
-  sed -i '' 's/,/,〜,/g' "$current_dir/Connection Statistics.csv"
+
+  sed -i '' -e 's/,/,〜,/g' -e "s|$year/$month/$day|$today_slash|g" "archive/Connection Statistics.csv"
   rm "$current_dir/InsertEntry" "$current_dir/DeleteEntry" "$current_dir/MacTableEntry"
 
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
   sed -i '' -e "/$today/q" -e "/$today/d" "$current_dir/querylog.json"
-  sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "$current_dir/querylog.json" | awk '{ print length(), $0 }' | sort -nr | sed '/^5[0-5]/q' | awk '{ print $2 }' | sort -u > "$current_dir/cover_up.txt"
+  sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "$current_dir/querylog.json" | awk '{ print length(), $0 }' | sort -nr | grep "^[5-9][0-9]" | awk '{ print $2 }' | sort -u > "$current_dir/cover_up.txt"
+  sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "$current_dir/querylog.json" | awk '{ print length(), $0 }' | sort -nr | grep "^[1-9][0-9][0-9]" | awk '{ print $2 }' | sort -u >> "$current_dir/cover_up.txt"
+  sed -i '' 's|\\.*||g' "$current_dir/cover_up.txt"
 
   while IFS= read -r line; do
     num=$(grep -c "\"QH\":\"$line\"" "$current_dir/querylog.json")
-    echo "揉み消しドメイン($num): $line"
+    length=$(echo "$line" | awk '{ print length() $2 }')
+    echo "(length: $length / count: $num): $line"
     sed -i '' "/$line/d" "$current_dir/querylog.json"
   done < "$current_dir/cover_up.txt"
 
@@ -98,27 +106,27 @@ function automated_routine_task () {
   echo -e "\033[1;36mINFO: querylog_analyzer.command を実行中...\033[0m"
   echo -e "querylog_$yesterday.csv\n192.168.8.117" | "$command_dir/querylog_analyzer.command" # 複数行の入力をパイプやファイルを使って実行
   read -rp "Querylog_Analysis_Target_Domain.scpt を実行しますか？ { yes | y | no }: " yesno
-  if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ]; then
+  if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
     open "$command_dir/Querylog Analysis - 192.168.8.117.csv"
     sleep 2
     echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_15inch.scpt\033[0m"
     echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_27inch.scpt\033[0m"
     read -rp "{ 15inch | 27inch }: " mode
     if [ "$mode" = "15inch" ]; then
-      # 作成済クエリログ分析ファイルを編集①
+      # 作成済クエリログ分析ファイルを編集(15inch)①
       echo "osascript $ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_15inch.scpt"
       osascript "$ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_15inch.scpt"
       echo
-      # 作成済クエリログ分析ファイルを編集②
+      # 作成済クエリログ分析ファイルを編集(15inch)②
       echo "osascript $command_dir/Querylog_Analysis_Target_Domain_15inch.scpt"
       osascript "$command_dir/Querylog_Analysis_Target_Domain_15inch.scpt"
       echo -e "\033[1;32mSUCCESS: querylog_analyzer.command の実行完了\033[0m"; echo
     else
-      # 作成済クエリログ分析ファイルを編集①
+      # 作成済クエリログ分析ファイルを編集(27inch)①
       echo "osascript $ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_27inch.scpt"
       osascript "$ScriptEditorPath/Querylog_Analysis_Target_Domain(initializing)_27inch.scpt"
       echo
-      # 作成済クエリログ分析ファイルを編集②
+      # 作成済クエリログ分析ファイルを編集(27inch)②
       echo "osascript $command_dir/Querylog_Analysis_Target_Domain_27inch.scpt"
       osascript "$command_dir/Querylog_Analysis_Target_Domain_27inch.scpt"
       echo -e "\033[1;32mSUCCESS: querylog_analyzer.command の実行完了\033[0m"; echo
