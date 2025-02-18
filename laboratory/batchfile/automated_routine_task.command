@@ -1,10 +1,6 @@
 #!/bin/bash
 
 today=$(date '+%Y-%m-%d')
-today_slash=$(date '+%Y-%m-%d' | sed 's|-|/|g');
-year=$(TZ=UTC-9 date '+%Y')
-month=$(TZ=UTC-9 date '+%m' | sed 's/^0//')
-day=$(TZ=UTC-9 date '+%d' | sed 's/^0//')
 yesterday=$(date -v -1d +"%Y-%m-%d")
 current_dir=$(cd "$(dirname "$0")" && pwd)
 GoogleDrivePath=$(find "$HOME/Library/CloudStorage" -type d -name "GoogleDrive-*@gmail.com" 2>/dev/null)
@@ -69,7 +65,10 @@ function automated_routine_task () {
     paste -d , "$current_dir/InsertEntry" "$current_dir/DeleteEntry" >> "archive/Connection Statistics.csv"
   done < "$current_dir/MacTableEntry"
 
-  sed -i '' -e 's/,/,〜,/g' -e "s|$year/$month/$day|$today_slash|g" "archive/Connection Statistics.csv"
+  before_date=$(head -n 1 "archive/$yesterday/MacTableEntry.csv" | sed -e 's/ .*$//g' -e 's|/|-|g')
+  after_date=$(date -jf "%Y-%m-%d" "$before_date" "+%Y/%m/%d")
+  before_date="${before_date//-//}" # sed 's|-|/|g' と同義
+  sed -i '' -e 's/,/,〜,/g' -e "s|$before_date|$after_date|g" "archive/Connection Statistics.csv"
   rm "$current_dir/InsertEntry" "$current_dir/DeleteEntry" "$current_dir/MacTableEntry"
 
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
@@ -146,6 +145,11 @@ failure=$(curl -I $URL 2>&1 | grep --only-matching "Could not resolve host")
 if [ "$success" ]; then
   echo -e "\033[1;32mSUCCESS: $success\033[0m"
   automated_routine_task
+  if [ ! -e "$GoogleDrivePath/archive_$yesterday.tar.gz" ] || [ ! -e "$GoogleDrivePath/querylog_$yesterday.json.tar.gz" ]; then
+    echo -e "\033[1;31mFILE ERROR: Google Drive に tar アーカイブが存在しません。ファイルを再配置して再度実行してください。\033[0m"
+    echo
+    exit 1
+  fi
 elif [ "$failure" == "Could not resolve host" ]; then
   echo -e "\033[1;31mNETWORK ERROR: Google Drive にアクセス出来ませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
   echo
