@@ -6,6 +6,7 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 GoogleDrivePath=$(find "$HOME/Library/CloudStorage" -type d -name "GoogleDrive-*@gmail.com" 2>/dev/null)
 GoogleDrivePath=$(find "$GoogleDrivePath" -type d -name "添付ファイル" 2>/dev/null | awk 'NR == 1')
 ScriptEditorPath="$HOME/Library/Mobile Documents/com~apple~ScriptEditor2/Documents"
+year="${yesterday//-*}"
 
 function automated_routine_task () {
   echo -e "\033[1;36mINFO: Google Drive から tar アーカイブを転送中...\033[0m"
@@ -51,42 +52,45 @@ function automated_routine_task () {
 
   # archive を圧縮・転送
   command_dir=$(find "$current_dir" -type f -name "attachment_compression.command" 2>/dev/null | awk 'NR == 1' | sed 's/\/attachment_compression.command//g')
-  cd "$command_dir" || exit
   yesterday_slash="${yesterday//-//}" # sed 's|-|/|g' と同義
   echo -e "$yesterday_slash" | "$command_dir/attachment_compression.command"
   "$command_dir/internal_data_sync.command"
 
   # MacTableEntry.csv をベースに Connection Statistics.numbers 用のファイルを作成
-  sed -e 's/^.*(): //g' -e 's/"//g' "archive/$yesterday/MacTableEntry.csv" | sort -u > "$current_dir/MacTableEntry"
+  sed -e 's/^.*(): //g' -e 's/"//g' "archive/$yesterday/MacTableEntry.csv" | sort -u > "MacTableEntry"
   while IFS= read -r line; do
     echo "$line" >> "archive/Connection Statistics.csv"
-    grep "MacTableInsertEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "$current_dir/InsertEntry"
-    grep "MacTableDeleteEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "$current_dir/DeleteEntry"
-    paste -d , "$current_dir/InsertEntry" "$current_dir/DeleteEntry" >> "archive/Connection Statistics.csv"
-  done < "$current_dir/MacTableEntry"
+    grep "MacTableInsertEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "InsertEntry"
+    grep "MacTableDeleteEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "DeleteEntry"
+    paste -d , "InsertEntry" "DeleteEntry" >> "archive/Connection Statistics.csv"
+  done < "MacTableEntry"
 
   before_date=$(head -n 1 "archive/$yesterday/MacTableEntry.csv" | sed -e 's/ .*$//g' -e 's|/|-|g')
   after_date=$(date -jf "%Y-%m-%d" "$before_date" "+%Y/%m/%d")
   before_date="${before_date//-//}" # sed 's|-|/|g' と同義
   sed -i '' -e 's/,/,〜,/g' -e "s|$before_date|$after_date|g" "archive/Connection Statistics.csv"
-  rm "$current_dir/InsertEntry" "$current_dir/DeleteEntry" "$current_dir/MacTableEntry"
+  rm "InsertEntry" "DeleteEntry" "MacTableEntry"
 
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
-  sed -i '' -e "/$today/q" -e "/$today/d" "$current_dir/querylog.json"
-  sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "$current_dir/querylog.json" | awk '{ print length(), $0 }' | sort -nr | grep "^[5-9][0-9]" | awk '{ print $2 }' | sort -u > "$current_dir/cover_up.txt"
-  sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "$current_dir/querylog.json" | awk '{ print length(), $0 }' | sort -nr | grep "^[1-9][0-9][0-9]" | awk '{ print $2 }' | sort -u >> "$current_dir/cover_up.txt"
-  sed -i '' 's|\\.*||g' "$current_dir/cover_up.txt"
+  sed -i '' -e "/$today/q" -e "/$today/d" "querylog.json"
+
+  # querylog.json を圧縮・転送
+  tar -zcf "querylog_$yesterday.json.tar.gz" querylog.json
+  mv "querylog_$yesterday.json.tar.gz" "$GoogleDrivePath/$year/querylog"
+  sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "querylog.json" | awk '{ print length(), $0 }' | sort -nr | grep "^[5-9][0-9]" | awk '{ print $2 }' | sort -u > "$current_dir/cover_up.txt"
+  sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "querylog.json" | awk '{ print length(), $0 }' | sort -nr | grep "^[1-9][0-9][0-9]" | awk '{ print $2 }' | sort -u >> "$current_dir/cover_up.txt"
+  sed -i '' 's|\\.*||g' "cover_up.txt"
 
   while IFS= read -r line; do
-    num=$(grep -c "\"QH\":\"$line\"" "$current_dir/querylog.json")
+    num=$(grep -c "\"QH\":\"$line\"" "querylog.json")
     length=$(echo "$line" | awk '{ print length() $2 }')
     echo "(length: $length / count: $num): $line"
-    sed -i '' "/$line/d" "$current_dir/querylog.json"
-  done < "$current_dir/cover_up.txt"
+    sed -i '' "/$line/d" "querylog.json"
+  done < "cover_up.txt"
 
-  if mv "$current_dir/querylog.json" "$command_dir"; then
+  if mv "querylog.json" "$command_dir"; then
     : # then の中を省略(何もしない)
   else
     echo -e "\033[1;38mquerylog.json の移動処理をスキップします\033[0m"
