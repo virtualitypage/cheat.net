@@ -148,6 +148,7 @@ if [ -e "$drive" ] && [ -e "$github" ]; then
   echo -e "\033[1;32mSUCCESS: Google Drive ／ GitHub 共に有効です。\033[0m"
   echo
   internal_data_sync
+  rm -r archive
 else
   echo -e "\033[1;31mERROR: Google Drive ／ GitHub またはその両方にアクセス出来ません。端末が Wi-Fi に接続されているか等を確認して再度実行してください。\033[0m"
   echo
