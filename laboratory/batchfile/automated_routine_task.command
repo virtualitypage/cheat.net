@@ -1,7 +1,8 @@
 #!/bin/bash
 
 today=$(date '+%Y-%m-%d')
-yesterday=$(date -v -1d +"%Y-%m-%d")
+yesterday=$(date -v-1d '+%Y-%m-%d')
+SetFile_today=$(date '+%m/%d/%Y')
 current_dir=$(cd "$(dirname "$0")" && pwd)
 GoogleDrivePath=$(find "$HOME/Library/CloudStorage" -type d -name "GoogleDrive-*@gmail.com" 2>/dev/null)
 GoogleDrivePath=$(find "$GoogleDrivePath" -type d -name "添付ファイル" 2>/dev/null | awk 'NR == 1')
@@ -29,9 +30,9 @@ function automated_routine_task () {
      "archive/$yesterday/23_59_59/system.csv" "archive/$yesterday"
 
   rm -r "archive/$yesterday/23_59_59" \
-                 "archive/$today" \
-                 "archive_$yesterday.tar.gz" \
-                 "querylog_$yesterday.json.tar.gz"
+        "archive/$today" \
+        "archive_$yesterday.tar.gz" \
+        "querylog_$yesterday.json.tar.gz"
 
   for ((i = 1; i <= 23; i++)); do
     j=$(printf "%02d\n" $i)
@@ -57,27 +58,31 @@ function automated_routine_task () {
   "$command_dir/internal_data_sync.command"
 
   # MacTableEntry.csv をベースに Connection Statistics.numbers 用のファイルを作成
-  sed -e 's/^.*(): //g' -e 's/"//g' "archive/$yesterday/MacTableEntry.csv" | sort -u > "MacTableEntry"
+  sed -e 's/^.*(): //g' -e 's/"//g' "archive_$yesterday/$yesterday/MacTableEntry.csv" | sort -u > "MacTableEntry"
   while IFS= read -r line; do
-    echo "$line" >> "archive/Connection Statistics.csv"
-    grep "MacTableInsertEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "InsertEntry"
-    grep "MacTableDeleteEntry(): $line" "archive/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "DeleteEntry"
-    paste -d , "InsertEntry" "DeleteEntry" >> "archive/Connection Statistics.csv"
+    echo "$line" >> "archive_$yesterday/Connection Statistics.csv"
+    grep "MacTableInsertEntry(): $line" "archive_$yesterday/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "InsertEntry"
+    grep "MacTableDeleteEntry(): $line" "archive_$yesterday/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "DeleteEntry"
+    paste -d , "InsertEntry" "DeleteEntry" >> "archive_$yesterday/Connection Statistics.csv"
   done < "MacTableEntry"
 
-  before_date=$(head -n 1 "archive/$yesterday/MacTableEntry.csv" | sed -e 's/ .*$//g' -e 's|/|-|g')
-  after_date=$(date -jf "%Y-%m-%d" "$before_date" "+%Y/%m/%d")
+  before_date=$(head -n 1 "archive_$yesterday/$yesterday/MacTableEntry.csv" | sed -e 's/ .*$//g' -e 's|/|-|g')
+  after_date=$(date -jf '%Y-%m-%d' "$before_date" '+%Y/%m/%d')
   before_date="${before_date//-//}" # sed 's|-|/|g' と同義
-  sed -i '' -e 's/,/,〜,/g' -e "s|$before_date|$after_date|g" "archive/Connection Statistics.csv"
+  sed -i '' -e 's/,/,〜,/g' -e "s|$before_date|$after_date|g" "archive_$yesterday/Connection Statistics.csv"
   rm "InsertEntry" "DeleteEntry" "MacTableEntry"
 
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
   sed -i '' -e "/$today/q" -e "/$today/d" "querylog.json"
+  SetFile -m "$SetFile_today 02:00" "querylog.json"
+  SetFile -d "$SetFile_today 02:00" "querylog.json"
 
   # querylog.json を圧縮・転送
   tar -zcf "querylog_$yesterday.json.tar.gz" querylog.json
+  SetFile -m "$SetFile_today 02:00" "querylog_$yesterday.json.tar.gz"
+  SetFile -d "$SetFile_today 02:00" "querylog_$yesterday.json.tar.gz"
   mv "querylog_$yesterday.json.tar.gz" "$GoogleDrivePath/$year/querylog"
   sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "querylog.json" | awk '{ print length(), $0 }' | sort -nr | grep "^[5-9][0-9]" | awk '{ print $2 }' | sort -u > "$current_dir/cover_up.txt"
   sed -e 's|{.*"QH":"||g' -e 's|","QT".*$||g' "querylog.json" | awk '{ print length(), $0 }' | sort -nr | grep "^[1-9][0-9][0-9]" | awk '{ print $2 }' | sort -u >> "$current_dir/cover_up.txt"
@@ -148,11 +153,12 @@ failure=$(curl -I $URL 2>&1 | grep --only-matching "Could not resolve host")
 
 if [ "$success" ]; then
   echo -e "\033[1;32mSUCCESS: $success\033[0m"
-  automated_routine_task
   if [ ! -e "$GoogleDrivePath/archive_$yesterday.tar.gz" ] || [ ! -e "$GoogleDrivePath/querylog_$yesterday.json.tar.gz" ]; then
     echo -e "\033[1;31mFILE ERROR: Google Drive に tar アーカイブが存在しません。ファイルを再配置して再度実行してください。\033[0m"
     echo
     exit 1
+  else
+    automated_routine_task
   fi
 elif [ "$failure" == "Could not resolve host" ]; then
   echo -e "\033[1;31mNETWORK ERROR: Google Drive にアクセス出来ませんでした。端末が Wi-Fi に接続されているか確認して再度実行してください。\033[0m"
