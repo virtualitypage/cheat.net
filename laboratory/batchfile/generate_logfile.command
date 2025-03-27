@@ -1,8 +1,12 @@
 #!/bin/bash
 
+while IFS= read -r catalog_file; do
+  rm "$catalog_file"
+done < <(find "$current_dir" -name '._*')
+
 current_dir=$(cd "$(dirname "$0")" && pwd)
 year=$(TZ=UTC-9 date '+%Y')
-sub_file=$(find "$current_dir" -type f -name "*$year*status.txt" 2>/dev/null)
+sub_file=$(find "$current_dir" -maxdepth 1 -type f -name "*$year*status.txt" 2>/dev/null)
 date=$(basename "$sub_file" | sed 's/ status.txt//g')
 main_file="$current_dir/securityCamera_Rec($date).txt"
 securityCamera_Rec=$(basename "$main_file")
