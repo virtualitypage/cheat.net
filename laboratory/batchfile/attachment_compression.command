@@ -16,26 +16,9 @@ SetFile_tomorrow=$(date -v+1d -j -f "%Y/%m/%d" "$date" +"%m/%d/%Y")
 
 cp -r "$archive/" "${archive}_$file_date_YMD/"
 
-rm "$archive/$file_date_YMD/._authpriv.csv" \
-   "$archive/$file_date_YMD/._CPU_temp_$file_date_YMD.log" \
-   "$archive/$file_date_YMD/._CPU_temp_$file_date_YMD.log.csv" \
-   "$archive/$file_date_YMD/._CPU_util_$file_date_YMD.log" \
-   "$archive/$file_date_YMD/._CPU_util_$file_date_YMD.log.csv" \
-   "$archive/$file_date_YMD/._MacTableEntry.csv" \
-   "$archive/$file_date_YMD/._process_kill_$file_date_YMD.log" \
-   "$archive/$file_date_YMD/._system.csv" \
-   "$archive/$file_date_YMD/._system.log" \
-   "$archive/disk_logger/._disk_metrics_$file_date_YM.json" \
-   "$archive/interface_logger/._br-lan_$file_date_YM.log" \
-   "$archive/interface_logger/._eth0_$file_date_YM.log" \
-   "$archive/interface_logger/._lo_$file_date_YM.log" \
-   "$archive/interface_logger/._rax0_$file_date_YM.log" \
-   "$archive/interface_logger/._tailscale0_$file_date_YM.log" \
-   "$archive/._$file_date_YMD" \
-   "$archive/._disk_logger" \
-   "$archive/._interface_logger" \
-   "$archive/._msmtp_$file_date_YM.json" \
-   "$archive/log_only.csv" 2>/dev/null
+while IFS= read -r catalog_file; do
+  rm "$catalog_file"
+done < <(find "$archive" -name '._*')
 
 SetFile -m "$SetFile_tomorrow 00:00" "$archive" "$archive/disk_logger"
 SetFile -d "$SetFile_tomorrow 00:00" "$archive" "$archive/disk_logger"
