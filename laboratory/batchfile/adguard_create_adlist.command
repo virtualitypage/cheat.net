@@ -22,4 +22,8 @@ function create_adlist () {
 
 if [ "$mid_file" ]; then
   create_adlist
+  read -rp "sort -u を実行しますか？ { yes | y | no }: " yesno
+  if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
+    sort -u "$current_dir/Advertisement_disallow.csv" > "$current_dir/Advertisement_disallow_uniq.csv"
+  fi
 fi
