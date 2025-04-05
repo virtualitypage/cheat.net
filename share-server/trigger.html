@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>トリガーページ</title>
+    <link rel="stylesheet" href="../css/form.css">
+    <script>
+      let submitted = false;
+      const onloadFrame = () => {
+        if (submitted) {
+          window.location = "trigger_ok.html";
+        }
+      }
+    </script>
+  </head>
+<body>
+  <form action="https://docs.google.com/forms/d/e/1FAIpQLSfQKp9B-iW5fEH881Bgvr0fyci9XVc274QpL59Q_a_t92TXUw/formResponse" method="post" target="hidden-iframe" onsubmit="submitted = true;">
+    <h2 style="text-align: center; margin-top: 40px">実行中プログラムの状態を LINE に通知するトリガーページ</h2>
+    <div class="form_body_trigger">
+      <dl>
+        <dt class="form_label_trigger">使用中のプログラムファイルを入力</dt>
+        <dd><input class="box_calc" type="text" name="entry.1802785411" placeholder="example.command"></dd> <!-- null,0,[[123456789, の部分が対象-->
+      </dl>
+      <dl>
+        <dt class="form_label_trigger">正常終了？ or エラー終了？</dt>
+        <dd>
+          <label class="label_radio">
+            <input type="radio" name="entry.1428442029" value="正常終了" class="input_radio" required> <!-- null,2,[[123456789,[[ の部分が対象 -->
+            <span class="radio_span">正常終了</span>
+          </label>
+          <label class="label_radio">
+            <input type="radio" name="entry.1428442029" value="エラー終了" class="input_radio" required> <!-- null,2,[[123456789,[[ の部分が対象 -->
+            <span class="radio_span">エラー終了</span>
+          </label>
+        </dd>
+      </dl>
+      <div class="form_submit">
+        <button type="submit">トリガーオン</button>
+      </div>
+      <br>
+      <br>
+    </div>
+  </form>
+  <iframe name="hidden-iframe" style="display: none;" onload="onloadFrame()"></iframe>
+  </body>
+</html>

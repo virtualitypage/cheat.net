@@ -55,6 +55,13 @@ form dl dt {
   transform: translate(-50%, -50%);
 }
 
+.form_body_trigger {
+  position: absolute;
+  top: 260px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .form_label {
   font-size: 25px;
   display: flex;
@@ -80,6 +87,13 @@ form dl dt {
   display: flex;
   align-items: center;
   width: 300px;
+}
+
+.form_label_trigger {
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  width: 450px;
 }
 
 .box_calc {
@@ -201,6 +215,13 @@ form dl dt {
     transform: translate(-50%, -50%);
   }
 
+  .form_body_trigger {
+    position: absolute;
+    top: 250px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   .form_label {
     font-size: 20px;
     display: flex;
@@ -216,6 +237,13 @@ form dl dt {
 
   .form_label_organize {
     font-size: 20px;
+    display: flex;
+    align-items: center;
+    width: 380px;
+  }
+
+  .form_label_trigger {
+    font-size: 17px;
     display: flex;
     align-items: center;
     width: 380px;
