@@ -25,6 +25,75 @@ files_found_mp4=false
 files_found_mov=false
 files_found_avi=false
 
+command_name=$(basename "$0")
+echo "$command_name" | pbcopy
+
+function success_trigger () {
+  cat << EOF > "Trigger page - Success.scpt"
+tell application "Safari"
+  activate
+end tell
+
+tell application "Safari"
+  activate
+  set bounds of window 1 to {0, 0, 1000, 975} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+  tell application "Safari"
+    quit
+    delay 0.5
+    activate
+    set bounds of window 1 to {0, 0, 1100, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+    tell window 1
+      make new tab with properties {URL:"https://virtualitypage.github.io/cheat.net/share-server/trigger"}
+    end tell
+    close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
+    delay 2
+    tell application "System Events"
+      do shell script "/usr/local/bin/cliclick c:655,300" -- select text box
+      delay 0.5
+      keystroke "v" using {command down} -- paste
+      delay 0.5
+      do shell script "/usr/local/bin/cliclick c:635,380" -- select "正常終了"
+      delay 0.5
+      do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
+    end tell
+  end tell
+end tell
+EOF
+}
+
+function failure_trigger () {
+  cat << EOF > "Trigger page - Failure.scpt"
+tell application "Safari"
+  activate
+end tell
+
+tell application "Safari"
+  activate
+  set bounds of window 1 to {0, 0, 1000, 975} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+  tell application "Safari"
+    quit
+    delay 0.5
+    activate
+    set bounds of window 1 to {0, 0, 1100, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+    tell window 1
+      make new tab with properties {URL:"https://virtualitypage.github.io/cheat.net/share-server/trigger"}
+    end tell
+    close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
+    delay 2
+    tell application "System Events"
+      do shell script "/usr/local/bin/cliclick c:655,300" -- select text box
+      delay 0.5
+      keystroke "v" using {command down} -- paste
+      delay 0.5
+      do shell script "/usr/local/bin/cliclick c:635,430" -- select "エラー終了"
+      delay 0.5
+      do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
+    end tell
+  end tell
+end tell
+EOF
+}
+
 function motd () {
   ttys=$(who | awk 'NR==2 { print $2 }')
   LC_ALL=C last | awk -v ttys="$ttys" -v time="$time" 'NR>1 { print "Current login:", $3, $4, time, "on", ttys}' >> "$logfile"
@@ -223,6 +292,9 @@ function enqueue () {
     echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$src_volume\" \"$queue\" に齟齬が無い\033[0m"
     echo -e "\033[1;31m       ・DISK \"$DISK\" 内に動画ファイルが存在している\033[0m"
     echo -e "\033[1;31m       ・デキュー領域 \"$queue\" が存在している\033[0m"
+    failure_trigger
+    echo "osascript Trigger page - Failure.scpt"
+    osascript "Trigger page - Failure.scpt"
     exit 1
   fi
 
@@ -296,6 +368,7 @@ function dequeue () {
       echo -e "\033[1;32mSUCCESS: デキュー領域 \"$queue\" を削除しました\033[0m"
       break
     else
+      RETRY_COUNT=$((RETRY_COUNT + 1))
       echo
       echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に転送処理を再度実行します ($RETRY_COUNT/3)\033[0m"
       sleep 3
@@ -308,6 +381,9 @@ function dequeue () {
     echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$queue\" \"$dst_volume/$date_dir\" に齟齬が無い\033[0m"
     echo -e "\033[1;31m       ・デキュー領域 \"$queue\" 内に動画ファイルが存在する\033[0m"
     echo -e "\033[1;31m       ・SERVER \"$SERVER\" 内に転送先 \"$dst_volume/$date_dir\" が存在する\033[0m"
+    failure_trigger
+    echo "osascript Trigger page - Failure.scpt"
+    osascript "Trigger page - Failure.scpt"
     exit 1
   fi
 
@@ -394,6 +470,9 @@ if [ -e $src_volume ]; then
     ps_check
     enqueue
     dequeue
+    success_trigger
+    echo "osascript Trigger page - Success.scpt"
+    osascript "Trigger page - Success.scpt"
   elif [ -e $src_volume ] && [ ! -e $dst_volume ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;31mERROR: SERVER \"$SERVER\" にアクセス出来ません。サーバーにアクセスされているか確認して再度実行してください。\033[0m"
