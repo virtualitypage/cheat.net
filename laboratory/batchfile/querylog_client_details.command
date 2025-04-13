@@ -10,6 +10,7 @@ read -rp "分析対象のIPアドレスを入力して下さい: " ip_addr
 
 sub_file_name=${sub_file//.csv/}
 query_file="$current_dir/Querylog Client Details $sub_file_name - $ip_addr.csv"
+main_file_10inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_10inch(1200×800).scpt"
 main_file_15inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_15inch.scpt"
 main_file_21inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_21inch.scpt"
 main_file_27inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_27inch.scpt"
@@ -107,11 +108,29 @@ EOF
 )
 
 accept_code () {
+  cat << EOF >> "$main_file_10inch"
+          do shell script "/usr/local/bin/cliclick c:650,270"
+          delay 0.7
+          do shell script "/usr/local/bin/cliclick c:620,550" -- select lime
+          delay 0.5
+          keystroke "g" using {command down}
+        end repeat
+        delay 0.1
+        do shell script "pbcopy < /dev/null"
+        set the clipboard to "  "
+        keystroke "f" using {command down}
+        keystroke "v" using {command down} -- paste
+      end tell
+    end repeat
+  end tell
+end accept_variable
+
+EOF
   cat << EOF >> "$main_file_15inch"
           do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
-          delay 0.7
+          delay 1.5
           do shell script "/usr/local/bin/cliclick c:815,705" -- select lime
-          delay 0.5
+          delay 1.5
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -127,9 +146,9 @@ end accept_variable
 EOF
   cat << EOF >> "$main_file_21inch"
           do shell script "/usr/local/bin/cliclick c:955,400"
-          delay 0.7
-          do shell script "/usr/local/bin/cliclick c:915,695" -- select lime
           delay 0.5
+          do shell script "/usr/local/bin/cliclick c:915,695" -- select lime
+          delay 0.3
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -140,7 +159,7 @@ EOF
       end tell
     end repeat
   end tell
-end blockedService_variable
+end accept_variable
 
 EOF
   cat << EOF >> "$main_file_27inch"
@@ -164,11 +183,29 @@ EOF
 }
 
 reject_code () {
+  cat << EOF >> "$main_file_10inch"
+          do shell script "/usr/local/bin/cliclick c:650,270"
+          delay 0.7
+          do shell script "/usr/local/bin/cliclick c:560,550" -- select cherry
+          delay 0.5
+          keystroke "g" using {command down}
+        end repeat
+        delay 0.1
+        do shell script "pbcopy < /dev/null"
+        set the clipboard to "  "
+        keystroke "f" using {command down}
+        keystroke "v" using {command down} -- paste
+      end tell
+    end repeat
+  end tell
+end reject_variable
+
+EOF
   cat << EOF >> "$main_file_15inch"
           do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
-          delay 0.7
+          delay 1.5
           do shell script "/usr/local/bin/cliclick c:755,705" -- select cherry
-          delay 0.5
+          delay 1.5
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -184,9 +221,9 @@ end reject_variable
 EOF
   cat << EOF >> "$main_file_21inch"
           do shell script "/usr/local/bin/cliclick c:955,400"
-          delay 0.7
-          do shell script "/usr/local/bin/cliclick c:855,695" -- select cherry
           delay 0.5
+          do shell script "/usr/local/bin/cliclick c:855,695" -- select cherry
+          delay 0.3
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -197,7 +234,7 @@ EOF
       end tell
     end repeat
   end tell
-end blockedService_variable
+end reject_variable
 
 EOF
   cat << EOF >> "$main_file_27inch"
@@ -221,11 +258,29 @@ EOF
 }
 
 blockedService_code () {
+  cat << EOF >> "$main_file_10inch"
+          do shell script "/usr/local/bin/cliclick c:650,270"
+          delay 0.7
+          do shell script "/usr/local/bin/cliclick c:560,550" -- select cherry
+          delay 0.5
+          keystroke "g" using {command down}
+        end repeat
+        delay 0.1
+        do shell script "pbcopy < /dev/null"
+        set the clipboard to "  "
+        keystroke "f" using {command down}
+        keystroke "v" using {command down} -- paste
+      end tell
+    end repeat
+  end tell
+end blockedService_variable
+
+EOF
   cat << EOF >> "$main_file_15inch"
           do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
-          delay 0.7
+          delay 1.5
           do shell script "/usr/local/bin/cliclick c:755,705" -- select cherry
-          delay 0.5
+          delay 1.5
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -241,9 +296,9 @@ end blockedService_variable
 EOF
   cat << EOF >> "$main_file_21inch"
           do shell script "/usr/local/bin/cliclick c:955,400"
-          delay 0.7
-          do shell script "/usr/local/bin/cliclick c:855,695" -- select cherry
           delay 0.5
+          do shell script "/usr/local/bin/cliclick c:855,695" -- select cherry
+          delay 0.3
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -278,11 +333,29 @@ EOF
 }
 
 safeBrowsing_code () {
+  cat << EOF >> "$main_file_10inch"
+          do shell script "/usr/local/bin/cliclick c:650,270"
+          delay 0.7
+          do shell script "/usr/local/bin/cliclick c:580,600" -- select cantaloupe
+          delay 0.5
+          keystroke "g" using {command down}
+        end repeat
+        delay 0.1
+        do shell script "pbcopy < /dev/null"
+        set the clipboard to "  "
+        keystroke "f" using {command down}
+        keystroke "v" using {command down} -- paste
+      end tell
+    end repeat
+  end tell
+end safeBrowsing_variable
+
+EOF
   cat << EOF >> "$main_file_15inch"
           do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
-          delay 0.7
+          delay 1.5
           do shell script "/usr/local/bin/cliclick c:775,760" -- select cantaloupe
-          delay 0.5
+          delay 1.5
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -298,9 +371,9 @@ end safeBrowsing_variable
 EOF
   cat << EOF >> "$main_file_21inch"
           do shell script "/usr/local/bin/cliclick c:955,400"
-          delay 0.7
-          do shell script "/usr/local/bin/cliclick c:875,755" -- select cantaloupe
           delay 0.5
+          do shell script "/usr/local/bin/cliclick c:875,755" -- select cantaloupe
+          delay 0.3
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -311,7 +384,7 @@ EOF
       end tell
     end repeat
   end tell
-end blockedService_variable
+end safeBrowsing_variable
 
 EOF
   cat << EOF >> "$main_file_27inch"
@@ -335,11 +408,29 @@ EOF
 }
 
 safeSearch_code () {
+  cat << EOF >> "$main_file_10inch"
+          do shell script "/usr/local/bin/cliclick c:650,270"
+          delay 0.7
+          do shell script "/usr/local/bin/cliclick c:580,600" -- select cantaloupe
+          delay 0.5
+          keystroke "g" using {command down}
+        end repeat
+        delay 0.1
+        do shell script "pbcopy < /dev/null"
+        set the clipboard to "  "
+        keystroke "f" using {command down}
+        keystroke "v" using {command down} -- paste
+      end tell
+    end repeat
+  end tell
+end safeSearch_variable
+
+EOF
   cat << EOF >> "$main_file_15inch"
           do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
-          delay 0.7
+          delay 1.5
           do shell script "/usr/local/bin/cliclick c:775,760" -- select cantaloupe
-          delay 0.5
+          delay 1.5
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -355,9 +446,9 @@ end safeSearch_variable
 EOF
   cat << EOF >> "$main_file_21inch"
           do shell script "/usr/local/bin/cliclick c:955,400"
-          delay 0.7
-          do shell script "/usr/local/bin/cliclick c:875,755" -- select cantaloupe
           delay 0.5
+          do shell script "/usr/local/bin/cliclick c:875,755" -- select cantaloupe
+          delay 0.3
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -368,7 +459,7 @@ EOF
       end tell
     end repeat
   end tell
-end blockedService_variable
+end safeSearch_variable
 
 EOF
   cat << EOF >> "$main_file_27inch"
@@ -392,11 +483,29 @@ EOF
 }
 
 rewritten_code () {
+  cat << EOF >> "$main_file_10inch"
+          do shell script "/usr/local/bin/cliclick c:650,270"
+          delay 0.7
+          do shell script "/usr/local/bin/cliclick c:700,600" -- select sky
+          delay 0.5
+          keystroke "g" using {command down}
+        end repeat
+        delay 0.1
+        do shell script "pbcopy < /dev/null"
+        set the clipboard to "  "
+        keystroke "f" using {command down}
+        keystroke "v" using {command down} -- paste
+      end tell
+    end repeat
+  end tell
+end rewritten_variable
+
+EOF
   cat << EOF >> "$main_file_15inch"
           do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
-          delay 0.7
+          delay 1.5
           do shell script "/usr/local/bin/cliclick tc:890,705" -- select sky
-          delay 0.5
+          delay 1.5
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -412,9 +521,9 @@ end rewritten_variable
 EOF
   cat << EOF >> "$main_file_21inch"
           do shell script "/usr/local/bin/cliclick c:955,400"
-          delay 0.7
-          do shell script "/usr/local/bin/cliclick c:990,755" -- select sky
           delay 0.5
+          do shell script "/usr/local/bin/cliclick c:990,755" -- select sky
+          delay 0.3
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -425,7 +534,7 @@ EOF
       end tell
     end repeat
   end tell
-end blockedService_variable
+end rewritten_variable
 
 EOF
   cat << EOF >> "$main_file_27inch"
@@ -449,11 +558,29 @@ EOF
 }
 
 processed_code () {
+  cat << EOF >> "$main_file_10inch"
+          do shell script "/usr/local/bin/cliclick c:650,270"
+          delay 0.7
+          do shell script "/usr/local/bin/cliclick c:650,460" -- select tin
+          delay 0.5
+          keystroke "g" using {command down}
+        end repeat
+        delay 0.1
+        do shell script "pbcopy < /dev/null"
+        set the clipboard to "  "
+        keystroke "f" using {command down}
+        keystroke "v" using {command down} -- paste
+      end tell
+    end repeat
+  end tell
+end processed_variable
+
+EOF
   cat << EOF >> "$main_file_15inch"
           do shell script "/usr/local/bin/cliclick c:945,435" -- select text color
-          delay 0.7
+          delay 1.5
           do shell script "/usr/local/bin/cliclick c:855,610" -- select tin
-          delay 0.5
+          delay 1.5
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -469,9 +596,9 @@ end processed_variable
 EOF
   cat << EOF >> "$main_file_21inch"
           do shell script "/usr/local/bin/cliclick c:955,400"
-          delay 0.7
-          do shell script "/usr/local/bin/cliclick c:955,605" -- select tin
           delay 0.5
+          do shell script "/usr/local/bin/cliclick c:955,605" -- select tin
+          delay 0.3
           keystroke "g" using {command down}
         end repeat
         delay 0.1
@@ -482,7 +609,7 @@ EOF
       end tell
     end repeat
   end tell
-end blockedService_variable
+end processed_variable
 
 EOF
   cat << EOF >> "$main_file_27inch"
@@ -519,12 +646,14 @@ for i in {1..7}; do
   reason="${reason_array[$i - 1]}"
   counter="$current_dir/$reason-count.txt"
   if [ -e "$counter" ]; then
-    for j in {1..1000}; do
-      k=$(($j + 2))
+    for j in {1..144}; do
+      k=$(($j + 1))
       if grep --extended-regexp "^$j:" "$counter" 1>/dev/null; then
+        echo "on ${reason}_variable(urlList)" >> "$main_file_10inch"
         echo "on ${reason}_variable(urlList)" >> "$main_file_15inch"
         echo "on ${reason}_variable(urlList)" >> "$main_file_21inch"
         echo "on ${reason}_variable(urlList)" >> "$main_file_27inch"
+        echo "$common_code" >> "$main_file_10inch"
         echo "$common_code" >> "$main_file_15inch"
         echo "$common_code" >> "$main_file_21inch"
         echo "$common_code" >> "$main_file_27inch"
@@ -552,22 +681,25 @@ for i in {1..7}; do
           ;;
         esac
         grep --extended-regexp "^$j:" "$counter" > "${reason}_A.txt"
-        sed -i '' "s/variable/$k/g" "$main_file_15inch" "$main_file_21inch" "$main_file_27inch"
-        sed -i '' "s/reasonName/$reason/g" "$main_file_15inch" "$main_file_21inch" "$main_file_27inch"
+        sed -i '' "s/variable/$k/g" "$main_file_10inch" "$main_file_15inch" "$main_file_21inch" "$main_file_27inch"
+        sed -i '' "s/reasonName/$reason/g" "$main_file_10inch" "$main_file_15inch" "$main_file_21inch" "$main_file_27inch"
         sed -i '' -e "1s/.*: /set $reason${k} to {\"/g" -e "s/$j: /\"/g" -e 's/$/", /g' "${reason}_A.txt"
+        sort -u "${reason}_A.txt" > "${reason}_A2.txt"
         sed -i '' -e '$a \
-        }' -e 's/,   //g' "${reason}_A.txt"
+        }' -e 's/,   //g' "${reason}_A2.txt"
         < "${reason}_A.txt" tr -d '\n' > "${reason}_B.txt"
-        sed -i '' "s/,         }/}\n${reason}_$k($reason${k})\n\ndelay 2\n\n/g" "${reason}_B.txt"
+        sed -i '' "s/, $/}\n${reason}_$k($reason${k})\n\ndelay 2\n\n/g" "${reason}_B.txt"
+        cat "${reason}_B.txt" >> "$main_file_10inch"
         cat "${reason}_B.txt" >> "$main_file_15inch"
         cat "${reason}_B.txt" >> "$main_file_21inch"
         cat "${reason}_B.txt" >> "$main_file_27inch"
       fi
     done
-    rm "$counter" "${reason}_A.txt" "${reason}_B.txt" "query_reason.csv" 2>/dev/null
+    rm "$counter" "${reason}_A.txt" "${reason}_A2.txt" "${reason}_B.txt" "query_reason.csv" 2>/dev/null
   fi
 done
 
+echo "$last_code" >> "$main_file_10inch"
 echo "$last_code" >> "$main_file_15inch"
 echo "$last_code" >> "$main_file_21inch"
 echo "$last_code" >> "$main_file_27inch"
