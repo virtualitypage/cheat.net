@@ -669,7 +669,7 @@ function querylog_client_details () {
             ;;
           esac
           grep --extended-regexp "^$b:" "$counter" > "${reason}_A.txt"
-          sed -i '' "s/variable/$k/g" "$main_file_10inch" "$main_file_15inch" "$main_file_21inch" "$main_file_27inch"
+          sed -i '' "s/variable/$c/g" "$main_file_10inch" "$main_file_15inch" "$main_file_21inch" "$main_file_27inch"
           sed -i '' "s/reasonName/$reason/g" "$main_file_10inch" "$main_file_15inch" "$main_file_21inch" "$main_file_27inch"
           sed -i '' -e "1s/.*: /set $reason${c} to {\"/g" -e "s/$b: /\"/g" -e 's/$/", /g' "${reason}_A.txt"
           sort -u "${reason}_A.txt" > "${reason}_A2.txt"
