@@ -693,33 +693,6 @@ function dequeue2 () {
   mv "/Volumes/Untitled/robocopy_log_*" "$destination"
 }
 
-function disk_clean () {
-  MEDIA_DIR=$(find /Volumes/Untitled/DCIM/* -type d)
-  echo -e "\033[1;36m$MEDIA_DIR\033[0m"
-  read -rp "\"$src_dir\" を削除しますか？ { yes | y | no }: " yesno
-  if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
-    if rm $src_dir/* 2>/dev/null; then
-      echo
-      echo -e "\033[1;32mSUCCESS: \"$src_dir\" を削除しました\033[0m"
-    else
-      echo
-      echo -e "\033[1;32mERROR: ディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
-    fi
-  fi
-  if [ -e $src_dir2 ]; then
-    read -rp "\"$src_dir2\" を削除しますか？ { yes | y | no }: " yesno
-    if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
-      if rm $src_dir2/* 2>/dev/null; then
-        echo
-        echo -e "\033[1;32mSUCCESS: \"$src_dir2\" を削除しました\033[0m"
-      else
-        echo
-        echo -e "\033[1;32mERROR: ディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
-      fi
-    fi
-  fi
-}
-
 exec > >(tee -a "$logfile")
 
 URL="https://drive.google.com/drive/my-drive"
@@ -777,7 +750,6 @@ if [ -e $src_dir ]; then
     success_trigger
     echo "osascript Trigger page - Success.scpt"
     osascript "Trigger page - Success.scpt"
-    disk_clean
   elif [ -e $src_dir ] && [ ! -e $dst_dir ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;31mERROR: SERVER \"$SERVER\" にアクセス出来ません。サーバーにアクセスされているか確認して再度実行してください。\033[0m"
