@@ -4,16 +4,32 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 year=$(TZ=UTC-9 date '+%Y')
 cd "$current_dir" || exit
 
+function querylog_reason_statistics () {
+  for h in {0..23}; do
+    for m in {0..5}; do
+      hour=$(printf "%02d" "$h")
+      for i in {1..7}; do
+        reason_array=("accept" "reject" "blockedService" "safeBrowsing" "safeSearch" "rewritten" "processed")
+        reason="${reason_array[$i - 1]}"
+        grep "$ip_addr" "$sub_file.tmp" | grep "$reason" | grep "$hour:${m}[0-9]:[0-5][0-9]" | wc -l | awk '{ print $1 }' | sed 's/$/,/g' >> "query_reason_stat.txt"
+      done
+      reason_raw=$(cat "query_reason_stat.txt" | tr -d '\n' | sed 's/,$//g')
+      echo "$reason_raw" >> "Querylog Reason Statistics - $ip_addr.csv"
+      echo > query_reason_stat.txt
+    done
+  done
+}
+
 function query_file_tmp () {
   sed -i '' -e 's/ \[.*\]//g' \
-          -e 's/ (キャッシュからの配信)//g' \
-          -e 's/,[0-9].[0-9][0-9] ms,//g' \
-          -e 's/,[0-9] ms,//g' \
-          -e 's/,[0-9][0-9] ms,//g' \
-          -e 's/,[0-9][0-9][0-9] ms,//g' \
-          -e 's/,[0-9][0-9][0-9][0-9] ms,//g' \
-          -e 's/,[0-9][0-9][0-9][0-9][0-9] ms,//g' \
-          -e '/,,,,,/q' "$sub_file" 2>/dev/null
+            -e 's/ (キャッシュからの配信)//g' \
+            -e 's/,[0-9].[0-9][0-9] ms,//g' \
+            -e 's/,[0-9] ms,//g' \
+            -e 's/,[0-9][0-9] ms,//g' \
+            -e 's/,[0-9][0-9][0-9] ms,//g' \
+            -e 's/,[0-9][0-9][0-9][0-9] ms,//g' \
+            -e 's/,[0-9][0-9][0-9][0-9][0-9] ms,//g' \
+            -e '/,,,,,/q' "$sub_file" 2>/dev/null
 
   awk 'BEGIN { ORS=""; } # 出力の区切り文字を空に設定
   {
@@ -715,6 +731,7 @@ for i in {1..8}; do
   main_file_21inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_21inch.scpt"
   main_file_27inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_27inch.scpt"
   echo "時刻,総クエリ数,ドメイン" > "$query_file"
+  querylog_reason_statistics
   querylog_client_details
   rm "$current_dir/query_reason_$ip_addr.csv"
 done
