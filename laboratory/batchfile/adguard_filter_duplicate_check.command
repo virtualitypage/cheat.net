@@ -4,9 +4,9 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 guard="/Volumes/virtual_env/GitHub/expansion_NW/guard"
 domain_txt="$current_dir/domains.txt"
 
-sed -e '/#/d' -e 's/0.0.0.0 //g' -e 's/@||//g' $guard/A*.txt > "$domain_txt"
-sed -e '/#/d' -e 's/0.0.0.0 //g' -e 's/@||//g' $guard/R*.txt > "$domain_txt"
-sed -e '/#/d' -e 's/0.0.0.0 //g' -e 's/@||//g' $guard/S*.txt > "$domain_txt"
+sed -e '/#/d' -e 's/0.0.0.0 //g' -e 's/@||//g' $guard/A*.txt >> "$domain_txt"
+sed -e '/#/d' -e 's/0.0.0.0 //g' -e 's/@||//g' $guard/R*.txt >> "$domain_txt"
+sed -e '/#/d' -e 's/0.0.0.0 //g' -e 's/@||//g' $guard/S*.txt >> "$domain_txt"
 
 sed -i '' '/^$/d' "$domain_txt"
 
