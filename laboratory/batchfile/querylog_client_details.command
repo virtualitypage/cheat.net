@@ -14,10 +14,11 @@ function querylog_reason_statistics () {
         grep "$ip_addr" "$sub_file.tmp" | grep "$reason" | grep "$hour:${m}[0-9]:[0-5][0-9]" | wc -l | awk '{ print $1 }' | sed 's/$/,/g' >> "query_reason_stat.txt"
       done
       reason_raw=$(cat "query_reason_stat.txt" | tr -d '\n' | sed 's/,$//g')
-      echo "$reason_raw" >> "Querylog Reason Statistics - $ip_addr.csv"
+      echo "$reason_raw" >> "$stat_file"
       echo > query_reason_stat.txt
     done
   done
+  rm query_reason_stat.txt
 }
 
 function query_file_tmp () {
@@ -726,6 +727,7 @@ ip_addr_array=("192.168.8.117" "192.168.8.159" "192.168.8.163" "192.168.8.175" "
 for i in {1..8}; do
   export ip_addr="${ip_addr_array[$i - 1]}"
   query_file="$current_dir/Querylog Client Details $sub_file_name - $ip_addr.csv"
+  stat_file="$current_dir/Querylog Reason Statistics $sub_file_name - $ip_addr.csv"
   main_file_10inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_10inch(1200×800).scpt"
   main_file_15inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_15inch.scpt"
   main_file_21inch="$current_dir/Querylog_Client_Details_${sub_file_name}($ip_addr)_21inch.scpt"
