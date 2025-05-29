@@ -4,7 +4,7 @@ export LC_ALL=C
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
 file=$(find "$current_dir" -type f -maxdepth 1 -name 'robocopy_log_*.log')
-cp "$file" "$current_dir/$file.copy"
+cp "$file" "$file.copy"
 
 sed -i '' 's/Windows.*/Windows の堅牢性の高いファイル コピー/g' "$file"
 sed -i '' 's/�J�n/開始/g' "$file"
