@@ -1,7 +1,7 @@
 function autoAcquisition() {
   var folder = DriveApp.getFolderById("-----FOLDER_ID-----");
   var date = new Date();
-  date.setDate(date.getDate()-1);
+  date.setDate(date.getDate() - 1);
   var date = Utilities.formatDate(date, 'Asia/Tokyo', 'yyyy-MM-dd');
 
   var query = "subject:" + date + " log file"; // 検索クエリを生成
