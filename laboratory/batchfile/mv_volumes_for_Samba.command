@@ -694,8 +694,6 @@ function dequeue2 () {
 }
 
 function disk_clean () {
-  MEDIA_DIR=$(find /Volumes/Untitled/DCIM/* -type d)
-  echo -e "\033[1;36m$MEDIA_DIR\033[0m"
   read -rp "\"$src_dir\" を削除しますか？ { yes | y | no }: " yesno
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
     if rm $src_dir/* 2>/dev/null; then
