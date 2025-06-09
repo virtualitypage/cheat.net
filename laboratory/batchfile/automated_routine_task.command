@@ -27,16 +27,15 @@ function automated_routine_task () {
   mv "archive/$yesterday/23_59_59/system_23_59_59.log" "archive/$yesterday/system.log"
   mv "archive/$yesterday/23_59_59/authpriv.csv" \
      "archive/$yesterday/23_59_59/MacTableEntry.csv" \
-     "archive/$yesterday/23_59_59/system.csv" "archive/$yesterday"
+     "archive/$yesterday/23_59_59/system.csv" "archive/$yesterday" 2>/dev/null
 
-  rm -r "archive/$yesterday/23_59_59" \
-        "archive/$today" \
-        "archive_$yesterday.tar.gz" \
-        "querylog_$yesterday.json.tar.gz"
+  rm -rf "archive/$yesterday/23_59_59" \
+         "archive_$yesterday.tar.gz" \
+         "querylog_$yesterday.json.tar.gz"
 
   for ((i = 1; i <= 23; i++)); do
     j=$(printf "%02d\n" $i)
-    rm -r "archive/$yesterday/${j}_00_00" 2>/dev/null
+    rm -rf "archive/$yesterday/${j}_00_00" 2>/dev/null
   done
 
   # ファイルの末尾にある空行を置換により削除
@@ -76,8 +75,8 @@ function automated_routine_task () {
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
   sed -i '' -e "/$today/q" -e "/$today/d" "querylog.json"
-  SetFile -m "$SetFile_today 02:00" "querylog.json"
-  SetFile -d "$SetFile_today 02:00" "querylog.json"
+  SetFile -m "$SetFile_today 02:00" querylog.json
+  SetFile -d "$SetFile_today 02:00" querylog.json
 
   # querylog.json を圧縮・転送
   tar -zcf "querylog_$yesterday.json.tar.gz" querylog.json
@@ -145,6 +144,11 @@ function automated_routine_task () {
   echo -e "\033[1;36mINFO: querylog_statistics.command を実行中...\033[0m"
   echo -e "querylog_$yesterday.csv" | "$command_dir/querylog_statistics.command" # 複数行の入力をパイプやファイルを使って実行
   echo -e "\033[1;32mSUCCESS: querylog_statistics.command の実行完了\033[0m"; echo
+
+  # クエリログレポートファイルを作成
+  echo -e "\033[1;36mINFO: querylog_reporting.command を実行中...\033[0m"
+  echo -e "querylog_$yesterday.csv" | "$command_dir/querylog_reporting.command" # 複数行の入力をパイプやファイルを使って実行
+  echo -e "\033[1;32mSUCCESS: querylog_reporting.command の実行完了\033[0m"; echo
 }
 
 URL="https://drive.google.com/drive/my-drive"
