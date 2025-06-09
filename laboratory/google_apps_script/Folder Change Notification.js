@@ -84,10 +84,8 @@ function LineDeveloperMessage() {
 }
 
 function initializeTrigger() { // 通知用のトリガーを定期的に作成する
-  const date = new Date();
-  date.setDate(date.getDate() + 1);
-  date.setHours(0, 0, 0, 0); // 時間、分、秒、およびミリ秒全てを0に設定
-  ScriptApp.newTrigger('createTrigger').timeBased().at(date).create(); // 当日の対象時刻にcreateTriggerを実行するトリガーを作成
+  ScriptApp.newTrigger('createTrigger').timeBased().atHour(0).everyDays(1).create(); // 毎日0時頃に createTrigger を実行するトリガーを作成
+  console.log("initializeTrigger(): 初期化トリガーを作成しました");
 }
 
 function createTrigger() {
