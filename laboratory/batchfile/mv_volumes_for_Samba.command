@@ -34,32 +34,37 @@ echo "$command_name" | pbcopy
 function success_trigger () {
   cat << EOF > "Trigger page - Success.scpt"
 tell application "Safari"
-  activate
+	quit
 end tell
+
+delay 5
 
 tell application "Safari"
   activate
   set bounds of window 1 to {0, 0, 1000, 975} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
-  tell application "Safari"
-    quit
-    delay 0.5
-    activate
-    set bounds of window 1 to {0, 0, 1100, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
-    tell window 1
-      make new tab with properties {URL:"https://virtualitypage.github.io/cheat.net/share-server/trigger"}
-    end tell
-    close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
-    delay 2
-    tell application "System Events"
-      do shell script "/usr/local/bin/cliclick c:655,300" -- select text box
-      delay 0.5
-      keystroke "v" using {command down} -- paste
-      delay 0.5
-      do shell script "/usr/local/bin/cliclick c:635,380" -- select "正常終了"
-      delay 0.5
-      do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
-    end tell
+  delay 0.5
+  activate
+  set bounds of window 1 to {0, 0, 1100, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+  tell window 1
+    make new tab with properties {URL:"https://virtualitypage.github.io/cheat.net/share-server/trigger"}
   end tell
+  close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
+  delay 2
+  tell application "System Events"
+    do shell script "/usr/local/bin/cliclick c:655,300" -- select text box
+    delay 0.5
+    keystroke "v" using {command down} -- paste
+    delay 0.5
+    do shell script "/usr/local/bin/cliclick c:635,380" -- select "正常終了"
+    delay 0.5
+    do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
+  end tell
+end tell
+
+delay 5
+
+tell application "Safari"
+  quit
 end tell
 EOF
 }
@@ -67,32 +72,37 @@ EOF
 function failure_trigger () {
   cat << EOF > "Trigger page - Failure.scpt"
 tell application "Safari"
-  activate
+  quit
 end tell
+
+delay 5
 
 tell application "Safari"
   activate
   set bounds of window 1 to {0, 0, 1000, 975} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
-  tell application "Safari"
-    quit
-    delay 0.5
-    activate
-    set bounds of window 1 to {0, 0, 1100, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
-    tell window 1
-      make new tab with properties {URL:"https://virtualitypage.github.io/cheat.net/share-server/trigger"}
-    end tell
-    close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
-    delay 2
-    tell application "System Events"
-      do shell script "/usr/local/bin/cliclick c:655,300" -- select text box
-      delay 0.5
-      keystroke "v" using {command down} -- paste
-      delay 0.5
-      do shell script "/usr/local/bin/cliclick c:635,430" -- select "エラー終了"
-      delay 0.5
-      do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
-    end tell
+  delay 0.5
+  activate
+  set bounds of window 1 to {0, 0, 1100, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+  tell window 1
+    make new tab with properties {URL:"https://virtualitypage.github.io/cheat.net/share-server/trigger"}
   end tell
+  close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
+  delay 2
+  tell application "System Events"
+    do shell script "/usr/local/bin/cliclick c:655,300" -- select text box
+    delay 0.5
+    keystroke "v" using {command down} -- paste
+    delay 0.5
+    do shell script "/usr/local/bin/cliclick c:635,430" -- select "エラー終了"
+    delay 0.5
+    do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
+  end tell
+end tell
+
+delay 5
+
+tell application "Safari"
+	quit
 end tell
 EOF
 }
@@ -322,6 +332,7 @@ function enqueue () {
     failure_trigger
     echo "osascript Trigger page - Failure.scpt"
     osascript "Trigger page - Failure.scpt"
+    open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
     exit 1
   fi
 
@@ -411,6 +422,7 @@ function dequeue () {
     failure_trigger
     echo "osascript Trigger page - Failure.scpt"
     osascript "Trigger page - Failure.scpt"
+    open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
     exit 1
   fi
 
@@ -567,6 +579,7 @@ function enqueue2 () {
     failure_trigger
     echo "osascript Trigger page - Failure.scpt"
     osascript "Trigger page - Failure.scpt"
+    open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
     exit 1
   fi
 
@@ -656,6 +669,7 @@ function dequeue2 () {
     failure_trigger
     echo "osascript Trigger page - Failure.scpt"
     osascript "Trigger page - Failure.scpt"
+    open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
     exit 1
   fi
 
@@ -775,6 +789,7 @@ if [ -e $src_dir ]; then
     success_trigger
     echo "osascript Trigger page - Success.scpt"
     osascript "Trigger page - Success.scpt"
+    open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
     disk_clean
   elif [ -e $src_dir ] && [ ! -e $dst_dir ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
