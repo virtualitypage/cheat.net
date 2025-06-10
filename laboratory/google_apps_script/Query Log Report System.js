@@ -2,8 +2,14 @@ var date = new Date();
 date.setDate(date.getDate() - 1);
 var date = Utilities.formatDate(date, 'Asia/Tokyo', 'yyyy-MM-dd');
 
+function init() { // 初回実行時のみ実行。既存・未知のドメインの比較表を作成する
+  importCSV();
+  unknownDomainSearch();
+}
+
 function importCSV() {
-  const csvFileName = 'querylog_report_system_' + date + '.csv';
+  const csvFileName = '-----FILE_NAME-----' + date + '.csv';
+  Logger.log(csvFileName + " をインポート");
 
   const files = DriveApp.getFilesByName(csvFileName);
   if (!files.hasNext()) {
@@ -123,10 +129,56 @@ function processedSearch() {
   }
 }
 
+
+function unknownDomainSearch() { // 注意：既知のドメイン列(E列)はプログラムが編集するため手入力厳禁
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  var knownDomains = sheet.getSheetByName("レポート対象ドメイン").getRange("E1:E").getValues();
+  var unknownDomains = sheet.getSheetByName("クエリログ・レポート").getRange("D2:D").getValues();
+  var reportMessage = "・通過した未知のドメイン\n";
+  detectionFlag = false;
+
+  for (var i = 0; i < unknownDomains.length; i++) {
+    unknownFlag = false;
+    var unknownDomain = unknownDomains[i][0];
+    for (var j = 0; j < knownDomains.length; j++) {
+      var knownDomain = knownDomains[j][0];
+      if (unknownDomain === knownDomain && knownDomain) { // 既知のドメインとマッチした場合
+        unknownFlag = true;
+        break; // 次の未知のドメインに移行
+      }
+    }
+    if (unknownFlag == false && unknownDomain) { // 未知のドメインとして判定された場合
+      reportMessage += unknownDomain;
+      if (j !== unknownDomain.length - 1) {
+        reportMessage += '\n'; // 最終行でない場合に改行を追加
+      }
+      detectionFlag = true;
+    }
+  }
+
+  const knownDomainsSheet = sheet.getSheetByName("レポート対象ドメイン");
+  const unknownDomainsSheet = sheet.getSheetByName("クエリログ・レポート");
+  const knownDomainsColumn = knownDomainsSheet.getRange(1, 5, knownDomainsSheet.getLastRow()).getValues().flat().filter(String);
+  const unknownDomainsColumn = unknownDomainsSheet.getRange(2, 4, unknownDomainsSheet.getLastRow()).getValues().flat().filter(String);
+
+  const mergedDomains = Array.from(new Set([...knownDomainsColumn, ...unknownDomainsColumn])).sort();
+  // knownDomainsColumn と unknownDomainsColumn をスプレッド構文で結合し（[... , ...]）
+  // Set によって重複を自動で排除し（new Set(...)）
+  // Array.from(...) で Set を普通の配列に戻し sort() で昇順に並び替えた
+  // 最終的な1次元配列 mergedDomains を作成
+
+  knownDomainsSheet.insertColumnAfter(6); // E列の後ろに列を追加して削除される列を補う
+  knownDomainsSheet.deleteColumn(5); // 既存の列(E列)を削除
+  knownDomainsSheet.getRange(1, 5, mergedDomains.length, 1).setValues(mergedDomains.map(v => [v])); // mergedDomains の内容(1次元配列)を縦向きの2次元配列に変換（mergedDomains.map(v => [v])）してE列の1行目に書き込む
+
+  if (detectionFlag == true) {
+    return reportMessage;
+  }
+}
+
 function LineDeveloperMessage() {
-  var channelAccessToken = "/4IZ03CoDHwoROKJx4ut+QNKwW6ecn1qheeF64IHoLonXIvlhrLZl5pbFJR25n4EhhklQ28FdXXAWjkr8pEXAk0OawG7/FZbLgiU5YYfVsqX+xh6X+csHmWyGRPls2Va4IdgGmpo30MnzsBjBfW5FgdB04t89/1O/w1cDnyilFU=";
-  // var groupId = "C97fda4cd18f1d0bd01e7765567540c75"; // 血祭りにあげてやるグループLINEのグループID
-  var groupId = "Cbec17f5a1c815de002db5a635b30b3f4"; // テスト用グループLINEのグループID
+  var channelAccessToken = "----CHANNEL_ACCESS_TOKEN-----";
+  var groupId = "-----GROUP_ID-----";
 
   // 以下、メッセージの内容を設定
   var headers = {
@@ -138,6 +190,7 @@ function LineDeveloperMessage() {
   var blockedService = blockedServiceSearch();
   var safeBrowsing = safeBrowsingSearch();
   var processed = processedSearch();
+  var unknownDomain = unknownDomainSearch();
 
   var messageText = date + "【Query Log Report System】\n\n";
 
@@ -147,6 +200,7 @@ function LineDeveloperMessage() {
     if (blockedService) messageText += blockedService + '\n';
     if (safeBrowsing) messageText += safeBrowsing + '\n';
     if (processed) messageText += processed + '\n\n';
+    if (unknownDomain) messageText += unknownDomain + '\n\n';
     messageText += "注意：上記ドメインへのアクセス禁止\n\n";
   } else { // 全て空の場合
     messageText += "報告：危険と認定されたドメインは検知されませんでした";
@@ -168,6 +222,9 @@ function LineDeveloperMessage() {
   Logger.log(response.getContentText());
 }
 
+const triggerDate = new Date();
+triggerDate.setDate(triggerDate.getDate() + 1);
+
 function initializeTrigger() { // 通知用のトリガーを定期的に作成する
   const triggers = ScriptApp.getProjectTriggers(); // 対象のプロジェクトに登録されているトリガーを取得
   triggers.forEach(function (t) {
@@ -175,21 +232,25 @@ function initializeTrigger() { // 通知用のトリガーを定期的に作成�
       ScriptApp.deleteTrigger(t);
     }
   });
-  ScriptApp.newTrigger('createTrigger').timeBased().atHour(12).everyDays(1).create(); // 毎日12時頃にcreateTriggerを実行するトリガーを作成
-  ScriptApp.newTrigger('importCSV').timeBased().atHour(12).everyDays(1).create();
-  console.log("initializeTrigger(): 初期化トリガーを作成しました");
+  ScriptApp.newTrigger('createTrigger').timeBased().atHour(23).everyDays(1).create(); // 毎晩23時頃にcreateTriggerを実行するトリガーを作成
+  Logger.log("initializeTrigger(): 初期化トリガーを作成しました");
 }
 
 function createTrigger() { // 指定した日時にLineDeveloperMessageを実行する
   const triggers = ScriptApp.getProjectTriggers();
   triggers.forEach(function (t) {
+    if (t.getHandlerFunction() === 'importCSV') { // 使用済み・不要なimportCSVトリガーを削除
+      ScriptApp.deleteTrigger(t);
+    }
     if (t.getHandlerFunction() === 'LineDeveloperMessage') { // 使用済み・不要なLineDeveloperMessageトリガーを削除
       ScriptApp.deleteTrigger(t);
     }
   });
-  const date = new Date();
-  date.setDate(date.getDate() + 1);
-  date.setHours(12, 0, 30, 0); // 時間、分、秒、およびミリ秒全てを0に設定
-  ScriptApp.newTrigger('LineDeveloperMessage').timeBased().at(date).create(); // 当日の対象時刻にLineDeveloperMessageを実行するトリガーを作成
-  console.log("createTrigger(): LineDeveloperMessage実行トリガーを作成しました");
+  triggerDate.setHours(5, 0, 0, 0);
+  ScriptApp.newTrigger('importCSV').timeBased().at(triggerDate).create();
+  Logger.log("createTrigger(): importCSV実行トリガーを作成しました");
+
+  triggerDate.setHours(6, 0, 0, 0); // 時間、分、秒、およびミリ秒全てを0に設定
+  ScriptApp.newTrigger('LineDeveloperMessage').timeBased().at(triggerDate).create(); // 当日の対象時刻にLineDeveloperMessageを実行するトリガーを作成
+  Logger.log("createTrigger(): LineDeveloperMessage実行トリガーを作成しました");
 }
