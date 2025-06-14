@@ -9,27 +9,27 @@ dst_dir="/Volumes/Internal/var/cache"
 destination="$HOME/Library/CloudStorage/GoogleDrive-ganbanlife@gmail.com/.shortcut-targets-by-id/1mZyi1kb7Iepj2zVvRgVo_BGJAmlC8GKY/共有フォルダ/動画用フォルダ"
 archive="/Volumes/Internal/var/cache/archive"
 logfile="$destination/mv_volumes_$today.log"
+stdout="/Volumes/Internal/var/log/stdout"
 
 src_file="DSCF0001.AVI"
 date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_dir/$src_file 2>/dev/null)
 date_dir2=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_dir2/$src_file 2>/dev/null)
+queue="$HOME/Desktop/$date_dir"
+queue2="$HOME/Desktop/$date_dir2"
 disk_free="$destination/diskFree.json"
 
 DISK="Untitled"
 SERVER="Internal"
 
+mp4_files=()
+mov_files=()
+avi_files=()
+files_found_mp4=false
+files_found_mov=false
+files_found_avi=false
+
 command_name=$(basename "$0")
 echo "$command_name" | pbcopy
-
-kanst_message=$(
-  cat << EOF
-
-
-#################################################
-# INFORMATION: 転送処理は 101MEDIA に移行します #
-#################################################
-EOF
-)
 
 function success_trigger () {
   cat << EOF > "Trigger page - Success.scpt"
@@ -130,7 +130,6 @@ function stream_editor () {
   sed -i '' 's/\[1;31m//g' "$logfile"
   sed -i '' 's/\[1;32m//g' "$logfile"
   sed -i '' 's/\[1;33m//g' "$logfile"
-  sed -i '' 's/\[1;35m//g' "$logfile"
   sed -i '' 's/\[1;36m//g' "$logfile"
   sed -i '' 's/\[0m//g' "$logfile"
   sed -i '' 's/building file list ... /building file list .../g' "$logfile"
@@ -165,9 +164,33 @@ function ps_check () {
   done <<< "$pid_array" # pid_array の内容を while ループに渡す
 }
 
-function rsync_100MEDIA_info () {
-  num_files=$(ls -F "$src_dir" | grep -v / | wc -l)
-  total_time=$(echo "5 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+function enqueue_info () {
+  num_files=$(ls -F $src_dir | grep -v / | wc -l)
+  total_time=$(echo "4 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+  current_time=$(date +%s) # 現在の時刻を取得
+  end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
+  end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
+  echo
+  echo -e "\033[1;36mINFO: 動画ファイルのエンキュー処理を実行します…\033[0m"
+  echo
+  echo -e "\033[1;36mINFO: エンキュー処理は \"$end_time\" に完了する見込みです\033[0m"
+}
+
+function enqueue_info2 () {
+  num_files=$(ls -F $src_dir2 | grep -v / | wc -l)
+  total_time=$(echo "4 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+  current_time=$(date +%s) # 現在の時刻を取得
+  end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
+  end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
+  echo
+  echo -e "\033[1;36mINFO: 動画ファイルのエンキュー処理を実行します…\033[0m"
+  echo
+  echo -e "\033[1;36mINFO: エンキュー処理は \"$end_time\" に完了する見込みです\033[0m"
+}
+
+function dequeue_info () {
+  num_files=$(ls -F "$queue" | grep -v / | wc -l)
+  total_time=$(echo "6 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
   end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
@@ -177,9 +200,9 @@ function rsync_100MEDIA_info () {
   echo -e "\033[1;36mINFO: 転送処理は \"$end_time\" に完了する見込みです\033[0m"
 }
 
-function rsync_101MEDIA_info () {
-  num_files=$(ls -F "$src_dir2" | grep -v / | wc -l)
-  total_time=$(echo "5 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+function dequeue_info2 () {
+  num_files=$(ls -F "$queue2" | grep -v / | wc -l)
+  total_time=$(echo "6 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
   end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
@@ -189,30 +212,23 @@ function rsync_101MEDIA_info () {
   echo -e "\033[1;36mINFO: 転送処理は \"$end_time\" に完了する見込みです\033[0m"
 }
 
-function rsync_100MEDIA () {
-  mp4_files=()
-  mov_files=()
-  avi_files=()
-  files_found_mp4=false
-  files_found_mov=false
-  files_found_avi=false
-
+function enqueue () {
   main_file="$date_dir status.txt"
-  cd "$dst_dir" || exit
+  cd "$HOME/Desktop" || exit
 
   if [ ! -e "$date_dir" ]; then
     mkdir "$date_dir"
   elif [ ! -d "$date_dir" ]; then
     echo -e "\033[1;36mINFO: \"$date_dir\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
     mkdir archive
-    echo "mv -v $dst_dir/$date_dir $archive"
-    mv -v "$dst_dir/$date_dir" $archive
+    echo "mv -v $queue $archive"
+    mv -v "$queue" $archive
     mkdir "$date_dir"
     echo
   fi
 
-  # 100MEDIA にて動画ファイルを検索、status ファイルを作成
-  echo -e "\033[1;36mINFO: \"$src_dir\" にて動画ファイルを検索しています…\033[0m"
+  # Untitled にて動画ファイルを検索、statusファイルを作成
+  echo -e "\033[1;36mINFO: DISK \"$DISK\" にて動画ファイルを検索しています…\033[0m"
   for file in "$src_dir"/*; do
     if [ -f "$file" ]; then
       mp4_search_result=$(find "$file" -type f -iname '*.mp4' 2>/dev/null) # .mp4 ファイルを検索(大文字小文字を区別しない)
@@ -237,7 +253,7 @@ function rsync_100MEDIA () {
   done
   echo
 
-  # 100MEDIA にて発見された動画ファイルのステータスを記録
+  # Untitled にて発見された動画ファイルのステータスを記録
   if [ "$files_found_mp4" = true ]; then
     first_file=true
     echo -e "\033[1;36mINFO: 動画ファイル(mp4)のステータスを記録しています…\033[0m"
@@ -287,26 +303,121 @@ function rsync_100MEDIA () {
     done
   fi
 
-  # 動画ファイルを 100MEDIA から Internal に転送させる。コマンド実行に3回失敗した場合、強制終了する
-  rsync_100MEDIA_info
+  # 動画ファイルのエンキュー処理。コマンド実行に3回失敗した場合、強制終了する
+  enqueue_info
   RETRY_COUNT=0
   while [ $RETRY_COUNT -lt 3 ]; do
-    echo "rsync --archive --human-readable --progress $src_dir/* $dst_dir/$date_dir"
-    if rsync --archive --human-readable --progress "$src_dir"/* "$dst_dir/$date_dir"; then
+    echo "rsync --archive --human-readable --progress $src_dir/* $queue"
+    if rsync --archive --human-readable --progress $src_dir/* "$queue"; then
+      echo
+      echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルのエンキュー処理が正常に終了しました。\033[0m"
+      echo -e "\033[1;32mDISK \"$DISK\" 内のファイルはデキュー領域 \"$queue\" に格納されています。\033[0m"
+      echo
       break
     else
       RETRY_COUNT=$((RETRY_COUNT + 1))
       echo
       echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に転送処理を再度実行します ($RETRY_COUNT/3)\033[0m"
       sleep 3
-      rsync_100MEDIA_info
+      enqueue_info
+    fi
+  done
+  if [ $RETRY_COUNT -ge 3 ]; then
+    echo
+    echo -e "\033[1;31mERROR: 試行回数制限に到達しました。以下の事項を確認して再度実行してください。\033[0m"
+    echo -e "\033[1;31m       ・転送元である DISK \"$DISK\" が挿入されている\033[0m"
+    echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$src_dir\" \"$queue\" に齟齬が無い\033[0m"
+    echo -e "\033[1;31m       ・DISK \"$DISK\" 内に動画ファイルが存在している\033[0m"
+    echo -e "\033[1;31m       ・デキュー領域 \"$queue\" が存在している\033[0m"
+    failure_trigger
+    echo "osascript Trigger page - Failure.scpt"
+    osascript "Trigger page - Failure.scpt"
+    open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
+    exit 1
+  fi
+
+  # if rm $src_dir/* 2>/dev/null; then
+  #   echo
+  #   echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" 内のファイルを削除しました\033[0m"
+  # else
+  #   echo
+  #   echo -e "\033[1;31mERROR: $src_dir 配下のファイルが削除できませんでした。対象のファイルを含むディレクトリを検索して再度実行します\033[0m"
+  #   echo
+  #   target_dir=$(find "$src_file" -type f -iname '*.avi' 2>/dev/null)
+  #   target_dir=$(dirname "$target_dir")
+  #   echo "rm $target_dir/*"
+  #   if rm "$target_dir/*" 2>/dev/null; then
+  #     echo
+  #     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" 内のファイルを削除しました\033[0m"
+  #   else
+  #     echo
+  #     echo -e "\033[1;32mERROR: $src_file を格納するディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
+  #   fi
+  # fi
+}
+
+function dequeue () {
+  cd $dst_dir || exit
+
+  if [ ! -e "$date_dir" ]; then
+    mkdir "$date_dir"
+  elif [ ! -d "$date_dir" ]; then
+    echo -e "\033[1;36mINFO: \"$date_dir\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
+    mkdir archive
+    echo "mv -v $dst_dir/$date_dir $archive"
+    mv -v "$dst_dir/$date_dir" $archive
+    mkdir "$date_dir"
+    echo
+  fi
+
+  # 確認の為、デキュー領域にてファイル検索を行う
+  echo -e "\033[1;36mINFO: デキュー領域 \"$queue\" にて動画ファイルを検索しています…\033[0m"
+  for file in "$queue"/*; do
+    if [ -f "$file" ]; then
+      mp4_search_result=$(find "$file" -type f -iname '*.mp4' 2>/dev/null) # .mp4 ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$mp4_search_result" ]; then
+        mp4_files+=("$mp4_search_result")
+        echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
+      fi
+      mov_search_result=$(find "$file" -type f -iname '*.mov' 2>/dev/null) # .mov ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$mov_search_result" ]; then
+        mov_files+=("$mov_search_result")
+        echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
+      fi
+      avi_search_result=$(find "$file" -type f -iname '*.avi' 2>/dev/null) # .avi ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$avi_search_result" ]; then
+        avi_files+=("$avi_search_result")
+        echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
+      fi
+    fi
+  done
+
+  # 動画ファイルをデキュー領域から Internal に転送させる。コマンド実行に3回失敗した場合、強制終了する
+  dequeue_info
+  RETRY_COUNT=0
+  while [ $RETRY_COUNT -lt 3 ]; do
+    echo "rsync --archive --human-readable --progress $queue/* $dst_dir/$date_dir"
+    if rsync --archive --human-readable --progress "$queue"/* "$dst_dir/$date_dir"; then
+      echo
+      echo -e "\033[1;36mINFO: デキュー領域 \"$queue\" を削除しています…\033[0m"
+      echo "rm -rf $queue"
+      rm -rf "$queue" 2>/dev/null
+      echo
+      echo -e "\033[1;32mSUCCESS: デキュー領域 \"$queue\" を削除しました\033[0m"
+      break
+    else
+      RETRY_COUNT=$((RETRY_COUNT + 1))
+      echo
+      echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に転送処理を再度実行します ($RETRY_COUNT/3)\033[0m"
+      sleep 3
+      dequeue_info
     fi
   done
   if [ $RETRY_COUNT -ge 3 ]; then
     echo -e "\033[1;31mERROR: 試行回数制限に到達しました。以下の事項を確認して再度実行してください。\033[0m"
     echo -e "\033[1;31m       ・転送先である SERVER \"$SERVER\" に接続されている\033[0m"
-    echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$src_dir\" \"$dst_dir/$date_dir\" に齟齬が無い\033[0m"
-    echo -e "\033[1;31m       ・転送元である \"$src_dir\" 内に動画ファイルが存在する\033[0m"
+    echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$queue\" \"$dst_dir/$date_dir\" に齟齬が無い\033[0m"
+    echo -e "\033[1;31m       ・デキュー領域 \"$queue\" 内に動画ファイルが存在する\033[0m"
     echo -e "\033[1;31m       ・SERVER \"$SERVER\" 内に転送先 \"$dst_dir/$date_dir\" が存在する\033[0m"
     failure_trigger
     echo "osascript Trigger page - Failure.scpt"
@@ -342,35 +453,29 @@ function rsync_100MEDIA () {
   echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
   echo
   echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルの転送処理が正常に終了しました。\033[0m"
-  echo -e "\033[1;32mDISK \"$src_dir\" 内のファイルは $dst_dir/$date_dir に格納されています。\033[0m"
+  echo -e "\033[1;32mデキュー領域 \"$queue\" 内のファイルは $dst_dir/$date_dir に格納されています。\033[0m"
+  stream_editor
+  end_point
+  rsync "$logfile" $stdout
 }
 
-function rsync_101MEDIA () {
-  mp4_files=()
-  mov_files=()
-  avi_files=()
-  files_found_mp4=false
-  files_found_mov=false
-  files_found_avi=false
-
+function enqueue2 () {
   main_file="$date_dir2 status.txt"
-  echo -e "\033[1;35m$kanst_message\033[0m"
-  echo
-  echo
+  cd "$HOME/Desktop" || exit
 
   if [ ! -e "$date_dir2" ]; then
     mkdir "$date_dir2"
   elif [ ! -d "$date_dir2" ]; then
     echo -e "\033[1;36mINFO: \"$date_dir2\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
     mkdir archive
-    echo "mv -v $dst_dir/$date_dir2 $archive"
-    mv -v "$dst_dir/$date_dir2" $archive
+    echo "mv -v $queue2 $archive"
+    mv -v "$queue2" $archive
     mkdir "$date_dir2"
     echo
   fi
 
-  # 101MEDIA にて動画ファイルを検索、status ファイルを作成
-  echo -e "\033[1;36mINFO: \"$src_dir2\" にて動画ファイルを検索しています…\033[0m"
+  # Untitled にて動画ファイルを検索、statusファイルを作成
+  echo -e "\033[1;36mINFO: DISK \"$DISK\" にて動画ファイルを検索しています…\033[0m"
   for file in "$src_dir2"/*; do
     if [ -f "$file" ]; then
       mp4_search_result=$(find "$file" -type f -iname '*.mp4' 2>/dev/null) # .mp4 ファイルを検索(大文字小文字を区別しない)
@@ -395,7 +500,7 @@ function rsync_101MEDIA () {
   done
   echo
 
-  # 101MEDIA にて発見された動画ファイルのステータスを記録
+  # Untitled にて発見された動画ファイルのステータスを記録
   if [ "$files_found_mp4" = true ]; then
     first_file=true
     echo -e "\033[1;36mINFO: 動画ファイル(mp4)のステータスを記録しています…\033[0m"
@@ -445,26 +550,121 @@ function rsync_101MEDIA () {
     done
   fi
 
-  # 動画ファイルを 101MEDIA から Internal に転送させる。コマンド実行に3回失敗した場合、強制終了する
-  rsync_101MEDIA_info
+  # 動画ファイルのエンキュー処理。コマンド実行に3回失敗した場合、強制終了する
+  enqueue_info2
   RETRY_COUNT=0
   while [ $RETRY_COUNT -lt 3 ]; do
-    echo "rsync --archive --human-readable --progress $src_dir2/* $dst_dir/$date_dir2"
-    if rsync --archive --human-readable --progress "$src_dir2"/* "$dst_dir/$date_dir2"; then
+    echo "rsync --archive --human-readable --progress $src_dir2/* $queue2"
+    if rsync --archive --human-readable --progress $src_dir2/* "$queue2"; then
+      echo
+      echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルのエンキュー処理が正常に終了しました。\033[0m"
+      echo -e "\033[1;32mDISK \"$DISK\" 内のファイルはデキュー領域 \"$queue2\" に格納されています。\033[0m"
+      echo
       break
     else
       RETRY_COUNT=$((RETRY_COUNT + 1))
       echo
       echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に転送処理を再度実行します ($RETRY_COUNT/3)\033[0m"
       sleep 3
-      rsync_101MEDIA_info
+      enqueue_info2
+    fi
+  done
+  if [ $RETRY_COUNT -ge 3 ]; then
+    echo
+    echo -e "\033[1;31mERROR: 試行回数制限に到達しました。以下の事項を確認して再度実行してください。\033[0m"
+    echo -e "\033[1;31m       ・転送元である DISK \"$DISK\" が挿入されている\033[0m"
+    echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$src_dir2\" \"$queue2\" に齟齬が無い\033[0m"
+    echo -e "\033[1;31m       ・DISK \"$DISK\" 内に動画ファイルが存在している\033[0m"
+    echo -e "\033[1;31m       ・デキュー領域 \"$queue2\" が存在している\033[0m"
+    failure_trigger
+    echo "osascript Trigger page - Failure.scpt"
+    osascript "Trigger page - Failure.scpt"
+    open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
+    exit 1
+  fi
+
+  # if rm $src_dir/* 2>/dev/null; then
+  #   echo
+  #   echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" 内のファイルを削除しました\033[0m"
+  # else
+  #   echo
+  #   echo -e "\033[1;31mERROR: $src_dir 配下のファイルが削除できませんでした。対象のファイルを含むディレクトリを検索して再度実行します\033[0m"
+  #   echo
+  #   target_dir=$(find "$src_file" -type f -iname '*.avi' 2>/dev/null)
+  #   target_dir=$(dirname "$target_dir")
+  #   echo "rm $target_dir/*"
+  #   if rm "$target_dir/*" 2>/dev/null; then
+  #     echo
+  #     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" 内のファイルを削除しました\033[0m"
+  #   else
+  #     echo
+  #     echo -e "\033[1;32mERROR: $src_file を格納するディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
+  #   fi
+  # fi
+}
+
+function dequeue2 () {
+  cd $dst_dir || exit
+
+  if [ ! -e "$date_dir2" ]; then
+    mkdir "$date_dir2"
+  elif [ ! -d "$date_dir2" ]; then
+    echo -e "\033[1;36mINFO: \"$date_dir2\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
+    mkdir archive
+    echo "mv -v $dst_dir/$date_dir2 $archive"
+    mv -v "$dst_dir/$date_dir2" $archive
+    mkdir "$date_dir2"
+    echo
+  fi
+
+  # 確認の為、デキュー領域にてファイル検索を行う
+  echo -e "\033[1;36mINFO: デキュー領域 \"$queue2\" にて動画ファイルを検索しています…\033[0m"
+  for file in "$queue2"/*; do
+    if [ -f "$file" ]; then
+      mp4_search_result=$(find "$file" -type f -iname '*.mp4' 2>/dev/null) # .mp4 ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$mp4_search_result" ]; then
+        mp4_files+=("$mp4_search_result")
+        echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
+      fi
+      mov_search_result=$(find "$file" -type f -iname '*.mov' 2>/dev/null) # .mov ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$mov_search_result" ]; then
+        mov_files+=("$mov_search_result")
+        echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
+      fi
+      avi_search_result=$(find "$file" -type f -iname '*.avi' 2>/dev/null) # .avi ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$avi_search_result" ]; then
+        avi_files+=("$avi_search_result")
+        echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
+      fi
+    fi
+  done
+
+  # 動画ファイルをデキュー領域から Internal に転送させる。コマンド実行に3回失敗した場合、強制終了する
+  dequeue_info2
+  RETRY_COUNT=0
+  while [ $RETRY_COUNT -lt 3 ]; do
+    echo "rsync --archive --human-readable --progress $queue2/* $dst_dir/$date_dir2"
+    if rsync --archive --human-readable --progress "$queue2"/* "$dst_dir/$date_dir2"; then
+      echo
+      echo -e "\033[1;36mINFO: デキュー領域 \"$queue2\" を削除しています…\033[0m"
+      echo "rm -rf $queue2"
+      rm -rf "$queue2" 2>/dev/null
+      echo
+      echo -e "\033[1;32mSUCCESS: デキュー領域 \"$queue2\" を削除しました\033[0m"
+      break
+    else
+      RETRY_COUNT=$((RETRY_COUNT + 1))
+      echo
+      echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に転送処理を再度実行します ($RETRY_COUNT/3)\033[0m"
+      sleep 3
+      dequeue_info2
     fi
   done
   if [ $RETRY_COUNT -ge 3 ]; then
     echo -e "\033[1;31mERROR: 試行回数制限に到達しました。以下の事項を確認して再度実行してください。\033[0m"
     echo -e "\033[1;31m       ・転送先である SERVER \"$SERVER\" に接続されている\033[0m"
-    echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$src_dir2\" \"$dst_dir/$date_dir2\" に齟齬が無い\033[0m"
-    echo -e "\033[1;31m       ・転送元である \"$src_dir2\" 内に動画ファイルが存在する\033[0m"
+    echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$queue2\" \"$dst_dir/$date_dir2\" に齟齬が無い\033[0m"
+    echo -e "\033[1;31m       ・デキュー領域 \"$queue2\" 内に動画ファイルが存在する\033[0m"
     echo -e "\033[1;31m       ・SERVER \"$SERVER\" 内に転送先 \"$dst_dir/$date_dir2\" が存在する\033[0m"
     failure_trigger
     echo "osascript Trigger page - Failure.scpt"
@@ -500,7 +700,11 @@ function rsync_101MEDIA () {
   echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
   echo
   echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルの転送処理が正常に終了しました。\033[0m"
-  echo -e "\033[1;32m\"$src_dir2\" 内のファイルは $dst_dir/$date_dir2 に格納されています。\033[0m"
+  echo -e "\033[1;32mデキュー領域 \"$queue2\" 内のファイルは $dst_dir/$date_dir2 に格納されています。\033[0m"
+  stream_editor
+  end_point
+  rsync "$logfile" $stdout
+  mv "/Volumes/Untitled/robocopy_log_*" "$destination"
 }
 
 function disk_clean () {
@@ -576,13 +780,12 @@ if [ -e $src_dir ]; then
     echo
     sleep 0.5
     ps_check
-    rsync_100MEDIA
+    enqueue
+    dequeue
     if [ -e $src_dir2 ]; then
-      rsync_101MEDIA
-      stream_editor
+      enqueue2
+      dequeue2
     fi
-    mv "/Volumes/Untitled/robocopy_log_*" "$destination" 2>/dev/null
-    end_point
     success_trigger
     echo "osascript Trigger page - Success.scpt"
     osascript "Trigger page - Success.scpt"
