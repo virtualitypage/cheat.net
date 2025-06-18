@@ -57,7 +57,7 @@ tell application "Safari"
       delay 0.5
       do shell script "/usr/local/bin/cliclick c:635,380" -- select "正常終了"
       delay 0.5
-      do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
+      do shell script "/usr/local/bin/cliclick c:550,420" -- select "トリガーオン"
     end tell
   end tell
 end tell
@@ -90,7 +90,7 @@ tell application "Safari"
       delay 0.5
       do shell script "/usr/local/bin/cliclick c:635,430" -- select "エラー終了"
       delay 0.5
-      do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
+      do shell script "/usr/local/bin/cliclick c:550,420" -- select "トリガーオン"
     end tell
   end tell
 end tell

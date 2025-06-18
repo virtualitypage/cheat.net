@@ -57,7 +57,7 @@ tell application "Safari"
     delay 0.5
     do shell script "/usr/local/bin/cliclick c:635,380" -- select "正常終了"
     delay 0.5
-    do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
+    do shell script "/usr/local/bin/cliclick c:550,420" -- select "トリガーオン"
   end tell
 end tell
 
@@ -95,7 +95,7 @@ tell application "Safari"
     delay 0.5
     do shell script "/usr/local/bin/cliclick c:635,430" -- select "エラー終了"
     delay 0.5
-    do shell script "/usr/local/bin/cliclick c:550,500" -- select "トリガーオン"
+    do shell script "/usr/local/bin/cliclick c:550,420" -- select "トリガーオン"
   end tell
 end tell
 
@@ -579,7 +579,6 @@ if [ -e $src_dir ]; then
     rsync_100MEDIA
     if [ -e $src_dir2 ]; then
       rsync_101MEDIA
-      stream_editor
     fi
     mv "/Volumes/Untitled/robocopy_log_*" "$destination" 2>/dev/null
     end_point
@@ -587,6 +586,7 @@ if [ -e $src_dir ]; then
     echo "osascript Trigger page - Success.scpt"
     osascript "Trigger page - Success.scpt"
     open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
+    stream_editor
     disk_clean
   elif [ -e $src_dir ] && [ ! -e $dst_dir ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
