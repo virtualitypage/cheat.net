@@ -135,6 +135,7 @@ function stream_editor () {
   sed -i '' 's/\[0m//g' "$logfile"
   sed -i '' 's/building file list ... /building file list .../g' "$logfile"
   sed -i '' "s/uname/$uname/g" "$logfile"
+  sed -i '' 's/\x1b//g' "$logfile"
 }
 
 function end_point () {
