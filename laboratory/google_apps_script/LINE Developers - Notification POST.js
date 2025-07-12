@@ -1,7 +1,67 @@
-var lastSuggestedMenu = ""; // 前回のメニューを保持する変数を追加
+var lastSuggestedMenu = ""; // トップ部分に前回のメニューを保持する変数を追加
+
+function reminderSetting() {
+  var nextDate = new Date();
+  nextDate.setDate(nextDate.getDate() + 4);
+
+  var dayOfweek = '';
+  switch(nextDate.getDay()){
+    case 0: dayOfweek = '日';
+    break;
+    case 1: dayOfweek = '月';
+    break;
+    case 2: dayOfweek = '火';
+    break;
+    case 3: dayOfweek = '水';
+    break;
+    case 4: dayOfweek = '木';
+    break;
+    case 5: dayOfweek = '金';
+    break;
+    case 6: dayOfweek = '土';
+    break;
+  }
+  nextCollectionDate = Utilities.formatDate(nextDate, 'JST', 'yyyy年MM月dd日({曜日}曜日)');
+  nextCollectionDate = nextCollectionDate.replace('{曜日}', dayOfweek); // {曜日}を日本語の曜日に置換
+
+  var previousCollectionDate = "回収(前日)";
+  var currentCollectionDate = "回収日";
+
+  var targetSpreadsheetId = '-----SPREAD_SHEET_ID-----'; // スプレッドシートのID　※シートを変更したら必ず更新すること
+  var sheet = SpreadsheetApp.openById(targetSpreadsheetId);
+
+  var sheetName = Utilities.formatDate(nextDate, 'JST', 'yyyyMM');
+  var targetSheet = sheet.getSheetByName(sheetName);
+  var dateColumnValues = targetSheet.getRange('A2:A32').getValues(); // 日付が記録されている列のデータを取得
+
+  // 各日付と設定された日付を比較し、一致した場合に指定のセルに文字列を入れる
+  for (var i = 0; i < dateColumnValues.length; i++) {
+    var sheetDate = new Date(dateColumnValues[i][0]);
+    if (sheetDate.getDate() === nextDate.getDate()) {
+      targetSheet.getRange('D' + (i + 1)).setValue(previousCollectionDate); // D列のセルに挿入
+      var rangeTargetSheet = targetSheet.getRange('D' + (i + 1)); // 全範囲を指定
+      rangeTargetSheet.setVerticalAlignment('middle'); // 中央配置
+      rangeTargetSheet.setHorizontalAlignment('center'); // 中央配置
+      rangeTargetSheet.setFontWeight('bold'); // 太字
+      rangeTargetSheet.setFontColor("blue"); // 文字色を青色にする
+    }
+    if (sheetDate.getDate() === nextDate.getDate()) {
+      targetSheet.getRange('D' + (i + 2)).setValue(currentCollectionDate); // E列のセルに挿入
+      var rangeTargetSheet = targetSheet.getRange('D' + (i + 2)); // 全範囲を指定
+      rangeTargetSheet.setVerticalAlignment('middle'); // 中央配置
+      rangeTargetSheet.setHorizontalAlignment('center'); // 中央配置
+      rangeTargetSheet.setFontWeight('bold'); // 太字
+      rangeTargetSheet.setFontColor("red"); // 文字色を赤色にする
+      break;
+    } else if (sheetDate.getDate() === nextDate.getDate()) {
+      break;
+    }
+  }
+  return nextCollectionDate;
+}
 
 function doPost(e) {
-  var token = "-----CHANNEL_ACCESS_TOKEN-----"; //LINE Messaging APIのチャネルアクセストークンを設定
+  var token = "-----CHANNEL_ACCESS_TOKEN-----"; // LINE Messaging APIのチャネルアクセストークンを設定
 
   // グループLINEのグループIDを取得するコード　※スプレッドシートで実行することで取得できる
   // var json = JSON.parse(e.postData.contents);
@@ -32,6 +92,10 @@ function doPost(e) {
     case "XX2銀行への振込未完了":
       responseMessage = "引き落とし日は月によって異なりますがXX〜YY日です。期日までに振込を完了させましょう。";
       break;
+    case "cmd:microSDカード回収済み":
+      var nextCollectionDate = reminderSetting();
+      responseMessage = "記録完了：リマインドシート - microSDカード回収（通知用）" + '\n' + "次回の回収予定日は " + nextCollectionDate + " です";
+      break;
     case "それにしましょう":
       // 前回の提案メニューを保持している場合はそれを返信
       if (lastSuggestedMenu !== "") {
@@ -47,7 +111,7 @@ function doPost(e) {
       LineDeveloperMessage();
       break;
     case "予定を変更する":
-      responseMessage = 'microSDカード回収日 予定変更フォーム' + '\n' + '-----FORM_URL-----';
+      responseMessage = 'microSDカード回収日 予定変更フォームです。なんなりとお使いください' + '\n' + '-----FORM_URL-----';
       break;
     case "どこにいるんだァ？一旦集まロットォ！！！":
       responseMessage = "集合しましょう。集合場所の候補としては「川上神社の鳥居付近(南方面)」「土俵がある建物」などです。";
@@ -67,13 +131,13 @@ function doPost(e) {
     }]
   };
 
-  var options = { //　HTTPSのPOST時のオプションパラメータを設定する
+  var options = { // HTTPSのPOST時のオプションパラメータを設定する
     'method': 'POST',
     'headers': { "Authorization": "Bearer " + token },
     'contentType': 'application/json',
     'payload': JSON.stringify(payload)
   };
-  UrlFetchApp.fetch(url, options); //　LINE Messaging APIにリクエストし、ユーザーからの投稿に返答する
+  UrlFetchApp.fetch(url, options); // LINE Messaging APIにリクエストし、ユーザーからの投稿に返答する
 }
 
 function getMenuTextFromSpreadsheet() { // スプレッドシートからmessageTextの値を取得する関数
@@ -99,6 +163,10 @@ function menuNotification() {
   // var date = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'MM/dd');
   var dates = sheet.getRange('A2:A').getValues(); // 日時データの範囲を指定
   var targetDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // 今日の日時を取得
+
+  var sheet_id = sheet.getSheetId();
+  var stringlink = '-----SPREAD_SHEET_ID-----' + sheet_id;
+  var stringText = '献立表';
 
   let message = '';
 
