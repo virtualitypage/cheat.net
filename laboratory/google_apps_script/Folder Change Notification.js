@@ -12,6 +12,7 @@ function init() { // 初回のみ実行
   PropertiesService.getScriptProperties().setProperty('previousFileLists', currentFileLists.join(',')); // ファイルリストを設定
   PropertiesService.getScriptProperties().setProperty('previousFileCount', currentFileLists.length.toString()); // ファイル数を設定
   Logger.log("init(): スクリプトプロパティを作成しました");
+  initializeTrigger();
 }
 
 function checkForNewFiles() {
@@ -81,6 +82,26 @@ function LineDeveloperMessage() {
 
   var response = UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
   Logger.log(response.getContentText());
+
+  // スクリプトの実行制限コード
+  var frequencyIntProperty = PropertiesService.getScriptProperties(); // 現在のスクリプト内のユーザープロパティを取得
+  var current = frequencyIntProperty.getProperty('frequency') || '0'; // プロパティが存在しない場合は 0 が代入される
+  var frequency = parseInt(current, 10); // プロパティの値を10進数で数値に変換
+  frequency++;
+  frequencyIntProperty.setProperty('frequency', frequency.toString()); // 実行回数を更新
+
+  var frequencyIntProperty = PropertiesService.getScriptProperties().getProperty('frequency'); // 実行回数を取得
+  if (frequencyIntProperty == 2) { // スクリプトの実行回数が2回になった場合
+    var currentProperty = PropertiesService.getScriptProperties(); // 現在のスクリプト内のユーザープロパティを取得
+    currentProperty.deleteProperty('frequency'); // 指定のユーザープロパティを削除
+    var triggers = ScriptApp.getProjectTriggers(); // 対象のプロジェクトに登録されているトリガーを取得
+    triggers.forEach(function (t) {
+      if (t.getHandlerFunction() === 'LineDeveloperMessage') {
+        ScriptApp.deleteTrigger(t);
+        Logger.log("createTrigger(): LineDeveloperMessage 実行トリガーを削除しました");
+      }
+    });
+  }
 }
 
 function initializeTrigger() { // 通知用のトリガーを定期的に作成する
@@ -89,19 +110,13 @@ function initializeTrigger() { // 通知用のトリガーを定期的に作成�
 }
 
 function createTrigger() {
-  const today = new Date();
-  const day = today.getDay();
-
-  if (day === 0 || day === 6) { // 0:日曜日 || 6:土曜日
-    ScriptApp.newTrigger('LineDeveloperMessage').timeBased().everyMinutes(1).create(); // 1分毎に実行するトリガーを作成
-    Logger.log("createTrigger(): LineDeveloperMessage 実行トリガーを作成しました");
-  } else {
-    const triggers = ScriptApp.getProjectTriggers(); // 対象のプロジェクトに登録されているトリガーを取得
-    triggers.forEach(function (t) {
-      if (t.getHandlerFunction() === 'LineDeveloperMessage') {
-        ScriptApp.deleteTrigger(t);
-        Logger.log("createTrigger(): LineDeveloperMessage 実行トリガーを削除しました");
-      }
-    });
-  }
+  const triggers = ScriptApp.getProjectTriggers(); // 対象のプロジェクトに登録されているトリガーを取得
+  triggers.forEach(function (t) {
+    if (t.getHandlerFunction() === 'LineDeveloperMessage') {
+      ScriptApp.deleteTrigger(t);
+      Logger.log("createTrigger(): LineDeveloperMessage 実行トリガーを削除しました");
+    }
+  });
+  ScriptApp.newTrigger('LineDeveloperMessage').timeBased().everyMinutes(1).create(); // 1分毎に実行するトリガーを作成
+  Logger.log("createTrigger(): LineDeveloperMessage 実行トリガーを作成しました");
 }
