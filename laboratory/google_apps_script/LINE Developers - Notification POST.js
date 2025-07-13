@@ -1,8 +1,12 @@
+var channelAccessToken = "-----CHANNEL_ACCESS_TOKEN-----"; // LINE Messaging APIのチャネルアクセストークンを設定
+
 var lastSuggestedMenu = ""; // トップ部分に前回のメニューを保持する変数を追加
+
+var reminderSheetId = '-----SPREAD_SHEET_ID-----'; // スプレッドシートのID　※シートを変更したら必ず更新すること
 
 function reminderSetting() {
   var nextDate = new Date();
-  nextDate.setDate(nextDate.getDate() + 4);
+  nextDate.setDate(nextDate.getDate() + 5);
 
   var dayOfweek = '';
   switch(nextDate.getDay()){
@@ -27,9 +31,7 @@ function reminderSetting() {
   var previousCollectionDate = "回収(前日)";
   var currentCollectionDate = "回収日";
 
-  var targetSpreadsheetId = '-----SPREAD_SHEET_ID-----'; // スプレッドシートのID　※シートを変更したら必ず更新すること
-  var sheet = SpreadsheetApp.openById(targetSpreadsheetId);
-
+  var sheet = SpreadsheetApp.openById(reminderSheetId);
   var sheetName = Utilities.formatDate(nextDate, 'JST', 'yyyyMM');
   var targetSheet = sheet.getSheetByName(sheetName);
   var dateColumnValues = targetSheet.getRange('A2:A32').getValues(); // 日付が記録されている列のデータを取得
@@ -44,6 +46,10 @@ function reminderSetting() {
       rangeTargetSheet.setHorizontalAlignment('center'); // 中央配置
       rangeTargetSheet.setFontWeight('bold'); // 太字
       rangeTargetSheet.setFontColor("blue"); // 文字色を青色にする
+
+      PropertiesService.getScriptProperties().setProperty('nextCollectionDate', nextCollectionDate.toString()); // フォーマットされた次回の回収日時を設定
+      PropertiesService.getScriptProperties().setProperty('nextDate', sheetDate.toString()); // 次回の回収日時を設定
+      PropertiesService.getScriptProperties().setProperty('sheetName', sheetName.toString()); // 次回の回収日時に該当するシート名を設定
     }
     if (sheetDate.getDate() === nextDate.getDate()) {
       targetSheet.getRange('D' + (i + 2)).setValue(currentCollectionDate); // E列のセルに挿入
@@ -60,9 +66,33 @@ function reminderSetting() {
   return nextCollectionDate;
 }
 
-function doPost(e) {
-  var token = "-----CHANNEL_ACCESS_TOKEN-----"; // LINE Messaging APIのチャネルアクセストークンを設定
+function insertMessage() {
+  var sheetName = PropertiesService.getScriptProperties().getProperty('sheetName'); // 次回の回収日時に該当するシート名を取得
+  var nextDateStr = PropertiesService.getScriptProperties().getProperty('nextDate'); // 次回の回収日時を取得
+  var nextDate = new Date(nextDateStr); // Date オブジェクトに変換
 
+  var insertMessage = "動画データ削除済み";
+
+  var sheet = SpreadsheetApp.openById(reminderSheetId);
+  var targetSheet = sheet.getSheetByName(sheetName);
+  var dateColumnValues = targetSheet.getRange('A2:A32').getValues(); // 日付が記録されている列のデータを取得
+
+  // 各日付と設定された日付を比較し、一致した場合に指定のセルに文字列を入れる
+  for (var i = 0; i < dateColumnValues.length; i++) {
+    var sheetDate = new Date(dateColumnValues[i][0]);
+    if (sheetDate.getDate() === nextDate.getDate()) {
+      targetSheet.getRange('E' + (i + 2)).setValue(insertMessage); // E列のセルに挿入
+      var rangeTargetSheet = targetSheet.getRange('E' + (i + 2)); // 全範囲を指定
+      rangeTargetSheet.setVerticalAlignment('middle'); // 中央配置
+      rangeTargetSheet.setHorizontalAlignment('center'); // 中央配置
+      rangeTargetSheet.setFontWeight('bold'); // 太字
+      var nextCollectionDate = PropertiesService.getScriptProperties().getProperty('nextCollectionDate'); // フォーマットされた次回の回収日時を取得
+    }
+  }
+  return nextCollectionDate;
+}
+
+function doPost(e) {
   // グループLINEのグループIDを取得するコード　※スプレッドシートで実行することで取得できる
   // var json = JSON.parse(e.postData.contents);
   // var UID = json.events[0].source.userId;
@@ -92,9 +122,13 @@ function doPost(e) {
     case "XX2銀行への振込未完了":
       responseMessage = "引き落とし日は月によって異なりますがXX〜YY日です。期日までに振込を完了させましょう。";
       break;
-    case "cmd:microSDカード回収済み":
+    case "cmd:動画データ回収済み":
       var nextCollectionDate = reminderSetting();
       responseMessage = "記録完了：リマインドシート - microSDカード回収（通知用）" + '\n' + "次回の回収予定日は " + nextCollectionDate + " です";
+      break;
+    case "cmd:動画データ削除済み":
+      var nextCollectionDate = insertMessage();
+      responseMessage = "記録完了：リマインドシート - microSDカード回収（通知用）" + '\n' + nextCollectionDate + " の備考欄に「動画データ削除済み」が追加されました";
       break;
     case "それにしましょう":
       // 前回の提案メニューを保持している場合はそれを返信
@@ -116,8 +150,8 @@ function doPost(e) {
     case "どこにいるんだァ？一旦集まロットォ！！！":
       responseMessage = "集合しましょう。集合場所の候補としては「川上神社の鳥居付近(南方面)」「土俵がある建物」などです。";
       break;
-    case "よく頑張ったがとうとう「帰る」時がきたようだなァ...!":
-      responseMessage = "帰る時がきたようです(笑)このグループLINEで連絡を取り合ってください";
+    case "よく頑張ったがとうとう終わりの時が来たようだなァ...!":
+      responseMessage = "帰る時が来たようです(笑)このグループLINEで連絡を取り合ってください";
       break;
     default:
       responseMessage = "";
@@ -133,7 +167,7 @@ function doPost(e) {
 
   var options = { // HTTPSのPOST時のオプションパラメータを設定する
     'method': 'POST',
-    'headers': { "Authorization": "Bearer " + token },
+    'headers': { "Authorization": "Bearer " + channelAccessToken },
     'contentType': 'application/json',
     'payload': JSON.stringify(payload)
   };
@@ -294,9 +328,7 @@ function getMenuDetails(messageText) {
 }
 
 function LineDeveloperMessage() {
-  var channelAccessToken = "-----CHANNEL_ACCESS_TOKEN-----";
   var myUserId = "-----USER_ID-----";
-  // var myUserId = "C97fda4cd18f1d0bd01e7765567540c75"; // グループLINEのグループID
 
   var headers = { // 以下、メッセージの内容を設定
     "Authorization": "Bearer " + channelAccessToken,
