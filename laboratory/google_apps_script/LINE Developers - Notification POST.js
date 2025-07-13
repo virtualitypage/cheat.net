@@ -71,7 +71,7 @@ function insertMessage() {
   var nextDateStr = PropertiesService.getScriptProperties().getProperty('nextDate'); // 次回の回収日時を取得
   var nextDate = new Date(nextDateStr); // Date オブジェクトに変換
 
-  var insertMessage = "動画データ削除済み";
+  var insertString = "動画データ削除済み";
 
   var sheet = SpreadsheetApp.openById(reminderSheetId);
   var targetSheet = sheet.getSheetByName(sheetName);
@@ -81,7 +81,7 @@ function insertMessage() {
   for (var i = 0; i < dateColumnValues.length; i++) {
     var sheetDate = new Date(dateColumnValues[i][0]);
     if (sheetDate.getDate() === nextDate.getDate()) {
-      targetSheet.getRange('E' + (i + 2)).setValue(insertMessage); // E列のセルに挿入
+      targetSheet.getRange('E' + (i + 2)).setValue(insertString); // E列のセルに挿入
       var rangeTargetSheet = targetSheet.getRange('E' + (i + 2)); // 全範囲を指定
       rangeTargetSheet.setVerticalAlignment('middle'); // 中央配置
       rangeTargetSheet.setHorizontalAlignment('center'); // 中央配置
@@ -89,7 +89,7 @@ function insertMessage() {
       var nextCollectionDate = PropertiesService.getScriptProperties().getProperty('nextCollectionDate'); // フォーマットされた次回の回収日時を取得
     }
   }
-  return nextCollectionDate;
+  return [nextCollectionDate, insertString];
 }
 
 function doPost(e) {
@@ -127,8 +127,8 @@ function doPost(e) {
       responseMessage = "記録完了：リマインドシート - microSDカード回収（通知用）" + '\n' + "次回の回収予定日は " + nextCollectionDate + " です";
       break;
     case "cmd:動画データ削除済み":
-      var nextCollectionDate = insertMessage();
-      responseMessage = "記録完了：リマインドシート - microSDカード回収（通知用）" + '\n' + nextCollectionDate + " の備考欄に「動画データ削除済み」が追加されました";
+      var [nextCollectionDate, insertString] = insertMessage();
+      responseMessage = "記録完了：リマインドシート - microSDカード回収（通知用）" + '\n' + "次回の回収予定日である " + nextCollectionDate + " の備考欄に「" + insertString + "」が追加されました";
       break;
     case "それにしましょう":
       // 前回の提案メニューを保持している場合はそれを返信
