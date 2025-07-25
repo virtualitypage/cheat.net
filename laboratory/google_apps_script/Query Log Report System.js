@@ -201,9 +201,17 @@ function LineDeveloperMessage() {
     if (safeBrowsing) messageText += safeBrowsing + '\n';
     if (processed) messageText += processed + '\n\n';
     if (unknownDomain) messageText += unknownDomain + '\n\n';
-    messageText += "注意：上記ドメインへのアクセス禁止\n\n";
+    messageText += "注意：上記ドメインへのアクセス禁止\n";
   } else { // 全て空の場合
     messageText += "報告：危険と認定されたドメインは検知されませんでした";
+  }
+
+  if (messageText.length >= 5000) { // 文字数が5000以上の場合
+    Logger.log(messageText); // 生成されたメッセージのバックアップを取得
+    var messageTextLength = messageText.length;
+    var messageText = "";
+    var messageText = date + "【Query Log Report System】\n\n";
+    messageText += "失敗：400 Bad Request" + '\n\n' + "リクエスト本文の文字数が制限範囲(0-5000)を超過した為、サーバーの応答が切り捨てられました" + '\n' + "リクエスト本文の文字数：" + messageTextLength;
   }
 
   // `messageText`の値をデバッグログで出力
@@ -220,6 +228,25 @@ function LineDeveloperMessage() {
 
   var response = UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
   Logger.log(response.getContentText());
+}
+
+// LineDeveloperMessage(): 2025/07/16 6:00:02 "Exception: Too many simultaneous invocations: Spreadsheets" の発生を受けての対応策
+// https://issuetracker.google.com/issues/373461929?pli=1#comment33
+function tryLoop() {
+  var c = 4; // 関数のエラー発生時に再試行する回数(3回)
+  for (var i = 1; i < c; i++) {
+    try {
+      LineDeveloperMessage(); // 実行対象の関数
+      break;
+    } catch (e) {
+      if (i !== c - 1) { // i * 1秒後に再度実行
+        Utilities.sleep(i * 1000);
+      }
+      if (i >= c - 1) { // 試行回数が上限に達した場合
+        Logger.log('Error: ' + e.error);
+      }
+    };
+  }
 }
 
 const triggerDate = new Date();
