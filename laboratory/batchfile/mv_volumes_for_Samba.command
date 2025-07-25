@@ -51,11 +51,11 @@ tell application "Safari"
   close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
   delay 2
   tell application "System Events"
-    do shell script "/usr/local/bin/cliclick c:655,300" -- select text box
+    do shell script "/usr/local/bin/cliclick c:655,220" -- select text box
     delay 0.5
     keystroke "v" using {command down} -- paste
     delay 0.5
-    do shell script "/usr/local/bin/cliclick c:635,380" -- select "正常終了"
+    do shell script "/usr/local/bin/cliclick c:635,300" -- select "正常終了"
     delay 0.5
     do shell script "/usr/local/bin/cliclick c:550,420" -- select "トリガーオン"
   end tell
@@ -89,11 +89,11 @@ tell application "Safari"
   close tab 1 of window 1 -- スタートページを閉じる(window 1 は一つ目のタブを指す)
   delay 2
   tell application "System Events"
-    do shell script "/usr/local/bin/cliclick c:655,300" -- select text box
+    do shell script "/usr/local/bin/cliclick c:655,220" -- select text box
     delay 0.5
     keystroke "v" using {command down} -- paste
     delay 0.5
-    do shell script "/usr/local/bin/cliclick c:635,430" -- select "エラー終了"
+    do shell script "/usr/local/bin/cliclick c:635,350" -- select "エラー終了"
     delay 0.5
     do shell script "/usr/local/bin/cliclick c:550,420" -- select "トリガーオン"
   end tell
