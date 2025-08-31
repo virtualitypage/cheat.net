@@ -1,7 +1,6 @@
 #!/bin/sh
 
-current_dir=$(cd "$(dirname "$0")" && pwd)
-OUT_FILE="$current_dir/post.txt"
+repo="/Volumes/dev/GitHub/AdguardFilter_prototype"
 commit_date=$(date '+%Y/%m/%d %H:%M:%S')
 commit_SHA_long=$(git rev-parse HEAD)
 commit_SHA_short=$(git rev-parse --short HEAD)
@@ -11,16 +10,16 @@ first_add_file=true
 first_modified_file=true
 
 {
-  echo "## Commit: [$commit_SHA_short](https://github.com/virtualitypage/AdGuardHome_Filters/commit/$commit_SHA_long) - $commit_message"
+  echo "## Commit: [$commit_SHA_short](https://github.com/virtualitypage/AdguardFilter_prototype/commit/$commit_SHA_long) - $commit_message"
   echo
   echo "### Date"
   echo
   echo "- $commit_date"
   echo
-} >> "$OUT_FILE"
+} >> "$repo/post"
 
-# git show --name-status "$commit_SHA_short" | grep '^[MA]' | sed 's/Author.*//g' > /Volumes/dev/GitHub/AdGuardHome_Filters/a
-git diff --name-status HEAD^ > /Volumes/dev/GitHub/AdGuardHome_Filters/a
+# git show --name-status "$commit_SHA_short" | grep '^[MA]' | sed 's/Author.*//g' > "$repo/status"
+git diff --name-status HEAD^ > "$repo/status"
 while IFS= read -r line; do
   if echo "$line" | grep -q '^A'; then
     if $first_add_file; then
@@ -28,29 +27,38 @@ while IFS= read -r line; do
         echo
         echo "### Add"
         echo
-      } >> "$OUT_FILE"
+      } >> "$repo/post"
       first_add_file=false
     fi
     added=$(echo "$line" | awk '{print $2}')
-    echo "- $added" >> "$OUT_FILE"
+    echo "- $added" >> "$repo/post"
   elif echo "$line" | grep -q '^M'; then
     if $first_modified_file; then
       {
         echo "### Change"
         echo
-      } >> "$OUT_FILE"
+      } >> "$repo/post"
       first_modified_file=false
     fi
     modified=$(echo "$line" | awk '{print $2}')
-    git diff HEAD^ "$modified" > /Volumes/dev/GitHub/AdGuardHome_Filters/b
-    # sed -i '' -e 's/+++ b\///g' -e 's/@@ .*//g' -e 's/^ /    /g' -e 's/^+/    +/g' -e 's/^-/    -/g' -e 's/    $//g' -e '1,5d' /Volumes/dev/GitHub/AdGuardHome_Filters/b
-    sed -i '' -e 's/+++ b\///g' -e 's/^ /    /g' -e 's/^+/    +/g' -e 's/^-/    -/g' -e 's/    $//g' -e '1,5d' /Volumes/dev/GitHub/AdGuardHome_Filters/b
-    echo "- $modified" >> "$OUT_FILE"
-    cat << EOF >> "$OUT_FILE"
+    git diff HEAD^ "$modified" > "$repo/diff"
+    # sed -i '' -e 's/+++ b\///g' -e 's/@@ .*//g' -e 's/^ /    /g' -e 's/^+/    +/g' -e 's/^-/    -/g' -e 's/    $//g' -e '1,5d' "$repo/diff"
+    sed -i '' -e 's/+++ b\///g' \
+              -e 's/^ /    /g' \
+              -e 's/^+/    +/g' \
+              -e 's/^-/    -/g' \
+              -e 's/    $//g' \
+              -e '/\\ No newline at end of file/d' \
+              -e '1,5d' "$repo/diff"
+    echo "- $modified" >> "$repo/post"
+    cat << EOF >> "$repo/post"
     \`\`\`yaml
-$(cat /Volumes/dev/GitHub/AdGuardHome_Filters/b)
+$(cat "$repo/diff")
     \`\`\`
 
 EOF
   fi
-done < "/Volumes/dev/GitHub/AdGuardHome_Filters/a"
+done < "$repo/status"
+
+sed -i '' '4r '"$repo/post" "$repo/CommitLog.md"
+rm "$repo/diff" "$repo/status" "$repo/post"
