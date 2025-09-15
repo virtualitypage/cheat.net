@@ -2,7 +2,9 @@
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
 year=$(TZ=UTC-9 date '+%Y')
+month=$(date -v-1d '+%m')
 cd "$current_dir" || exit
+icloud_drive="$HOME/Library/Mobile Documents/com~apple~Numbers/Documents/監視系/Querylog Client Details/2025-${month}_scpt"
 
 function querylog_reason_statistics () {
   for h in {0..23}; do
@@ -22,7 +24,8 @@ function querylog_reason_statistics () {
 }
 
 function query_file_tmp () {
-  sed -i '' -e 's/ \[.*\]//g' \
+  sed -i '' -e '/タイムスタンプ.*/d' \
+            -e 's/ \[.*\]//g' \
             -e 's/ (キャッシュからの配信)//g' \
             -e 's/,[0-9].[0-9][0-9] ms,//g' \
             -e 's/,[0-9] ms,//g' \
@@ -596,6 +599,46 @@ end processed_variable
 EOF
 }
 
+head_code_10inch=$(
+  cat << EOF
+tell application "Numbers"
+  activate
+  set bounds of window 1 to {0, 0, 800, 750} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+end tell
+
+EOF
+)
+
+head_code_15inch=$(
+  cat << EOF
+tell application "Numbers"
+  activate
+  set bounds of window 1 to {0, 0, 1000, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+end tell
+
+EOF
+)
+
+head_code_21inch=$(
+  cat << EOF
+tell application "Numbers"
+  activate
+  set bounds of window 1 to {0, 0, 1100, 1100} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+end tell
+
+EOF
+)
+
+head_code_27inch=$(
+  cat << EOF
+tell application "Numbers"
+  activate
+  set bounds of window 1 to {500, 0, 2000, 1500} -- ウィンドウの位置とサイズ(左上隅の座標と幅、高さ)を指定
+end tell
+
+EOF
+)
+
 common_code=$(
   cat << EOF
   tell application "Numbers"
@@ -647,21 +690,37 @@ function querylog_client_details () {
     rm "$reason.csv" "$i.txt"
   done
 
+  first_write=true
   for a in {1..7}; do
+    if $first_write; then
+      echo "$head_code_10inch" > "$main_file_10inch"
+      echo "$head_code_15inch" > "$main_file_15inch"
+      echo "$head_code_21inch" > "$main_file_21inch"
+      echo "$head_code_27inch" > "$main_file_27inch"
+      first_write=false
+    fi
     reason="${reason_array[$a - 1]}"
     counter="$current_dir/$reason-count.txt"
     if [ -e "$counter" ]; then
       for b in {1..144}; do
         c=$(($b + 1))
         if grep --extended-regexp "^$b:" "$counter" 1>/dev/null; then
-          echo "on ${reason}_variable(urlList)" >> "$main_file_10inch"
-          echo "on ${reason}_variable(urlList)" >> "$main_file_15inch"
-          echo "on ${reason}_variable(urlList)" >> "$main_file_21inch"
-          echo "on ${reason}_variable(urlList)" >> "$main_file_27inch"
-          echo "$common_code" >> "$main_file_10inch"
-          echo "$common_code" >> "$main_file_15inch"
-          echo "$common_code" >> "$main_file_21inch"
-          echo "$common_code" >> "$main_file_27inch"
+          {
+            echo "on ${reason}_variable(urlList)"
+            echo "$common_code"
+          } >> "$main_file_10inch"
+          {
+            echo "on ${reason}_variable(urlList)"
+            echo "$common_code"
+          } >> "$main_file_15inch"
+          {
+            echo "on ${reason}_variable(urlList)"
+            echo "$common_code"
+          } >> "$main_file_21inch"
+          {
+            echo "on ${reason}_variable(urlList)"
+            echo "$common_code"
+          } >> "$main_file_27inch"
           case "$reason" in
             accept)
               accept_code
@@ -693,6 +752,7 @@ function querylog_client_details () {
           sed -i '' -e '$a \
           }' -e 's/,   //g' "${reason}_A2.txt"
           < "${reason}_A.txt" tr -d '\n' > "${reason}_B.txt"
+          # sed -i '' "s/,         }/}\n${reason}_$k($reason${k})\ntell application \"System Events\"\n  set response to display alert \"Finished\" buttons {\"Yes\", \"No\"} default button 1 as informational\n  if button returned of response is \"Yes\" then\n    delay 2\n  else\n    delay 5\n  end if\nend tell\n\n/g" "${reason}_B.txt"
           sed -i '' "s/, $/}\n${reason}_$c($reason${c})\n\ndelay 2\n\n/g" "${reason}_B.txt"
           cat "${reason}_B.txt" >> "$main_file_10inch"
           cat "${reason}_B.txt" >> "$main_file_15inch"
@@ -708,6 +768,10 @@ function querylog_client_details () {
   echo "$last_code" >> "$main_file_15inch"
   echo "$last_code" >> "$main_file_21inch"
   echo "$last_code" >> "$main_file_27inch"
+  mv "$main_file_10inch" "$icloud_drive"
+  mv "$main_file_15inch" "$icloud_drive"
+  mv "$main_file_21inch" "$icloud_drive"
+  mv "$main_file_27inch" "$icloud_drive"
 }
 
 cd "$current_dir" || exit
