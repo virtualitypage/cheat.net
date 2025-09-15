@@ -1,6 +1,6 @@
 #!/bin/sh
 
-repo="/Volumes/dev/GitHub/AdguardFilter_prototype"
+repo="/Volumes/dev/GitHub/AdGuardHome_Filters"
 commit_date=$(date '+%Y/%m/%d %H:%M:%S')
 commit_SHA_long=$(git rev-parse HEAD)
 commit_SHA_short=$(git rev-parse --short HEAD)
@@ -10,7 +10,7 @@ first_add_file=true
 first_modified_file=true
 
 {
-  echo "## Commit: [$commit_SHA_short](https://github.com/virtualitypage/AdguardFilter_prototype/commit/$commit_SHA_long) - $commit_message"
+  echo "## Commit: [$commit_SHA_short](https://github.com/virtualitypage/AdGuardHome_Filters/commit/$commit_SHA_long) - $commit_message"
   echo
   echo "### Date"
   echo
@@ -20,6 +20,7 @@ first_modified_file=true
 
 # git show --name-status "$commit_SHA_short" | grep '^[MA]' | sed 's/Author.*//g' > "$repo/status"
 git diff --name-status HEAD^ > "$repo/status"
+sed -i '' '/M	CommitLog.md/d' "$repo/status"
 while IFS= read -r line; do
   if echo "$line" | grep -q '^A'; then
     if $first_add_file; then
@@ -41,19 +42,32 @@ while IFS= read -r line; do
       first_modified_file=false
     fi
     modified=$(echo "$line" | awk '{print $2}')
-    git diff HEAD^ "$modified" > "$repo/diff"
+    git diff HEAD^ "$modified" > "$repo/diff_add"
+    git diff HEAD^ "$modified" > "$repo/diff_del"
     # sed -i '' -e 's/+++ b\///g' -e 's/@@ .*//g' -e 's/^ /    /g' -e 's/^+/    +/g' -e 's/^-/    -/g' -e 's/    $//g' -e '1,5d' "$repo/diff"
     sed -i '' -e 's/+++ b\///g' \
-              -e 's/^ /    /g' \
-              -e 's/^+/    +/g' \
-              -e 's/^-/    -/g' \
+              -e 's/^@@ /\n      @@ /g' \
+              -e 's/ @@$/ @@\n/g' \
+              -e 's/^ /      /g' \
+              -e 's/^+/    + /g' \
+              -e 's/^-/    - /g' \
               -e 's/    $//g' \
               -e '/\\ No newline at end of file/d' \
-              -e '1,5d' "$repo/diff"
+              -e '1,5d' "$repo/diff_add" "$repo/diff_del"
+    sed -i '' '/    +/d' "$repo/diff_del"
+    sed -i '' '/    -/d' "$repo/diff_add"
     echo "- $modified" >> "$repo/post"
     cat << EOF >> "$repo/post"
     \`\`\`yaml
-$(cat "$repo/diff")
+    BEFORE:
+$(cat "$repo/diff_del")
+    \`\`\`
+
+EOF
+    cat << EOF >> "$repo/post"
+    \`\`\`yaml
+    AFTER:
+$(cat "$repo/diff_add")
     \`\`\`
 
 EOF
@@ -61,4 +75,4 @@ EOF
 done < "$repo/status"
 
 sed -i '' '4r '"$repo/post" "$repo/CommitLog.md"
-rm "$repo/diff" "$repo/status" "$repo/post"
+rm "$repo/diff_add" "$repo/diff_del" "$repo/status" "$repo/post"
