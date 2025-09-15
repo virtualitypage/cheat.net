@@ -3,6 +3,7 @@
 today=$(date '+%Y-%m-%d')
 time=$(date '+%H:%m:%d')
 
+rm_dir="/Volumes/Untitled/DCIM"
 src_dir="/Volumes/Untitled/DCIM/100MEDIA"
 src_dir2="/Volumes/Untitled/DCIM/101MEDIA"
 dst_dir="/Volumes/Internal/var/cache"
@@ -37,7 +38,7 @@ tell application "Safari"
 	quit
 end tell
 
-delay 5
+delay 15
 
 tell application "Safari"
   activate
@@ -505,28 +506,28 @@ function rsync_101MEDIA () {
 }
 
 function disk_clean () {
-  read -rp "\"$src_dir\" を削除しますか？ { yes | y | no }: " yesno
+  read -rp "\"$rm_dir\" を削除しますか？ { yes | y | no }: " yesno
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
-    if rm $src_dir/* 2>/dev/null; then
+    if rm -r $rm_dir 2>/dev/null; then
       echo
-      echo -e "\033[1;32mSUCCESS: \"$src_dir\" を削除しました\033[0m"
+      echo -e "\033[1;32mSUCCESS: \"$rm_dir\" を削除しました\033[0m"
     else
       echo
       echo -e "\033[1;32mERROR: ディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
     fi
   fi
-  if [ -e $src_dir2 ]; then
-    read -rp "\"$src_dir2\" を削除しますか？ { yes | y | no }: " yesno
-    if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
-      if rm $src_dir2/* 2>/dev/null; then
-        echo
-        echo -e "\033[1;32mSUCCESS: \"$src_dir2\" を削除しました\033[0m"
-      else
-        echo
-        echo -e "\033[1;32mERROR: ディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
-      fi
-    fi
-  fi
+  # if [ -e $src_dir2 ]; then
+  #   read -rp "\"$src_dir2\" を削除しますか？ { yes | y | no }: " yesno
+  #   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
+  #     if rm $src_dir2/* 2>/dev/null; then
+  #       echo
+  #       echo -e "\033[1;32mSUCCESS: \"$src_dir2\" を削除しました\033[0m"
+  #     else
+  #       echo
+  #       echo -e "\033[1;32mERROR: ディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
+  #     fi
+  #   fi
+  # fi
 }
 
 exec > >(tee -a "$logfile")
