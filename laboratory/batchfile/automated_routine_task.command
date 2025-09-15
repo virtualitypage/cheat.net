@@ -2,24 +2,24 @@
 
 today=$(date '+%Y-%m-%d')
 yesterday=$(date -v-1d '+%Y-%m-%d')
+year_month=$(date -v-1d '+%Y_%m')
 SetFile_today=$(date '+%m/%d/%Y')
 current_dir=$(cd "$(dirname "$0")" && pwd)
+date_dir="/Volumes/dev/$yesterday"
 GoogleDrivePath=$(find "$HOME/Library/CloudStorage" -type d -name "GoogleDrive-*@gmail.com" 2>/dev/null)
 GoogleDrivePath=$(find "$GoogleDrivePath" -type d -name "添付ファイル" 2>/dev/null | awk 'NR == 1')
+github_path=$(find /Volumes/dev -type d -name "GitHub" 2>/dev/null | awk 'NR == 1')
+github="$github_path/GL-MT3000_Internal/var/log/data/gl-mt3000"
 ScriptEditorPath="$HOME/Library/Mobile Documents/com~apple~ScriptEditor2/Documents"
 year="${yesterday//-*}"
 
+mkdir -p "$date_dir" 2>/dev/null
+cd "$current_dir" || exit
+
 function automated_routine_task () {
-  echo -e "\033[1;36mINFO: Google Drive から tar アーカイブを転送中...\033[0m"
-  cp "$GoogleDrivePath/archive_$yesterday.tar.gz" \
-     "$GoogleDrivePath/querylog_$yesterday.json.tar.gz" "$current_dir"
-
-  echo -e "\033[1;32mSUCCESS: Google Drive からの tar アーカイブ転送完了\033[0m"; echo
-
-  echo -e "\033[1;36mINFO: tar アーカイブを $current_dir に展開中...\033[0m"
-  cd "$current_dir" || exit
-  tar -zxf "archive_$yesterday.tar.gz" 2>/dev/null
-  tar -zxf "querylog_$yesterday.json.tar.gz" 2>/dev/null
+  echo -e "\033[1;36mINFO: Google Drive から tar アーカイブを $current_dir に展開中...\033[0m"
+  tar -zxf "$GoogleDrivePath/archive_$yesterday.tar.gz" -C "$current_dir"
+  tar -zxf "$GoogleDrivePath/querylog_$yesterday.json.tar.gz" -C "$current_dir"
 
   echo -e "\033[1;32mSUCCESS: tar アーカイブを $current_dir に展開完了\033[0m"; echo
 
@@ -28,7 +28,7 @@ function automated_routine_task () {
   mv "archive/$yesterday/23_59_59/authpriv.csv" \
      "archive/$yesterday/23_59_59/MacTableEntry.csv" \
      "archive/$yesterday/23_59_59/system.csv" "archive/$yesterday" 2>/dev/null
-
+  sleep 10
   rm -rf "archive/$yesterday/23_59_59" \
          "archive_$yesterday.tar.gz" \
          "querylog_$yesterday.json.tar.gz"
@@ -48,7 +48,7 @@ function automated_routine_task () {
     mv "$log_file.tmp" "$log_file"
   done < "$tmpfile"
   mv archive/interface_logger/log_only.csv archive
-  rm "$tmpfile" "archive/.DS_Store" "archive/$yesterday/.DS_Store" 2>/dev/null
+  rm -rf "$tmpfile" "archive/.DS_Store" "archive/$yesterday/.DS_Store" 2>/dev/null
 
   # archive を圧縮・転送
   command_dir=$(find "$current_dir" -type f -name "attachment_compression.command" 2>/dev/null | awk 'NR == 1' | sed 's/\/attachment_compression.command//g')
@@ -70,6 +70,7 @@ function automated_routine_task () {
   before_date="${before_date//-//}" # sed 's|-|/|g' と同義
   sed -i '' -e 's/,/,〜,/g' -e "s|$before_date|$after_date|g" "archive_$yesterday/Connection Statistics.csv"
   rm "InsertEntry" "DeleteEntry" "MacTableEntry"
+  mv "$current_dir/archive_$yesterday" "$date_dir"
 
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
@@ -106,15 +107,24 @@ function automated_routine_task () {
   "$command_dir/convert_querylog_csv.command"
   sed -i '' 's/ ステータス: セーフサーチ/\nステータス: セーフサーチ/g' "$command_dir/querylog_$yesterday.csv"
   rm "$command_dir/querylog.json"
+  mv "$current_dir/querylog_$yesterday.json" "$github/query_log/$year_month"
+  open "$command_dir/querylog_$yesterday.csv"
 
   echo -e "\033[1;32mSUCCESS: json ファイルと csv ファイルの作成完了\033[0m"; echo
 
+  # 一日のクエリ統計ファイルを作成
+  echo -e "\033[1;36mINFO: querylog_statistics.command を実行中...\033[0m"
+  echo -e "querylog_$yesterday.csv" | "$command_dir/querylog_statistics.command" # 複数行の入力をパイプやファイルを使って実行
+  echo -e "\033[1;32mSUCCESS: querylog_statistics.command の実行完了\033[0m"; echo
+  mv "$current_dir/Querylog Statistics - $yesterday.csv" "$date_dir"
+
   # クエリログ分析のためのファイルを作成
+  target_ip="192.168.8.117"
   echo -e "\033[1;36mINFO: querylog_analyzer.command を実行中...\033[0m"
-  echo -e "querylog_$yesterday.csv\n192.168.8.117" | "$command_dir/querylog_analyzer.command" # 複数行の入力をパイプやファイルを使って実行
+  echo -e "querylog_$yesterday.csv\n$target_ip" | "$command_dir/querylog_analyzer.command" # 複数行の入力をパイプやファイルを使って実行
   read -rp "Querylog_Analysis_Target_Domain.scpt を実行しますか？ { yes | y | no }: " yesno
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
-    open "$command_dir/Querylog Analysis - 192.168.8.117.csv"
+    open "$command_dir/Querylog Analysis - $target_ip.csv"
     sleep 2
     echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_15inch.scpt\033[0m"
     echo -e "\033[1;38m> Querylog_Analysis_Target_Domain_27inch.scpt\033[0m"
@@ -139,16 +149,23 @@ function automated_routine_task () {
       echo -e "\033[1;32mSUCCESS: querylog_analyzer.command の実行完了\033[0m"; echo
     fi
   fi
-
-  # 一日のクエリ統計ファイルを作成
-  echo -e "\033[1;36mINFO: querylog_statistics.command を実行中...\033[0m"
-  echo -e "querylog_$yesterday.csv" | "$command_dir/querylog_statistics.command" # 複数行の入力をパイプやファイルを使って実行
-  echo -e "\033[1;32mSUCCESS: querylog_statistics.command の実行完了\033[0m"; echo
+  mv "$current_dir/Querylog Analysis - $target_ip.csv" \
+     "$current_dir/Querylog_Analysis_Target_Domain_15inch.scpt" \
+     "$current_dir/Querylog_Analysis_Target_Domain_27inch.scpt" "$date_dir"
 
   # クエリログレポートファイルを作成
-  echo -e "\033[1;36mINFO: querylog_reporting.command を実行中...\033[0m"
-  echo -e "querylog_$yesterday.csv" | "$command_dir/querylog_reporting.command" # 複数行の入力をパイプやファイルを使って実行
-  echo -e "\033[1;32mSUCCESS: querylog_reporting.command の実行完了\033[0m"; echo
+  # echo -e "\033[1;36mINFO: querylog_reporting.command を実行中...\033[0m"
+  # echo -e "querylog_$yesterday.csv" | "$command_dir/querylog_reporting.command" # 複数行の入力をパイプやファイルを使って実行
+  # echo -e "\033[1;32mSUCCESS: querylog_reporting.command の実行完了\033[0m"; echo
+
+  # クライアント毎のクエリログ詳細ファイルを作成
+  echo -e "\033[1;36mINFO: querylog_client_details.command を実行中...\033[0m"
+  rename 's/querylog_//' "querylog_$yesterday.csv"
+  echo -e "$yesterday.csv" | "$command_dir/querylog_client_details.command"
+  mv "$current_dir/Querylog Client Details $yesterday - "*.csv \
+     "$current_dir/Querylog_Client_Details_$yesterday"*.scpt \
+     "$current_dir/Querylog Reason Statistics $yesterday - "*.csv "$date_dir"
+  echo -e "\033[1;32mSUCCESS: querylog_client_details.command の実行完了\033[0m"; echo
 }
 
 URL="https://drive.google.com/drive/my-drive"
