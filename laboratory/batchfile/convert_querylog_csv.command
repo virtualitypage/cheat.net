@@ -201,7 +201,8 @@ sed -i '' -e 's/\" (/ (/g' \
           -e 's/,,/,-,/g' \
           -e 's/ \[-.*\]//g' \
           -e 's/処理済み (キャッシュからの配信)\"/処理済み (キャッシュからの配信)/g' \
-          -e 's/(キャッシュからの配信)\"\"/(キャッシュからの配信)\"/g' "$main_file"
+          -e 's/(キャッシュからの配信)\"\"/(キャッシュからの配信)\"/g' \
+          -e 's/ステータス: セーフサーチ (キャッシュからの配信)/\nステータス: セーフサーチ (キャッシュからの配信)/g' "$main_file"
 
 # cat /etc/AdGuardHome/config.yaml の "filters:" を参照
 sed -i '' -e 's/1720874115/Advertisement/g' \
@@ -210,4 +211,5 @@ sed -i '' -e 's/1720874115/Advertisement/g' \
           -e 's/1720874118/Reject_Domain/g' \
           -e 's/1731151222/Reject_Link/g' \
           -e 's/1731151223/Restricted_Domain/g' \
-          -e 's/1722950284/Accept_Domain/g' "$main_file"
+          -e 's/1722950284/Accept_Domain/g' \
+          -e 's/1756474491/Accept_PBAds/g' "$main_file"
