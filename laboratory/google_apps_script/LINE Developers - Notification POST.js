@@ -89,7 +89,16 @@ function insertMessage() {
       var nextCollectionDate = PropertiesService.getScriptProperties().getProperty('nextCollectionDate'); // フォーマットされた次回の回収日時を取得
     }
   }
-  return [nextCollectionDate, insertString];
+  // Google カレンダーへの予定登録
+  var calendarId = CalendarApp.getCalendarById('family12775047899443732984@group.calendar.google.com'); // 予定を反映させるカレンダーのID（通常はメールアドレス）をセット
+  var registered = "";
+  try {
+    calendarId.createAllDayEvent('防犯カメラの MicroSD カード回収日', nextDate);
+    registered = '\nファミリーカレンダーに予定が登録されました';
+  } catch (e) {
+    registered = '\nファミリーカレンダーへの予定登録に失敗しました: ' + e.message;
+  }
+  return [nextCollectionDate, registered];
 }
 
 function doPost(e) {
@@ -123,8 +132,8 @@ function doPost(e) {
       responseMessage = "引き落とし日は月によって異なりますがXX〜YY日です。期日までに振込を完了させましょう。";
       break;
     case "cmd:動画データ回収済み":
-      var nextCollectionDate = reminderSetting();
-      responseMessage = "記録完了：リマインドシート - microSDカード回収（通知用）" + '\n' + "次回の回収予定日は " + nextCollectionDate + " です";
+      var [nextCollectionDate, registered] = reminderSetting();
+      responseMessage = "記録完了：リマインドシート - microSDカード回収（通知用）" + '\n' + "次回の回収予定日は " + nextCollectionDate + " です" + registered;
       break;
     case "cmd:動画データ削除済み":
       var [nextCollectionDate, insertString] = insertMessage();
