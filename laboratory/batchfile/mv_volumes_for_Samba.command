@@ -169,7 +169,7 @@ function ps_check () {
 
 function rsync_100MEDIA_info () {
   num_files=$(ls -F "$src_dir" | grep -v / | wc -l)
-  total_time=$(echo "5 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+  total_time=$(echo "12 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
   end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
@@ -181,7 +181,7 @@ function rsync_100MEDIA_info () {
 
 function rsync_101MEDIA_info () {
   num_files=$(ls -F "$src_dir2" | grep -v / | wc -l)
-  total_time=$(echo "5 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+  total_time=$(echo "12 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
   end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
@@ -221,19 +221,19 @@ function rsync_100MEDIA () {
       if [ -n "$mp4_search_result" ]; then
         mp4_files+=("$mp4_search_result")
         files_found_mp4=true
-        echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
+        # echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
       fi
       mov_search_result=$(find "$file" -type f -iname '*.mov' 2>/dev/null) # .mov ファイルを検索(大文字小文字を区別しない)
       if [ -n "$mov_search_result" ]; then
         mov_files+=("$mov_search_result")
         files_found_mov=true
-        echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
+        # echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
       fi
       avi_search_result=$(find "$file" -type f -iname '*.avi' 2>/dev/null) # .avi ファイルを検索(大文字小文字を区別しない)
       if [ -n "$avi_search_result" ]; then
         avi_files+=("$avi_search_result")
         files_found_avi=true
-        echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
+        # echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
       fi
     fi
   done
@@ -248,11 +248,11 @@ function rsync_100MEDIA () {
       mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir/$mp4_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
         first_file=false
       else
         echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
       fi
     done
   fi
@@ -264,11 +264,11 @@ function rsync_100MEDIA () {
       mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir/$mov_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
         first_file=false
       else
         echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
       fi
     done
   fi
@@ -280,11 +280,11 @@ function rsync_100MEDIA () {
       avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir/$avi_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
         first_file=false
       else
         echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
       fi
     done
   fi
@@ -379,19 +379,19 @@ function rsync_101MEDIA () {
       if [ -n "$mp4_search_result" ]; then
         mp4_files+=("$mp4_search_result")
         files_found_mp4=true
-        echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
+        # echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
       fi
       mov_search_result=$(find "$file" -type f -iname '*.mov' 2>/dev/null) # .mov ファイルを検索(大文字小文字を区別しない)
       if [ -n "$mov_search_result" ]; then
         mov_files+=("$mov_search_result")
         files_found_mov=true
-        echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
+        # echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
       fi
       avi_search_result=$(find "$file" -type f -iname '*.avi' 2>/dev/null) # .avi ファイルを検索(大文字小文字を区別しない)
       if [ -n "$avi_search_result" ]; then
         avi_files+=("$avi_search_result")
         files_found_avi=true
-        echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
+        # echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
       fi
     fi
   done
@@ -406,11 +406,11 @@ function rsync_101MEDIA () {
       mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir2/$mp4_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
         first_file=false
       else
         echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
       fi
     done
   fi
@@ -422,11 +422,11 @@ function rsync_101MEDIA () {
       mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir2/$mov_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
         first_file=false
       else
         echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
       fi
     done
   fi
@@ -438,11 +438,11 @@ function rsync_101MEDIA () {
       avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir2/$avi_file")
       if [ "$first_file" = true ]; then
         echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
         first_file=false
       else
         echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
-        echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
+        # echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
       fi
     done
   fi
