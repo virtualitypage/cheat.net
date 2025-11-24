@@ -4,7 +4,8 @@ current_dir=$(cd "$(dirname "$0")" && pwd)
 sub_file="$current_dir/sort.csv"
 mid_file="$current_dir/count.csv"
 
-read -rp "> " stat_file
+echo "注意: 防犯カメラのstatusファイルから指定の月を含む行を抜き出し、一つのstatusファイルにしたものを読み込みます"
+read -rp "ファイル名の形式 [YYYY-MM.txt] > " stat_file
 
 year=$(echo "$stat_file" | sed 's/-/ /g' | awk '{ print $1 }')
 month=$(echo "$stat_file" | sed 's/-/ /g' | awk '{ printf "%02d", $2 }')
