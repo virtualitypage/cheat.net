@@ -5,10 +5,10 @@ yesterday=$(date -v-1d '+%Y-%m-%d')
 year_month=$(date -v-1d '+%Y_%m')
 SetFile_today=$(date '+%m/%d/%Y')
 current_dir=$(cd "$(dirname "$0")" && pwd)
-date_dir="/Volumes/dev/$yesterday"
+date_dir="/Volumes/DevOps/$yesterday"
 GoogleDrivePath=$(find "$HOME/Library/CloudStorage" -type d -name "GoogleDrive-*@gmail.com" 2>/dev/null)
 GoogleDrivePath=$(find "$GoogleDrivePath" -type d -name "添付ファイル" 2>/dev/null | awk 'NR == 1')
-github_path=$(find /Volumes/dev -type d -name "GitHub" 2>/dev/null | awk 'NR == 1')
+github_path=$(find /Volumes/DevOps -type d -name "GitHub" 2>/dev/null | awk 'NR == 1')
 github="$github_path/GL-MT3000_Internal/var/log/data/gl-mt3000"
 ScriptEditorPath="$HOME/Library/Mobile Documents/com~apple~ScriptEditor2/Documents"
 year="${yesterday//-*}"
@@ -23,8 +23,11 @@ function automated_routine_task () {
 
   echo -e "\033[1;32mSUCCESS: tar アーカイブを $current_dir に展開完了\033[0m"; echo
 
+  # 起動ログがあるかを事前にルータでフラグ建てしておくこと。それの有無で指定ログファイルの内容を結合という形で取得する
+
   echo -e "\033[1;36mINFO: archive 配下のファイルを整理・転送中...\033[0m"
   mv "archive/$yesterday/23_59_59/system_23_59_59.log" "archive/$yesterday/system.log"
+  mv "archive/$yesterday/23_59_59/logread_23_59_59.log" "archive/$yesterday/logread.log"
   mv "archive/$yesterday/23_59_59/authpriv.csv" \
      "archive/$yesterday/23_59_59/MacTableEntry.csv" \
      "archive/$yesterday/23_59_59/system.csv" "archive/$yesterday" 2>/dev/null
@@ -102,6 +105,11 @@ function automated_routine_task () {
     echo
   fi
 
+  # unknownDomain.sh を移動
+  chmod +x "$GoogleDrivePath/unknownDomain_$yesterday.command"
+  mv "$GoogleDrivePath/unknownDomain_$yesterday.command" \
+     "$GoogleDrivePath/unknownDomain_$yesterday.scpt" /Volumes/DevOps/ops/unknownDomainSearch
+
   # querylog.json をベースに成形済 json ファイルと csv ファイルを作成
   "$command_dir/convert_querylog_json.command"
   "$command_dir/convert_querylog_csv.command"
@@ -111,6 +119,11 @@ function automated_routine_task () {
   open "$command_dir/querylog_$yesterday.csv"
 
   echo -e "\033[1;32mSUCCESS: json ファイルと csv ファイルの作成完了\033[0m"; echo
+
+  # ブロックされた脅威 - 月間レポート用の csv ファイルを作成
+  echo -e "\033[1;36mINFO: ブロックされた脅威 - 月間レポート用の csv ファイルを作成中...\033[0m"
+  grep -B2 "ブロックされた脅威" "$command_dir/querylog_$yesterday.csv" | sed '/--/d' > "$command_dir/querylog_threat_$yesterday.csv"
+  open "$command_dir/querylog_threat_$yesterday.csv"
 
   # 一日のクエリ統計ファイルを作成
   echo -e "\033[1;36mINFO: querylog_statistics.command を実行中...\033[0m"
@@ -163,9 +176,9 @@ function automated_routine_task () {
   rename 's/querylog_//' "querylog_$yesterday.csv"
   echo -e "$yesterday.csv" | "$command_dir/querylog_client_details.command"
   mv "$current_dir/Querylog Client Details $yesterday - "*.csv \
-     "$current_dir/Querylog_Client_Details_$yesterday"*.scpt \
      "$current_dir/Querylog Reason Statistics $yesterday - "*.csv "$date_dir"
   echo -e "\033[1;32mSUCCESS: querylog_client_details.command の実行完了\033[0m"; echo
+  mv "$date_dir" /Volumes/DevOps/ops
 }
 
 URL="https://drive.google.com/drive/my-drive"
