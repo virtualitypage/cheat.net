@@ -78,7 +78,8 @@ function automated_routine_task () {
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
-  sed -i '' -e "/$today/q" -e "/$today/d" "querylog.json"
+  mv "querylog_$yesterday.json" querylog.json
+  sed -i '' -e "/$today/q" -e "/$today/d" querylog.json
   SetFile -m "$SetFile_today 02:00" querylog.json
   SetFile -d "$SetFile_today 02:00" querylog.json
 
