@@ -1,5 +1,6 @@
 #!/bin/bash
 
+year=$(date '+%Y')
 today=$(date '+%Y-%m-%d')
 time=$(date '+%H:%m:%d')
 
@@ -15,6 +16,8 @@ src_file="DSCF0001.AVI"
 date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_dir/$src_file 2>/dev/null)
 date_dir2=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_dir2/$src_file 2>/dev/null)
 disk_free="$destination/diskFree.json"
+disk_log_internal="$destination/disk_info_Internal - $year.csv"
+disk_log_microSD="$destination/disk_info_microSD - $year.csv"
 
 DISK="Untitled"
 SERVER="Internal"
@@ -479,21 +482,28 @@ function rsync_101MEDIA () {
   timestamp=$(date '+%Y/%m/%d %H:%m:%d')
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
-  echo "df -H $dst_dir >> $disk_free"
-  df -H $dst_dir | awk -v timestamp="$timestamp" 'NR==2 {
-    printf "  {\n"
-    printf "    \"タイムスタンプ\": \"%s\",\n", timestamp
-    printf "    \"ファイルシステム\": \"%s\",\n", $1
-    printf "    \"サイズ\": {\n"
-    printf "      \"容量\": \"%sB\",\n", $2
-    printf "      \"使用量\": \"%sB\",\n", $3
-    printf "      \"空き容量\": \"%sB\",\n", $4
-    printf "      \"使用率\": \"%s\"\n", $5
-    printf "    },\n"
-    printf "    \"マウント先\": \"%s\"\n", $9
-    printf "  },\n"
-    print "]"
-  }' >> "$disk_free"
+  # echo "df -H $dst_dir >> $disk_free"
+  # df -H $dst_dir | awk -v timestamp="$timestamp" 'NR==2 {
+  #   printf "  {\n"
+  #   printf "    \"タイムスタンプ\": \"%s\",\n", timestamp
+  #   printf "    \"ファイルシステム\": \"%s\",\n", $1
+  #   printf "    \"サイズ\": {\n"
+  #   printf "      \"容量\": \"%sB\",\n", $2
+  #   printf "      \"使用量\": \"%sB\",\n", $3
+  #   printf "      \"空き容量\": \"%sB\",\n", $4
+  #   printf "      \"使用率\": \"%s\"\n", $5
+  #   printf "    },\n"
+  #   printf "    \"マウント先\": \"%s\"\n", $9
+  #   printf "  },\n"
+  #   print "]"
+  # }' >> "$disk_free"
+
+  {
+    echo "$timestamp,"
+    df -H $dst_dir | awk 'NR == 2 { print $1","$2","$3","$4","$5","$9 }'
+  } | tr -d '\n' >> "$disk_log_internal"
+  echo -e >> "$disk_log_internal"
+
   closing_brace=$(grep -nB1 -nA1 ']' "$disk_free" | awk 'NR == 1 {gsub(/-/, ""); print $1 }')
   square_brackets=$(grep -nA1 ']' "$disk_free" | awk 'NR <= 2 { gsub(/:\]|-\[/, ""); print $1 }' | sed '1s/$/,/' | tr -d '\n')
   sed -i '' "${closing_brace}s/.*/  },/" "$disk_free" # 指定行を別の文字列に置換
@@ -561,20 +571,27 @@ if [ -e $src_dir ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
     timestamp=$(date '+%Y/%m/%d %H:%m:%d')
-    df -H $src_dir | awk -v timestamp="$timestamp" 'NR==2 {
-      printf "[\n"
-      printf "  {\n"
-      printf "    \"タイムスタンプ\": \"%s\",\n", timestamp
-      printf "    \"ファイルシステム\": \"%s\",\n", $1
-      printf "    \"サイズ\": {\n"
-      printf "      \"容量\": \"%sB\",\n", $2
-      printf "      \"使用量\": \"%sB\",\n", $3
-      printf "      \"空き容量\": \"%sB\",\n", $4
-      printf "      \"使用率\": \"%s\"\n", $5
-      printf "    },\n"
-      printf "    \"マウント先\": \"%s\"\n", $9
-      printf "  },\n"
-    }' >> "$disk_free"
+    # df -H $src_dir | awk -v timestamp="$timestamp" 'NR==2 {
+    #   printf "[\n"
+    #   printf "  {\n"
+    #   printf "    \"タイムスタンプ\": \"%s\",\n", timestamp
+    #   printf "    \"ファイルシステム\": \"%s\",\n", $1
+    #   printf "    \"サイズ\": {\n"
+    #   printf "      \"容量\": \"%sB\",\n", $2
+    #   printf "      \"使用量\": \"%sB\",\n", $3
+    #   printf "      \"空き容量\": \"%sB\",\n", $4
+    #   printf "      \"使用率\": \"%s\"\n", $5
+    #   printf "    },\n"
+    #   printf "    \"マウント先\": \"%s\"\n", $9
+    #   printf "  },\n"
+    # }' >> "$disk_free"
+
+    {
+      echo "$timestamp,"
+      df -H $src_dir | awk 'NR == 2 { print $1","$2","$3","$4","$5","$9 }'
+    } | tr -d '\n' >> "$disk_log_microSD"
+    echo -e >> "$disk_log_microSD"
+
     echo
     sleep 0.5
     ps_check
