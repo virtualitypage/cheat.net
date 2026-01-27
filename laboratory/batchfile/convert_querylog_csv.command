@@ -212,4 +212,5 @@ sed -i '' -e 's/1720874115/Advertisement/g' \
           -e 's/1731151222/Reject_Link/g' \
           -e 's/1731151223/Restricted_Domain/g' \
           -e 's/1722950284/Accept_Domain/g' \
-          -e 's/1756474491/Accept_PBAds/g' "$main_file"
+          -e 's/1756474491/Accept_PBAds/g' \
+          -e 's/1766559668/Appliances_Only/g' "$main_file"
