@@ -521,12 +521,20 @@ function rsync_101MEDIA () {
 function disk_clean () {
   read -rp "\"$rm_dir\" を削除しますか？ { yes | y | no }: " yesno
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
-    if rm -r $rm_dir 2>/dev/null; then
-      echo
-      echo -e "\033[1;32mSUCCESS: \"$rm_dir\" を削除しました\033[0m"
-    else
-      echo
-      echo -e "\033[1;32mERROR: ディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
+    A=$(ls -lt /Volumes/Internal/var/cache | awk 'NR == 2 { print $9 }')
+    B=$(stat -f "%Sm" -t "%Y-%-m-%-d" /Volumes/Untitled/DCIM/100MEDIA/DSCF0001.AVI)
+    if [ "$A" -eq "$B" ]; then
+      echo -e "\033[1;36mINFO: サーバー側とディスク側の動画データの日付が合致しました。\"$rm_dir\" を削除します\033[0m"
+      if rm -r $rm_dir 2>/dev/null; then
+        echo
+        echo -e "\033[1;32mSUCCESS: \"$rm_dir\" を削除しました\033[0m"
+      else
+        echo
+        echo -e "\033[1;32mERROR: ディレクトリが見つかりませんでした。完全なデータ削除のために DISK の初期化を推奨します\033[0m"
+      fi
+    elif [[ "$A" -ne "$B" ]]; then
+      echo -e "\033[1;33mWARNING: サーバー側とディスク側の動画データの日付が合致しませんでした\033[0m"
+      echo -e "\033[1;33m　　　　　 ディスク側の動画データが最新のものである可能性があります\033[0m"
     fi
   fi
   # if [ -e $src_dir2 ]; then
