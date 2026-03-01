@@ -19,7 +19,7 @@ case $month in # 各月の日数を考慮
   ;;
   02)
     # 閏年の計算
-    if [ $(("$year" % 4)) -eq 0 ] && [ $(("$year" % 100)) -ne 0 ] || [ $(("$year" % 400)) -eq 0 ]; then
+    if [ $(( year % 4 )) -eq 0 ] && [ $(( year % 100 )) -ne 0 ] || [ $(( year % 400 )) -eq 0 ]; then
       days_in_month=29
     else
       days_in_month=28
@@ -30,7 +30,7 @@ esac
 main_file="$current_dir/status_count - ${year}_${month}.csv"
 main_file2="$current_dir/status_count - ${year}_${month} dayOfWeek.csv"
 target_date=$(printf "%04d-%02d\n" "$year" "$month")
-mv /Volumes/Untitled/完了済/$target_date-*/$target_date-*.txt /Volumes/Untitled/完了済
+# mv /Volumes/Untitled/完了済/$target_date-*.txt /Volumes/Untitled/完了済
 
 function paste_text () {
   paste -d , "$current_dir/ch_num1.csv" "$current_dir/ch_num2.csv" "$current_dir/ch_num3.csv" "$current_dir/ch_num4.csv" > "$main_file"
@@ -132,7 +132,7 @@ function create1 () {
 function channel1 () {
   for ((d = 1; d <= days_in_month; d++)); do
     day=$(printf "%02d" "$d")
-    TARGET_STATUS_TEXT="$current_dir/$target_date-$day status nvr(ch1).txt"
+    TARGET_STATUS_TEXT="$current_dir/$target_date-$day status nvr(channel1).txt"
     cat "$TARGET_STATUS_TEXT" >> "$tmp_file"
   done
   echo "channel1のstatusファイル結合完了"
@@ -144,7 +144,7 @@ function channel1 () {
 function channel2 () {
   for ((d = 1; d <= days_in_month; d++)); do
     day=$(printf "%02d" "$d")
-    TARGET_STATUS_TEXT="$current_dir/$target_date-$day status nvr(ch2).txt"
+    TARGET_STATUS_TEXT="$current_dir/$target_date-$day status nvr(channel2).txt"
     cat "$TARGET_STATUS_TEXT" >> "$tmp_file"
   done
   echo "channel2のstatusファイル結合完了"
@@ -156,7 +156,7 @@ function channel2 () {
 function channel3 () {
   for ((d = 1; d <= days_in_month; d++)); do
     day=$(printf "%02d" "$d")
-    TARGET_STATUS_TEXT="$current_dir/$target_date-$day status nvr(ch3).txt"
+    TARGET_STATUS_TEXT="$current_dir/$target_date-$day status nvr(channel3).txt"
     cat "$TARGET_STATUS_TEXT" >> "$tmp_file"
   done
   echo "channel3のstatusファイル結合完了"
@@ -168,7 +168,7 @@ function channel3 () {
 function channel4 () {
   for ((d = 1; d <= days_in_month; d++)); do
     day=$(printf "%02d" "$d")
-    TARGET_STATUS_TEXT="$current_dir/$target_date-$day status nvr(ch4).txt"
+    TARGET_STATUS_TEXT="$current_dir/$target_date-$day status nvr(channel4).txt"
     cat "$TARGET_STATUS_TEXT" >> "$tmp_file"
   done
   echo "channel4のstatusファイル結合完了"
