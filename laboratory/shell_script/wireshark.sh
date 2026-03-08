@@ -1,10 +1,15 @@
 #!/bin/bash
 
 current_dir=$(cd "$(dirname "$0")" && pwd)
-year=2026
-month=02
-day=18
-prev_day=17
+year=
+prev_month=
+month=
+day=
+prev_day=
+
+function editcap () {
+  echo -e "\033[1;32meditcap -A \"$year-$month-${day} 00:00:00\" -B \"$year-$month-${day} 00:00:59\" $year-$prev_month-${prev_day}_23-00-*.pcap $year-$prev_month-${prev_day}_23.pcap\033[0m"
+}
 
 function mergecap () {
   cd "$current_dir" || exit
@@ -16,15 +21,11 @@ function mergecap () {
   done
 
   files=$(echo "${file_name[@]}" | tr -d '\n')
-  echo -e "\033[1;32mmergecap $year-$month-${prev_day}_23.pcap $files -w $year-$month-${day}_22.pcap\033[0m"
+  echo -e "\033[1;32mmergecap $year-$prev_month-${prev_day}_23.pcap $files -w $year-$month-${day}_22.pcap\033[0m"
   echo
   echo -e "\033[1;32meditcap -A \"$year-$month-${day} 23:00:00\" -B \"$year-$month-${day} 23:59:59\" $year-$month-${day}_23-00-*.pcap $year-$month-${day}_23.pcap\033[0m"
   echo
   echo -e "\033[1;32mmergecap $year-$month-${day}_22.pcap $year-$month-${day}_23.pcap -w $year-$month-${day}.pcap\033[0m"
-}
-
-function editcap () {
-  echo -e "\033[1;32meditcap -A \"$year-$month-${day} 00:00:00\" -B \"$year-$month-${day} 00:00:59\" $year-$month-${prev_day}_23-00-*.pcap $year-$month-${prev_day}_23.pcap\033[0m"
 }
 
 # function editcap () {
@@ -38,21 +39,22 @@ function editcap () {
 
 case $1 in
   move)
-    mv /Volumes/Internal/tcpdump/2026-02-${day}_* .
+    mv /Volumes/Internal/tcpdump/$year-$month-${day}_* . 2>/dev/null
     cd "$current_dir" || exit
-    gunzip -k 2026-02-${day}_*.gz
-    ;;
+    gunzip -k $year-$month-${day}_*.gz
+    ls -lh $HOME/Desktop/tcpdump/*.pcap
+  ;;
   gunzip)
     cd "$current_dir" || exit
-    gunzip -k 2026-02-${day}_*.gz
-    ;;
+    gunzip -k $year-$month-${day}_*.gz
+  ;;
   merge)
     mergecap
-    ;;
+  ;;
   edit)
     editcap
-    ;;
+  ;;
   *)
     echo "{ merge | edit }"
-    ;;
+  ;;
 esac
