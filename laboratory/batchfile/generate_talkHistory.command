@@ -26,5 +26,5 @@ if [ -f "$sub_file" ]; then
   echo -e "\033[1;36mINFO: 最後に、以下のコマンドを実行してください(少し時間をおくこと)\033[0m"
   echo -e "\033[1;38msed -i '' '/^,,/d' $main_file\033[0m"
   echo -e "\033[1;38msed -i '' 's/,,$//g' $main_file\033[0m"
-  echo -e "\033[1;38msed -i '' 's/^2024/,,\\\\n2024/g' $main_file\033[0m"
+  # echo -e "\033[1;38msed -i '' 's/^2024/,,\\\\n2024/g' $main_file\033[0m"
 fi
