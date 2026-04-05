@@ -172,7 +172,7 @@ function ps_check () {
 
 function rsync_100MEDIA_info () {
   num_files=$(ls -F "$src_dir" | grep -v / | wc -l)
-  total_time=$(echo "12 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+  total_time=$(echo "15 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
   end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
@@ -184,7 +184,7 @@ function rsync_100MEDIA_info () {
 
 function rsync_101MEDIA_info () {
   num_files=$(ls -F "$src_dir2" | grep -v / | wc -l)
-  total_time=$(echo "12 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+  total_time=$(echo "15 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
   end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
