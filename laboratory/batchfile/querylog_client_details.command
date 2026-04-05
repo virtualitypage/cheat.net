@@ -85,7 +85,7 @@ else
 fi
 
 sub_file_name=${sub_file//.csv/}
-ip_addr_array=("192.168.8.117" "192.168.8.159" "192.168.8.163" "192.168.8.175" "192.168.8.183" "192.168.8.204" "192.168.8.219" "192.168.8.235")
+ip_addr_array=("192.168.*.117" "192.168.*.159" "192.168.*.163" "192.168.*.175" "192.168.*.183" "192.168.*.204" "192.168.*.219" "192.168.*.235")
 for i in {1..8}; do
   export ip_addr="${ip_addr_array[$i - 1]}"
   stat_file="$current_dir/Querylog Reason Statistics $sub_file_name - $ip_addr.csv"
