@@ -11,6 +11,7 @@ github_path=$(find /Volumes/DevOps -type d -name "GitHub" 2>/dev/null | awk 'NR 
 github="$github_path/GL-MT3000_Internal/var/log/data/gl-mt3000"
 year="${yesterday//-*}"
 month=$(date -v-1d '+%m')
+day=$(date -v-1d '+%d')
 
 GL_MT3000_zip="$GoogleDrivePath/archive_${yesterday}_GL-MT3000.tar.gz"
 FortiGate50E_zip="$GoogleDrivePath/archive_${yesterday}_FortiGate50E.tar.gz"
@@ -52,6 +53,34 @@ function automated_routine_task () {
     echo "$body" | perl -pe 'chomp if eof' >> "$log_file.tmp"
     mv "$log_file.tmp" "$log_file"
   done < "$tmpfile"
+
+  # system log の Severity 統計を取るためのファイルを作成
+  cp "archive_GL-MT3000/$yesterday/system.csv" "archive_GL-MT3000/GL-MT3000_system_$yesterday.csv"
+  cp "archive_FortiGate50E/$yesterday/system.csv" "archive_FortiGate50E/FortiGate50E_system_$yesterday.csv"
+  sed -i '' -e 's|crit.*"|crit"|g' \
+            -e 's|err.*"|err"|g' \
+            -e 's|warn.*"|warn"|g' \
+            -e 's|notice.*"|notice"|g' \
+            -e 's|info.*"|info"|g' \
+            -e 's|debug.*"|debug"|g' \
+            -e 's/$/,/g' "archive_GL-MT3000/GL-MT3000_system_$yesterday.csv" "archive_FortiGate50E/FortiGate50E_system_$yesterday.csv"
+
+  for h in {0..23}; do
+    for m in {0..5}; do
+      hour=$(printf "%02d" "$h")
+      code=$(
+        cat << EOF
+"=COUNTIFS(\$A, "">=$year/$month/$day $hour:${m}0:00"", \$A, ""<=$year/$month/$day $hour:${m}9:59"", \$B, ""*crit*"")",\
+"=COUNTIFS(\$A, "">=$year/$month/$day $hour:${m}0:00"", \$A, ""<=$year/$month/$day $hour:${m}9:59"", \$B, ""*err*"")",\
+"=COUNTIFS(\$A, "">=$year/$month/$day $hour:${m}0:00"", \$A, ""<=$year/$month/$day $hour:${m}9:59"", \$B, ""*warn*"")",\
+"=COUNTIFS(\$A, "">=$year/$month/$day $hour:${m}0:00"", \$A, ""<=$year/$month/$day $hour:${m}9:59"", \$B, ""*notice*"")",\
+"=COUNTIFS(\$A, "">=$year/$month/$day $hour:${m}0:00"", \$A, ""<=$year/$month/$day $hour:${m}9:59"", \$B, ""*info*"")",\
+"=COUNTIFS(\$A, "">=$year/$month/$day $hour:${m}0:00"", \$A, ""<=$year/$month/$day $hour:${m}9:59"", \$B, ""*debug*"")"
+EOF
+      )
+      echo "$code" >> "archive_GL-MT3000/COUNTIFS_$yesterday.csv" "archive_GL-MT3000/COUNTIFS_$yesterday.csv"
+    done
+  done
 
   # archive を圧縮・転送
   command_dir=$(find "$current_dir" -type f -name "attachment_compression.command" 2>/dev/null | awk 'NR == 1' | sed 's/\/attachment_compression.command//g')
@@ -106,7 +135,7 @@ function automated_routine_task () {
     echo
   fi
 
-  # unknownDomain.sh を移動
+  # unknownDomain.command を移動
   chmod +x "$GoogleDrivePath/unknownDomain_$yesterday.command"
   mv "$GoogleDrivePath/unknownDomain_$yesterday.command" /Volumes/DevOps/ops/unknownDomainSearch 2>/dev/null
 
