@@ -345,7 +345,12 @@ function rsync_100MEDIA () {
   # sed -i '' "${square_brackets}d" "$disk_free" # 指定行を削除
   {
     echo "$timestamp,"
-    df -H $dst_dir | awk 'NR == 2 { print $1","$2","$3","$4","$5","$9 }'
+    df -H $dst_dir | awk 'NR == 2 {
+      for (i = 2; i <= 4; i++) {
+        gsub(/[MGT]/, "&B", $i) # 全ての単位に一括対応
+      }
+      print $1","$2","$3","$4","$5","$9
+    }'
   } | tr -d '\n' >> "$disk_log_internal"
   echo -e >> "$disk_log_internal"
   echo
@@ -508,7 +513,12 @@ function rsync_101MEDIA () {
   # sed -i '' "${square_brackets}d" "$disk_free" # 指定行を削除
   {
     echo "$timestamp,"
-    df -H $dst_dir | awk 'NR == 2 { print $1","$2","$3","$4","$5","$9 }'
+    df -H $dst_dir | awk 'NR == 2 {
+      for (i = 2; i <= 4; i++) {
+        gsub(/[MGT]/, "&B", $i) # 全ての単位に一括対応
+      }
+      print $1","$2","$3","$4","$5","$9
+    }'
   } | tr -d '\n' >> "$disk_log_internal"
   echo -e >> "$disk_log_internal"
   echo
@@ -599,7 +609,12 @@ if [ -e $src_dir ]; then
 
     {
       echo "$timestamp,"
-      df -H $src_dir | awk 'NR == 2 { print $1","$2","$3","$4","$5","$9 }'
+      df -H $src_dir | awk 'NR == 2 {
+        for (i = 2; i <= 4; i++) {
+          gsub(/[MGT]/, "&B", $i) # 全ての単位に一括対応
+        }
+        print $1","$2","$3","$4","$5","$9
+      }'
     } | tr -d '\n' >> "$disk_log_microSD"
     echo -e >> "$disk_log_microSD"
 
