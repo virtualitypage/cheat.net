@@ -10,7 +10,8 @@ src_dir2="/Volumes/Untitled/DCIM/101MEDIA"
 dst_dir="/Volumes/Internal/var/cache"
 destination="$HOME/Library/CloudStorage/GoogleDrive-ganbanlife@gmail.com/.shortcut-targets-by-id/1mZyi1kb7Iepj2zVvRgVo_BGJAmlC8GKY/共有フォルダ/動画用フォルダ"
 archive="/Volumes/Internal/var/cache/archive"
-logfile="$destination/mv_volumes_$today.log"
+log_file="$destination/mv_volumes_$today.log"
+log_file2="$destination/mv_volumes_$today.csv"
 
 src_file="DSCF0001.AVI"
 date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_dir/$src_file 2>/dev/null)
@@ -113,8 +114,8 @@ EOF
 
 function motd () {
   ttys=$(who | awk 'NR==2 { print $2 }')
-  LC_ALL=C last | awk -v ttys="$ttys" -v time="$time" 'NR>1 { print "Current login:", $3, $4, time, "on", ttys}' >> "$logfile"
-  cat << 'EOF' >> "$logfile"
+  LC_ALL=C last | awk -v ttys="$ttys" -v time="$time" 'NR>1 { print "Current login:", $3, $4, time, "on", ttys}' >> "$log_file"
+  cat << 'EOF' >> "$log_file"
 
                         ___  ____
   _ __ ___   __ _  ___ / _ \/ ___|
@@ -126,20 +127,20 @@ function motd () {
  uname
  ---------------------------------------------------
 EOF
-  echo "$users@$hostname ~ % $0 ; exit;" >> "$logfile"
+  echo "$users@$hostname ~ % $0 ; exit;" >> "$log_file"
 }
 
 function stream_editor () {
   uname=$(uname -v | awk '{print $2, $3, $4, $5, $6, $7, $8, $9, $10}' | sed 's/;//g')
-  sed -i '' 's/\[1;31m//g' "$logfile"
-  sed -i '' 's/\[1;32m//g' "$logfile"
-  sed -i '' 's/\[1;33m//g' "$logfile"
-  sed -i '' 's/\[1;35m//g' "$logfile"
-  sed -i '' 's/\[1;36m//g' "$logfile"
-  sed -i '' 's/\[0m//g' "$logfile"
-  sed -i '' 's/building file list ... /building file list .../g' "$logfile"
-  sed -i '' "s/uname/$uname/g" "$logfile"
-  sed -i '' 's/\x1b//g' "$logfile"
+  sed -i '' 's/\[1;31m//g' "$log_file"
+  sed -i '' 's/\[1;32m//g' "$log_file"
+  sed -i '' 's/\[1;33m//g' "$log_file"
+  sed -i '' 's/\[1;35m//g' "$log_file"
+  sed -i '' 's/\[1;36m//g' "$log_file"
+  sed -i '' 's/\[0m//g' "$log_file"
+  sed -i '' 's/building file list ... /building file list .../g' "$log_file"
+  sed -i '' "s/uname/$uname/g" "$log_file"
+  sed -i '' 's/\x1b//g' "$log_file"
 }
 
 function end_point () {
@@ -156,7 +157,7 @@ Saving session...
 EOF
   )
   message=$(perl -pe 'chomp if eof' <<< "$message")
-  echo "$message" | perl -pe 'chomp if eof' >> "$logfile"
+  echo "$message" | perl -pe 'chomp if eof' >> "$log_file"
 }
 
 function ps_check () {
@@ -528,6 +529,23 @@ function rsync_101MEDIA () {
   echo -e "\033[1;32m\"$src_dir2\" 内のファイルは $dst_dir/$date_dir2 に格納されています。\033[0m"
 }
 
+function generate_rsync_statistics () {
+  avi_file_array=()
+  data_array=()
+
+  while IFS= read -r avi_file; do
+    avi_file_array+=("$avi_file")
+  done < <(grep ".AVI" "$log_file" | sed 's/.AVI\r/.AVI/g') # $'DSCF0001.AVI\r'となる場合に使用
+  # done < <(grep ".AVI" "$log_file")
+
+  while IFS= read -r data; do
+    data_array+=("$data")
+  done < <(grep "xfer" "$log_file" | awk '{ gsub("100%", "B", $2); print $1 $2 "," $4 }') # $'DSCF0001.AVI\r'となる場合に使用
+  # done < <(grep "xfer" "$log_file" | sed 's/.*\r//g' | awk '{ gsub("100%", "B", $2); print $1 $2 "," $4 }') # \r（キャリッジリターン）を削除
+
+  paste -d ',' <(printf "%s\n" "${avi_file_array[@]}") <(printf "%s\n" "${data_array[@]}") > "$log_file2"
+}
+
 function disk_clean () {
   read -rp "\"$rm_dir\" を削除しますか？ { yes | y | no }: " yesno
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
@@ -561,7 +579,7 @@ function disk_clean () {
   # fi
 }
 
-exec > >(tee -a "$logfile")
+exec > >(tee -a "$log_file")
 
 URL="https://drive.google.com/drive/my-drive"
 code=$(curl -I $URL 2>/dev/null | head -n 1)
@@ -632,6 +650,7 @@ if [ -e $src_dir ]; then
     osascript "Trigger page - Success.scpt"
     open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
     stream_editor
+    generate_rsync_statistics
     disk_clean
   elif [ -e $src_dir ] && [ ! -e $dst_dir ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
