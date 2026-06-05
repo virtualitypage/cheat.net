@@ -322,7 +322,7 @@ function rsync_100MEDIA () {
   fi
 
   # Internal のディスク容量を記録
-  timestamp=$(date '+%Y/%m/%d %H:%m:%d')
+  timestamp=$(date "+%Y/%m/%d %H:%M:%S")
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
   # echo "df -H $dst_dir >> $disk_free"
@@ -490,7 +490,7 @@ function rsync_101MEDIA () {
   fi
 
   # Internal のディスク容量を記録
-  timestamp=$(date '+%Y/%m/%d %H:%m:%d')
+  timestamp=$(date "+%Y/%m/%d %H:%M:%S")
   echo
   echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
   # echo "df -H $dst_dir >> $disk_free"
@@ -540,8 +540,8 @@ function generate_rsync_statistics () {
 
   while IFS= read -r data; do
     data_array+=("$data")
-  done < <(grep "xfer" "$log_file" | awk '{ gsub("100%", "B", $2); print $1 $2 "," $4 }') # $'DSCF0001.AVI\r'となる場合に使用
-  # done < <(grep "xfer" "$log_file" | sed 's/.*\r//g' | awk '{ gsub("100%", "B", $2); print $1 $2 "," $4 }') # \r（キャリッジリターン）を削除
+  # done < <(grep "xfer" "$log_file" | awk '{ gsub("100%", "B", $2); print $1 $2 "," $4 }') # $'DSCF0001.AVI\r'となる場合に使用
+  done < <(grep "xfer" "$log_file" | sed 's/.*\r//g' | awk '{ gsub("100%", "B", $2); print $1 $2 "," $4 }') # \r（キャリッジリターン）を削除
 
   paste -d ',' <(printf "%s\n" "${avi_file_array[@]}") <(printf "%s\n" "${data_array[@]}") > "$log_file2"
 }
@@ -609,7 +609,7 @@ if [ -e $src_dir ]; then
   if [ -e $dst_dir ]; then
     echo -e "\033[1;32mSUCCESS: DISK \"$DISK\" は有効です。\033[0m"
     echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" は有効です。\033[0m"
-    timestamp=$(date '+%Y/%m/%d %H:%m:%d')
+    timestamp=$(date "+%Y/%m/%d %H:%M:%S")
     # df -H $src_dir | awk -v timestamp="$timestamp" 'NR==2 {
     #   printf "[\n"
     #   printf "  {\n"
