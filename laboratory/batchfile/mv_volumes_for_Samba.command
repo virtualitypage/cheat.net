@@ -551,7 +551,7 @@ function disk_clean () {
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
     A=$(ls -lt /Volumes/Internal/var/cache | awk 'NR == 2 { print $9 }')
     B=$(stat -f "%Sm" -t "%Y-%-m-%-d" /Volumes/Untitled/DCIM/100MEDIA/DSCF0001.AVI)
-    if [ "$A" -eq "$B" ]; then
+    if [[ "$A" -eq "$B" ]]; then
       echo -e "\033[1;36mINFO: サーバー側とディスク側の動画データの日付が合致しました。\"$rm_dir\" を削除します\033[0m"
       if rm -r $rm_dir 2>/dev/null; then
         echo
