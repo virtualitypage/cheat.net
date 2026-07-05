@@ -54,6 +54,58 @@ function automated_routine_task () {
     mv "$log_file.tmp" "$log_file"
   done < "$tmpfile"
 
+  # AdGuardHome ／ kernel ／ tailscaled ログの不要なタイムスタンプ(UTC 0)を除去・置換するコマンドを生成
+  AGH_replace_1=()
+  AGH_replace_2=()
+  AGH_log_array=$(grep "user.notice AdGuardHome" "archive_GL-MT3000/$yesterday/system.csv")
+
+  while read -r log; do
+    # date_UTC=$(echo "$log" | awk 'match($0, /[0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/) {print substr($0, RSTART, RLENGTH)}')
+    date_UTC=$(echo "$log" | awk 'match($0, /AdGuardHome\[[0-9]+\]: ([0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})/) { print substr($0, RSTART, RLENGTH) }' | awk '{ print "", $2, $3 }')
+    AGH_replace_1+=$(echo "-e 's|]:$date_UTC\..* ERROR|]: ERROR|g' " | tr -d '\n')
+    AGH_replace_2+=$(echo "-e 's|]:$date_UTC\..* Failed|]: Failed|g' " | tr -d '\n')
+  done <<< "$AGH_log_array"
+  echo -e "#!/bin/bash\n\nsed -i '' $AGH_replace_1/Volumes/DevOps/ops/$yesterday/archive_GL-MT3000/$yesterday/system.csv" > "/Volumes/DevOps/ops/GL-MT3000_UTC_remove_$yesterday.command"
+  echo -e "\nsed -i '' $AGH_replace_2/Volumes/DevOps/ops/$yesterday/archive_GL-MT3000/$yesterday/system.csv" >> "/Volumes/DevOps/ops/GL-MT3000_UTC_remove_$yesterday.command"
+
+  # 変換後の時刻が不正確のため廃案
+  # uptime_GL_MT3000=$(tail -n 1 archive_GL-MT3000/uptime)
+  # kernel_replace_GL_MT3000=()
+  # kernel_log_array_GL_MT3000=$(grep "kernel: \[" "archive_GL-MT3000/$yesterday/system.csv")
+
+  # while read -r log; do
+  #   second_GL_MT3000=$(echo "$log" | sed -e 's|^.*kernel: \[||g' -e 's|\..*||g')
+  #   epoch_sec_GL_MT3000=$(date -j -f "%Y-%m-%d %H:%M:%S" "$uptime_GL_MT3000" "+%s") # カーネル起動時刻をエポック秒に変換
+  #   epoch_GL_MT3000=$(echo $(( $epoch_sec_GL_MT3000 + $second_GL_MT3000 ))) # カーネル起動してから経過した秒数（モノトニック時間）を足す
+  #   date_GL_MT3000=$(LANG=C date -r $epoch_GL_MT3000 +"%a %b %d %H:%M:%S %Y") # 出力形式: ddd MMM DD YYYY HH:MM:SS
+  #   kernel_replace_GL_MT3000+=$(echo "-e 's|kernel: \[.*$second_GL_MT3000\..*\]|kernel: \[$date_GL_MT3000]|g' " | tr -d '\n')
+  # done <<< "$kernel_log_array_GL_MT3000"
+  # echo -e "\n\nsed -i '' $kernel_replace_GL_MT3000/Volumes/DevOps/ops/$yesterday/archive_GL-MT3000/$yesterday/system.csv" >> "/Volumes/DevOps/ops/GL-MT3000_UTC_remove_$yesterday.command"
+
+  tailscale_replace=()
+  tailscale_log_array=$(grep "daemon.err tailscaled" "archive_FortiGate50E/$yesterday/system.csv")
+
+  while read -r log; do
+    # date_UTC=$(echo "$log" | awk 'match($0, /[0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/) {print substr($0, RSTART, RLENGTH)}')
+    date_UTC=$(echo "$log" | awk 'match($0, /tailscaled\[[0-9]+\]: ([0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})/) { print substr($0, RSTART, RLENGTH) }' | awk '{ print "", $2, $3 }')
+    tailscale_replace+=$(echo "-e 's|]:$date_UTC|]:|g' " | tr -d '\n')
+  done <<< "$tailscale_log_array"
+  echo -e "#!/bin/bash\n\nsed -i '' $tailscale_replace/Volumes/DevOps/ops/$yesterday/archive_FortiGate50E/$yesterday/system.csv" > "/Volumes/DevOps/ops/FortiGate50E_UTC_remove_$yesterday.command"
+
+  # 変換後の時刻が不正確のため廃案
+  # uptime_FortiGate50E=$(tail -n 1 archive_FortiGate50E/uptime)
+  # kernel_replace_FortiGate50E=()
+  # kernel_log_array_FortiGate50E=$(grep "kernel: \[" "archive_FortiGate50E/$yesterday/system.csv")
+
+  # while read -r log; do
+  #   second_FortiGate50E=$(echo "$log" | sed -e 's|^.*kernel: \[||g' -e 's|\..*||g')
+  #   epoch_sec_FortiGate50E=$(date -j -f "%Y-%m-%d %H:%M:%S" "$uptime_FortiGate50E" "+%s") # カーネル起動時刻をエポック秒に変換
+  #   epoch_FortiGate50E=$(echo $(( $epoch_sec_FortiGate50E + $second_FortiGate50E ))) # カーネル起動してから経過した秒数（モノトニック時間）を足す
+  #   date_FortiGate50E=$(LANG=C date -r $epoch_FortiGate50E +"%a %b %d %H:%M:%S %Y") # 出力形式: ddd MMM DD YYYY HH:MM:SS
+  #   kernel_replace_FortiGate50E+=$(echo "-e 's|kernel: \[.*$second_FortiGate50E\..*\]|kernel: \[$date_FortiGate50E]|g' " | tr -d '\n')
+  # done <<< "$kernel_log_array_FortiGate50E"
+  # echo -e "\n\nsed -i '' $kernel_replace_FortiGate50E/Volumes/DevOps/ops/$yesterday/archive_FortiGate50E/$yesterday/system.csv" >> "/Volumes/DevOps/ops/FortiGate50E_UTC_remove_$yesterday.command"
+
   # system log の Severity 統計を取るためのファイルを作成
   cp "archive_GL-MT3000/$yesterday/system.csv" "archive_GL-MT3000/GL-MT3000_system_$yesterday.csv"
   cp "archive_FortiGate50E/$yesterday/system.csv" "archive_FortiGate50E/FortiGate50E_system_$yesterday.csv"
@@ -78,7 +130,8 @@ function automated_routine_task () {
 "=COUNTIFS(\$A, "">=$year/$month/$day $hour:${m}0:00"", \$A, ""<=$year/$month/$day $hour:${m}9:59"", \$B, ""*debug*"")"
 EOF
       )
-      echo "$code" >> "archive_GL-MT3000/COUNTIFS_$yesterday.csv" "archive_GL-MT3000/COUNTIFS_$yesterday.csv"
+      echo "$code" >> "archive_GL-MT3000/COUNTIFS_$yesterday.csv"
+      echo "$code" >> "archive_FortiGate50E/COUNTIFS_$yesterday.csv"
     done
   done
 
