@@ -41,7 +41,7 @@ case $1 in
   move)
     mv /Volumes/Internal/tcpdump/$year-$month-${day}_* . 2>/dev/null
     cd "$current_dir" || exit
-    gunzip -k $year-$month-${day}_*.gz
+    # gunzip -k $year-$month-${day}_*.gz
     ls -lh $HOME/Desktop/tcpdump/*.pcap
   ;;
   gunzip)
@@ -53,6 +53,9 @@ case $1 in
   ;;
   edit)
     editcap
+  ;;
+  rescue)
+    echo "構文：gunzip -c [YYYY-MM-DD_HH-MM-SS.pcap.gz] > [YYYY-MM-DD_HH-MM-SS.pcap]"
   ;;
   *)
     echo "{ merge | edit }"
