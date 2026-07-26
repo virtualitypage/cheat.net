@@ -141,6 +141,31 @@ EOF
   echo -e "$yesterday_slash" | "$command_dir/attachment_compression.command"
   "$command_dir/internal_data_sync.command"
 
+  # system.log の時系列ズレ検査
+  detect_GL_MT3000=$(awk -F, '
+    NR == 1 { next } # ヘッダーをスキップ
+    NR == 2 { prev = $1; next }
+    $1 < prev { printf "時刻の逆行あり: %d行目 (%s)\n", NR, $1 }
+    { prev = $1 }
+  ' "archive_GL-MT3000/$yesterday/system.csv")
+
+  if [ ! -z "$detect_GL_MT3000" ]; then
+    echo -e "警告: system.csv\n\n・$detect_GL_MT3000" > "archive_GL-MT3000/$yesterday/warning.txt"
+    echo -e "\033[1;31$detect_GL_MT3000\033[0m"; echo
+  fi
+
+  detect_FortiGate50E=$(awk -F, '
+    NR == 1 { next } # ヘッダーをスキップ
+    NR == 2 { prev = $1; next }
+    $1 < prev { printf "時刻の逆行あり: %d行目 (%s)\n", NR, $1 }
+    { prev = $1 }
+  ' "archive_FortiGate50E/$yesterday/system.csv")
+
+  if [ ! -z "$detect_FortiGate50E" ]; then
+    echo -e "警告: system.csv\n\n・$detect_FortiGate50E" > "archive_FortiGate50E/$yesterday/warning.txt"
+    echo -e "\033[1;31$detect_FortiGate50E\033[0m"; echo
+  fi
+
   # MacTableEntry.csv をベースに Connection Statistics.numbers 用のファイルを作成
   sed -e 's/^.*(): //g' -e 's/"//g' "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sort -u > "MacTableEntry"
   while IFS= read -r line; do
