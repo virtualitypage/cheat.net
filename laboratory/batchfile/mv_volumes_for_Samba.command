@@ -7,6 +7,7 @@ time=$(date '+%H:%m:%d')
 rm_dir="/Volumes/Untitled/DCIM"
 src_dir="/Volumes/Untitled/DCIM/100MEDIA"
 src_dir2="/Volumes/Untitled/DCIM/101MEDIA"
+src_dir3="/Volumes/Untitled/DCIM/102MEDIA"
 dst_dir="/Volumes/Internal/var/cache"
 destination="$HOME/Library/CloudStorage/GoogleDrive-ganbanlife@gmail.com/.shortcut-targets-by-id/1mZyi1kb7Iepj2zVvRgVo_BGJAmlC8GKY/共有フォルダ/動画用フォルダ"
 archive="/Volumes/Internal/var/cache/archive"
@@ -16,6 +17,7 @@ log_file2="$destination/mv_volumes_$today.csv"
 src_file="DSCF0001.AVI"
 date_dir=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_dir/$src_file 2>/dev/null)
 date_dir2=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_dir2/$src_file 2>/dev/null)
+date_dir3=$(stat -f "%Sm" -t "%Y-%-m-%-d" $src_dir3/$src_file 2>/dev/null)
 # disk_free="$destination/diskFree.json"
 disk_log_internal="$destination/disk_info_Internal - $year.csv"
 disk_log_microSD="$destination/disk_info_microSD - $year.csv"
@@ -32,6 +34,16 @@ kanst_message=$(
 
 #################################################
 # INFORMATION: 転送処理は 101MEDIA に移行します #
+#################################################
+EOF
+)
+
+kanst_message2=$(
+  cat << EOF
+
+
+#################################################
+# INFORMATION: 転送処理は 102MEDIA に移行します #
 #################################################
 EOF
 )
@@ -185,6 +197,18 @@ function rsync_100MEDIA_info () {
 
 function rsync_101MEDIA_info () {
   num_files=$(ls -F "$src_dir2" | grep -v / | wc -l)
+  total_time=$(echo "15 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
+  current_time=$(date +%s) # 現在の時刻を取得
+  end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
+  end_time=$(date -j -f "%s" "$end_time" "+%Y/%m/%d %H時%M分%S秒") # human-readable
+  echo
+  echo -e "\033[1;36mINFO: 動画ファイルを SERVER \"$SERVER\" に転送しています…\033[0m"
+  echo
+  echo -e "\033[1;36mINFO: 転送処理は \"$end_time\" に完了する見込みです\033[0m"
+}
+
+function rsync_102MEDIA_info () {
+  num_files=$(ls -F "$src_dir3" | grep -v / | wc -l)
   total_time=$(echo "15 * $num_files" | bc) # 転送時間(秒)／個 * データ個数 = 総転送時間
   current_time=$(date +%s) # 現在の時刻を取得
   end_time=$(echo "$current_time + $total_time" | bc) # 転送時間を加算
@@ -529,6 +553,174 @@ function rsync_101MEDIA () {
   echo -e "\033[1;32m\"$src_dir2\" 内のファイルは $dst_dir/$date_dir2 に格納されています。\033[0m"
 }
 
+function rsync_102MEDIA () {
+  mp4_files=()
+  mov_files=()
+  avi_files=()
+  files_found_mp4=false
+  files_found_mov=false
+  files_found_avi=false
+
+  main_file="$date_dir3 status.txt"
+  echo -e "\033[1;35m$kanst_message2\033[0m"
+  echo
+  echo
+
+  if [ ! -e "$date_dir3" ]; then
+    mkdir "$date_dir3"
+  elif [ ! -d "$date_dir3" ]; then
+    echo -e "\033[1;36mINFO: \"$date_dir3\" は保存フォルダ名として指定される必要があります。不正なファイルを $archive に移送します\033[0m"
+    mkdir archive
+    echo "mv -v $dst_dir/$date_dir3 $archive"
+    mv -v "$dst_dir/$date_dir3" $archive
+    mkdir "$date_dir3"
+    echo
+  fi
+
+  # 102MEDIA にて動画ファイルを検索、status ファイルを作成
+  echo -e "\033[1;36mINFO: \"$src_dir3\" にて動画ファイルを検索しています…\033[0m"
+  for file in "$src_dir3"/*; do
+    if [ -f "$file" ]; then
+      mp4_search_result=$(find "$file" -type f -iname '*.mp4' 2>/dev/null) # .mp4 ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$mp4_search_result" ]; then
+        mp4_files+=("$mp4_search_result")
+        files_found_mp4=true
+        # echo -e "\033[1;32mfiles found: $(basename "$mp4_search_result")\033[0m"
+      fi
+      mov_search_result=$(find "$file" -type f -iname '*.mov' 2>/dev/null) # .mov ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$mov_search_result" ]; then
+        mov_files+=("$mov_search_result")
+        files_found_mov=true
+        # echo -e "\033[1;32mfiles found: $(basename "$mov_search_result")\033[0m"
+      fi
+      avi_search_result=$(find "$file" -type f -iname '*.avi' 2>/dev/null) # .avi ファイルを検索(大文字小文字を区別しない)
+      if [ -n "$avi_search_result" ]; then
+        avi_files+=("$avi_search_result")
+        files_found_avi=true
+        # echo -e "\033[1;32mfiles found: $(basename "$avi_search_result")\033[0m"
+      fi
+    fi
+  done
+  echo
+
+  # 102MEDIA にて発見された動画ファイルのステータスを記録
+  if [ "$files_found_mp4" = true ]; then
+    first_file=true
+    echo -e "\033[1;36mINFO: 動画ファイル(mp4)のステータスを記録しています…\033[0m"
+    for mp4_file in "${mp4_files[@]}"; do
+      mp4_file=$(basename "$mp4_file")
+      mp4_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir3/$mp4_file")
+      if [ "$first_file" = true ]; then
+        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
+        # echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
+        first_file=false
+      else
+        echo "$(basename "$mp4_file") -> $mp4_stat" >> "$destination/$main_file"
+        # echo -e "\033[1;32mACQUIRE: \"$mp4_file -> $mp4_stat\" >> .../$main_file\033[0m"
+      fi
+    done
+  fi
+  if [ "$files_found_mov" = true ]; then
+    first_file=true
+    echo -e "\033[1;36mINFO: 動画ファイル(mov)のステータスを記録しています…\033[0m"
+    for mov_file in "${mov_files[@]}"; do
+      mov_file=$(basename "$mov_file")
+      mov_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir3/$mov_file")
+      if [ "$first_file" = true ]; then
+        echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
+        # echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
+        first_file=false
+      else
+        echo "$(basename "$mov_file") -> $mov_stat" >> "$destination/$main_file"
+        # echo -e "\033[1;32mACQUIRE: \"$mov_file -> $mov_stat\" >> .../$main_file\033[0m"
+      fi
+    done
+  fi
+  if [ "$files_found_avi" = true ]; then
+    first_file=true
+    echo -e "\033[1;36mINFO: 動画ファイル(avi)のステータスを記録しています…\033[0m"
+    for avi_file in "${avi_files[@]}"; do
+      avi_file=$(basename "$avi_file")
+      avi_stat=$(stat -f "%Sm" -t "%Y年%m月%d日 %H:%M" "$src_dir3/$avi_file")
+      if [ "$first_file" = true ]; then
+        echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
+        # echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
+        first_file=false
+      else
+        echo "$(basename "$avi_file") -> $avi_stat" >> "$destination/$main_file"
+        # echo -e "\033[1;32mACQUIRE: \"$avi_file -> $avi_stat\" >> .../$main_file\033[0m"
+      fi
+    done
+  fi
+
+  # 動画ファイルを 102MEDIA から Internal に転送させる。コマンド実行に3回失敗した場合、強制終了する
+  rsync_102MEDIA_info
+  RETRY_COUNT=0
+  while [ $RETRY_COUNT -lt 3 ]; do
+    echo "rsync --archive --human-readable --progress $src_dir3/* $dst_dir/$date_dir3"
+    if rsync --archive --human-readable --progress "$src_dir3"/* "$dst_dir/$date_dir3"; then
+      break
+    else
+      RETRY_COUNT=$((RETRY_COUNT + 1))
+      echo
+      echo -e "\033[1;33mWARNING: rsync コマンド実行中に問題が発生しました。3秒後に転送処理を再度実行します ($RETRY_COUNT/3)\033[0m"
+      sleep 3
+      rsync_102MEDIA_info
+    fi
+  done
+  if [ $RETRY_COUNT -ge 3 ]; then
+    echo -e "\033[1;31mERROR: 試行回数制限に到達しました。以下の事項を確認して再度実行してください。\033[0m"
+    echo -e "\033[1;31m       ・転送先である SERVER \"$SERVER\" に接続されている\033[0m"
+    echo -e "\033[1;31m       ・プログラムと実行環境のディレクトリパス \"$src_dir3\" \"$dst_dir/$date_dir3\" に齟齬が無い\033[0m"
+    echo -e "\033[1;31m       ・転送元である \"$src_dir3\" 内に動画ファイルが存在する\033[0m"
+    echo -e "\033[1;31m       ・SERVER \"$SERVER\" 内に転送先 \"$dst_dir/$date_dir3\" が存在する\033[0m"
+    failure_trigger
+    echo "osascript Trigger page - Failure.scpt"
+    osascript "Trigger page - Failure.scpt"
+    open "$HOME/Documents/Google Assistant Message - メッセージを実行して.mp3"
+    exit 1
+  fi
+
+  # Internal のディスク容量を記録
+  timestamp=$(date "+%Y/%m/%d %H:%M:%S")
+  echo
+  echo -e "\033[1;36mINFO: SERVER \"$SERVER\" のディスク容量を記録しています…\033[0m"
+  # echo "df -H $dst_dir >> $disk_free"
+  # df -H $dst_dir | awk -v timestamp="$timestamp" 'NR==2 {
+  #   printf "  {\n"
+  #   printf "    \"タイムスタンプ\": \"%s\",\n", timestamp
+  #   printf "    \"ファイルシステム\": \"%s\",\n", $1
+  #   printf "    \"サイズ\": {\n"
+  #   printf "      \"容量\": \"%sB\",\n", $2
+  #   printf "      \"使用量\": \"%sB\",\n", $3
+  #   printf "      \"空き容量\": \"%sB\",\n", $4
+  #   printf "      \"使用率\": \"%s\"\n", $5
+  #   printf "    },\n"
+  #   printf "    \"マウント先\": \"%s\"\n", $9
+  #   printf "  },\n"
+  #   print "]"
+  # }' >> "$disk_free"
+  # closing_brace=$(grep -nB1 -nA1 ']' "$disk_free" | awk 'NR == 1 {gsub(/-/, ""); print $1 }')
+  # square_brackets=$(grep -nA1 ']' "$disk_free" | awk 'NR <= 2 { gsub(/:\]|-\[/, ""); print $1 }' | sed '1s/$/,/' | tr -d '\n')
+  # sed -i '' "${closing_brace}s/.*/  },/" "$disk_free" # 指定行を別の文字列に置換
+  # sed -i '' "${square_brackets}d" "$disk_free" # 指定行を削除
+  {
+    echo "$timestamp,"
+    df -H $dst_dir | awk 'NR == 2 {
+      for (i = 2; i <= 4; i++) {
+        gsub(/[MGT]/, "&B", $i) # 全ての単位に一括対応
+      }
+      print $1","$2","$3","$4","$5","$9
+    }'
+  } | tr -d '\n' >> "$disk_log_internal"
+  echo -e >> "$disk_log_internal"
+  echo
+  echo -e "\033[1;32mSUCCESS: SERVER \"$SERVER\" のディスク容量を記録しました\033[0m"
+  echo
+  echo -e "\033[1;32mALL SUCCESSFUL: 動画ファイルの転送処理が正常に終了しました。\033[0m"
+  echo -e "\033[1;32m\"$src_dir3\" 内のファイルは $dst_dir/$date_dir3 に格納されています。\033[0m"
+}
+
 function generate_rsync_statistics () {
   avi_file_array=()
   data_array=()
@@ -549,7 +741,7 @@ function generate_rsync_statistics () {
 function disk_clean () {
   read -rp "\"$rm_dir\" を削除しますか？ { yes | y | no }: " yesno
   if [ "$yesno" = "yes" ] || [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
-    A=$(ls -lt /Volumes/Internal/var/cache | awk 'NR == 2 { print $9 }')
+    A=$(ls -lt /Volumes/Internal/var/cache | awk 'NR == 3 { print $9 }')
     B=$(stat -f "%Sm" -t "%Y-%-m-%-d" /Volumes/Untitled/DCIM/100MEDIA/DSCF0001.AVI)
     if [[ "$A" -eq "$B" ]]; then
       echo -e "\033[1;36mINFO: サーバー側とディスク側の動画データの日付が合致しました。\"$rm_dir\" を削除します\033[0m"
@@ -642,6 +834,9 @@ if [ -e $src_dir ]; then
     rsync_100MEDIA
     if [ -e $src_dir2 ]; then
       rsync_101MEDIA
+      if [ -e $src_dir3 ]; then
+        rsync_102MEDIA
+      fi
     fi
     mv "/Volumes/Untitled/robocopy_log_*" "$destination" 2>/dev/null
     end_point
