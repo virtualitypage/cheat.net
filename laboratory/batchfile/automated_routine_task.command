@@ -166,25 +166,7 @@ EOF
     echo -e "\033[1;31m$detect_FortiGate50E\033[0m"; echo
   fi
 
-  # MacTableEntry.csv をベースに Connection Statistics.numbers 用のファイルを作成
-  sed -e 's/^.*(): //g' -e 's/"//g' "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sort -u > "MacTableEntry"
-  while IFS= read -r line; do
-    echo "$line" >> "archive_GL-MT3000/Connection Statistics.csv"
-    grep "MacTableInsertEntry(): $line" "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "InsertEntry"
-    grep "MacTableDeleteEntry(): $line" "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "DeleteEntry"
-    paste -d , "InsertEntry" "DeleteEntry" >> "archive_GL-MT3000/Connection Statistics.csv"
-  done < "MacTableEntry"
-
-  before_date=$(head -n 1 "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sed -e 's/ .*$//g' -e 's|/|-|g')
-  after_date=$(date -jf '%Y-%m-%d' "$before_date" '+%Y/%m/%d')
-  before_date="${before_date//-//}" # sed 's|-|/|g' と同義
-  sed -i '' -e 's/,/,〜,/g' -e "s|$before_date|$after_date|g" "archive_GL-MT3000/Connection Statistics.csv"
-  rm "InsertEntry" "DeleteEntry" "MacTableEntry"
-  mv "archive_GL-MT3000" "archive_FortiGate50E" "$date_dir"
-
-  echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
-
-  # luci-staticticsの統計情報をまとめる（未完成）
+  # luci-staticticsの統計情報をまとめる
   luci_stat_FortiGate50E_array=(
     "archive_FortiGate50E/luci_stat_${yesterday}/br-lan_${yesterday}.csv"
     "archive_FortiGate50E/luci_stat_${yesterday}/br-wan_${yesterday}.csv"
@@ -223,7 +205,7 @@ EOF
 
   luci_stat_FortiGate50E_log="/Volumes/DevOps/ops/@FortiGate50E_log_summary_${yesterday}.csv"
   awk 'END { print $2, $3, $4, $5, $6 }' "archive_FortiGate50E/disk_metrics_$year-$month.csv" \
-    | sed -e 's/^.*,\"/FortiGate50E\nUptime,\"/g' -e 's/\",.*/\"/g' > "$luci_stat_FortiGate50E_log"
+    | sed -e 's/^.*,\"/Hostname,FortiGate50E\nUptime,\"/g' -e 's/\",.*/\"/g' > "$luci_stat_FortiGate50E_log"
   if grep ".crit" "archive_FortiGate50E/$yesterday/system.csv" >> "$luci_stat_FortiGate50E_log"; then
     :
   else
@@ -250,7 +232,7 @@ EOF
 
   luci_stat_GL_MT3000_log="/Volumes/DevOps/ops/@GL_MT3000_log_summary_${yesterday}.csv"
   awk 'END { print $2, $3, $4, $5, $6 }' "archive_GL-MT3000/disk_metrics_$year-$month.csv" \
-  | sed -e 's/^.*,\"/GL-MT3000\nUptime,\"/g' -e 's/\",.*/\"/g' > "$luci_stat_GL_MT3000_log"
+    | sed -e 's/^.*,\"/Hostname,GL-MT3000\nUptime,\"/g' -e 's/\",.*/\"/g' > "$luci_stat_GL_MT3000_log"
   if grep ".crit" "archive_GL-MT3000/$yesterday/system.csv" >> "$luci_stat_GL_MT3000_log"; then
     :
   else
@@ -274,6 +256,24 @@ EOF
       echo "$luci_stat_title,$max_1 / $max_2,$min_1 / $min_2,$avg_1 / $avg_2" >> "$luci_stat_GL_MT3000_log"
     fi
   done
+
+  # MacTableEntry.csv をベースに Connection Statistics.numbers 用のファイルを作成
+  sed -e 's/^.*(): //g' -e 's/"//g' "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sort -u > "MacTableEntry"
+  while IFS= read -r line; do
+    echo "$line" >> "archive_GL-MT3000/Connection Statistics.csv"
+    grep "MacTableInsertEntry(): $line" "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "InsertEntry"
+    grep "MacTableDeleteEntry(): $line" "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sed 's/,\".*//g' > "DeleteEntry"
+    paste -d , "InsertEntry" "DeleteEntry" >> "archive_GL-MT3000/Connection Statistics.csv"
+  done < "MacTableEntry"
+
+  before_date=$(head -n 1 "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sed -e 's/ .*$//g' -e 's|/|-|g')
+  after_date=$(date -jf '%Y-%m-%d' "$before_date" '+%Y/%m/%d')
+  before_date="${before_date//-//}" # sed 's|-|/|g' と同義
+  sed -i '' -e 's/,/,〜,/g' -e "s|$before_date|$after_date|g" "archive_GL-MT3000/Connection Statistics.csv"
+  rm "InsertEntry" "DeleteEntry" "MacTableEntry"
+  mv "archive_GL-MT3000" "archive_FortiGate50E" "$date_dir"
+
+  echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
   mv "querylog_$yesterday.json" querylog.json
