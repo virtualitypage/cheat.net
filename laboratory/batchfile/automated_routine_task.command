@@ -185,47 +185,95 @@ EOF
   echo -e "\033[1;32mSUCCESS: archive 配下のファイル整理・転送完了\033[0m"; echo
 
   # luci-staticticsの統計情報をまとめる（未完成）
-  luci_stat_GL_MT3000_array=(
-    "archive_GL-MT3000/luci_stat_${yesterday}/br_lan_${yesterday}.csv"
-    "archive_GL-MT3000/luci_stat_${yesterday}/eth0_${yesterday}.csv"
-    "archive_GL-MT3000/luci_stat_${yesterday}/cpu_0_${yesterday}.csv"
-    "archive_GL-MT3000/luci_stat_${yesterday}/cpu_1_${yesterday}.csv"
-    "archive_GL-MT3000/luci_stat_${yesterday}/tailscale0_${yesterday}.csv"
-    "archive_GL-MT3000/luci_stat_${yesterday}/thermal_zone0_${yesterday}.csv"
-  )
-
   luci_stat_FortiGate50E_array=(
-    "archive_FortiGate50E/luci_stat_${yesterday}/br_lan_${yesterday}.csv"
-    "archive_FortiGate50E/luci_stat_${yesterday}/br_wan_${yesterday}.csv"
-    "archive_FortiGate50E/luci_stat_${yesterday}/cpu_0_${yesterday}.csv"
-    "archive_FortiGate50E/luci_stat_${yesterday}/cpu_1_${yesterday}.csv"
+    "archive_FortiGate50E/luci_stat_${yesterday}/br-lan_${yesterday}.csv"
+    "archive_FortiGate50E/luci_stat_${yesterday}/br-wan_${yesterday}.csv"
     "archive_FortiGate50E/luci_stat_${yesterday}/tailscale0_${yesterday}.csv"
+    "archive_FortiGate50E/luci_stat_${yesterday}/cpu-0_util_${yesterday}.csv"
+    "archive_FortiGate50E/luci_stat_${yesterday}/cpu-1_util_${yesterday}.csv"
     "archive_FortiGate50E/luci_stat_${yesterday}/thermal_zone0_${yesterday}.csv"
   )
 
-  echo -e "\033[1;36mGL-MT3000\033[0m"
-  for i in "${!luci_stat_GL_MT3000_array[@]}"; do # 配列の「値」ではなく「インデックス番号」をループに回す
-    luci_stat_file="${luci_stat_GL_MT3000_array[$i]}"
-    max_1=$(awk -F ',' 'BEGIN {max = 0} {if (max < $3) max = $3} END {print max}' "$luci_stat_file")
-    min_1=$(awk -F ',' 'BEGIN {min = 100} {if (min > $3) min = $3} END {print min}' "$luci_stat_file")
-    max_2=$(awk -F ',' 'BEGIN {max = 0} {if (max < $4) max = $4} END {print max}' "$luci_stat_file")
-    min_2=$(awk -F ',' 'BEGIN {min = 100} {if (min > $4) min = $4} END {print min}' "$luci_stat_file")
-    avg=$(awk -F',' '{sum += $3; count++} END {printf "平均値: %.2f\n", sum/count}' "$luci_stat_file")
-    echo -e "\033[1;32m　最大値: $max_1 | $max_2 ／ 最小値: $min_1 | $min_2 ／ $avg\033[0m"
-  done
-  echo
+  luci_stat_FortiGate50E_title_array=(
+    "br-lan"
+    "br-wan"
+    "tailscale0"
+    "cpu-0"
+    "cpu-1"
+    "thermal_zone0"
+  )
+
+  luci_stat_GL_MT3000_array=(
+    "archive_GL-MT3000/luci_stat_${yesterday}/br-lan_${yesterday}.csv"
+    "archive_GL-MT3000/luci_stat_${yesterday}/eth0_${yesterday}.csv"
+    "archive_GL-MT3000/luci_stat_${yesterday}/tailscale0_${yesterday}.csv"
+    "archive_GL-MT3000/luci_stat_${yesterday}/cpu-0_util_${yesterday}.csv"
+    "archive_GL-MT3000/luci_stat_${yesterday}/cpu-1_util_${yesterday}.csv"
+    "archive_GL-MT3000/luci_stat_${yesterday}/thermal_zone0_${yesterday}.csv"
+  )
+
+  luci_stat_GL_MT3000_title_array=(
+    "br-lan"
+    "eth0"
+    "tailscale0"
+    "cpu-0"
+    "cpu-1"
+    "thermal_zone0"
+  )
+
+  luci_stat_FortiGate50E_log="/Volumes/DevOps/ops/@FortiGate50E_log_summary_${yesterday}.csv"
+  awk 'END { print $2, $3, $4, $5, $6 }' "archive_FortiGate50E/disk_metrics_$year-$month.csv" \
+    | sed -e 's/^.*,\"/FortiGate50E\nUptime,\"/g' -e 's/\",.*/\"/g' > "$luci_stat_FortiGate50E_log"
+  if grep ".crit" "archive_FortiGate50E/$yesterday/system.csv" >> "$luci_stat_FortiGate50E_log"; then
+    :
+  else
+    echo "Systemlog,critical message not found." >> "$luci_stat_FortiGate50E_log"
+  fi
+  echo -e "\n,\nStatistic,Maximum,Minimum,Average" >> "$luci_stat_FortiGate50E_log"
 
   echo -e "\033[1;36mFortiGate50E\033[0m"
   for i in "${!luci_stat_FortiGate50E_array[@]}"; do # 配列の「値」ではなく「インデックス番号」をループに回す
     luci_stat_file="${luci_stat_FortiGate50E_array[$i]}"
-    max_1=$(awk -F ',' 'BEGIN {max = 0} {if (max < $3) max = $3} END {print max}' "$luci_stat_file")
-    min_1=$(awk -F ',' 'BEGIN {min = 100} {if (min > $3) min = $3} END {print min}' "$luci_stat_file")
-    max_2=$(awk -F ',' 'BEGIN {max = 0} {if (max < $4) max = $4} END {print max}' "$luci_stat_file")
-    min_2=$(awk -F ',' 'BEGIN {min = 100} {if (min > $4) min = $4} END {print min}' "$luci_stat_file")
-    avg=$(awk -F',' '{sum += $3; count++} END {printf "平均値: %.2f\n", sum/count}' "$luci_stat_file")
-    echo -e "\033[1;32m　最大値: $max_1 | $max_2 ／ 最小値: $min_1 | $min_2 ／ $avg\033[0m"
+    luci_stat_title="${luci_stat_FortiGate50E_title_array[$i]}"
+    max_1=$(awk -F ',' 'BEGIN {max = $3} {if (max < $3) {max = $3; time = $2}} END {print time ": " max}' "$luci_stat_file")
+    min_1=$(awk -F ',' 'NR == 1 {min = $3} {if ($3 < min) {min = $3; time = $2}} END {print time ": " min}' "$luci_stat_file")
+    max_2=$(awk -F ',' 'BEGIN {max = $4} {if (max < $4) {max = $4; time = $2}} END {print time ": " max}' "$luci_stat_file")
+    min_2=$(awk -F ',' 'NR == 1 {min = $4} {if ($4 < min) {min = $4; time = $2}} END {print time ": " min}' "$luci_stat_file")
+    avg_1=$(awk -F ',' '{sum += $3; count++} END {printf "%.2f\n", sum/count}' "$luci_stat_file")
+    avg_2=$(awk -F ',' '{sum += $4; count++} END {printf "%.2f\n", sum/count}' "$luci_stat_file")
+    if [[ "$luci_stat_file" =~ "thermal_zone0" ]]; then
+      echo "$luci_stat_title,$max_1,$min_1,$avg_1" >> "$luci_stat_FortiGate50E_log"
+    else
+      echo "$luci_stat_title,$max_1 / $max_2,$min_1 / $min_2,$avg_1 / $avg_2" >> "$luci_stat_FortiGate50E_log"
+    fi
   done
-  echo
+
+  luci_stat_GL_MT3000_log="/Volumes/DevOps/ops/@GL_MT3000_log_summary_${yesterday}.csv"
+  awk 'END { print $2, $3, $4, $5, $6 }' "archive_GL-MT3000/disk_metrics_$year-$month.csv" \
+  | sed -e 's/^.*,\"/GL-MT3000\nUptime,\"/g' -e 's/\",.*/\"/g' > "$luci_stat_GL_MT3000_log"
+  if grep ".crit" "archive_GL-MT3000/$yesterday/system.csv" >> "$luci_stat_GL_MT3000_log"; then
+    :
+  else
+    echo "Systemlog,critical message not found." >> "$luci_stat_GL_MT3000_log"
+  fi
+  echo -e "\n,\nStatistic,Maximum,Minimum,Average" >> "$luci_stat_GL_MT3000_log"
+
+  echo -e "\033[1;36mGL-MT3000\033[0m"
+  for i in "${!luci_stat_GL_MT3000_array[@]}"; do
+    luci_stat_file="${luci_stat_GL_MT3000_array[$i]}"
+    luci_stat_title="${luci_stat_GL_MT3000_title_array[$i]}"
+    max_1=$(awk -F ',' 'BEGIN {max = $3} {if (max < $3) {max = $3; time = $2}} END {print time ": " max}' "$luci_stat_file")
+    min_1=$(awk -F ',' 'NR == 1 {min = $3} {if ($3 < min) {min = $3; time = $2}} END {print time ": " min}' "$luci_stat_file")
+    max_2=$(awk -F ',' 'BEGIN {max = $4} {if (max < $4) {max = $4; time = $2}} END {print time ": " max}' "$luci_stat_file")
+    min_2=$(awk -F ',' 'NR == 1 {min = $4} {if ($4 < min) {min = $4; time = $2}} END {print time ": " min}' "$luci_stat_file")
+    avg_1=$(awk -F ',' '{sum += $3; count++} END {printf "%.2f\n", sum/count}' "$luci_stat_file")
+    avg_2=$(awk -F ',' '{sum += $4; count++} END {printf "%.2f\n", sum/count}' "$luci_stat_file")
+    if [[ "$luci_stat_file" =~ "thermal_zone0" ]]; then
+      echo "$luci_stat_title,$max_1,$min_1,$avg_1" >> "$luci_stat_GL_MT3000_log"
+    else
+      echo "$luci_stat_title,$max_1 / $max_2,$min_1 / $min_2,$avg_1 / $avg_2" >> "$luci_stat_GL_MT3000_log"
+    fi
+  done
 
   echo -e "\033[1;36mINFO: querylog.json をベースに成形済 json ファイルと csv ファイルを作成中...\033[0m"
   mv "querylog_$yesterday.json" querylog.json
