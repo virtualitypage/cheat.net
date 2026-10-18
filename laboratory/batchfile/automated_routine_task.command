@@ -2,6 +2,7 @@
 
 today=$(date '+%Y-%m-%d')
 yesterday=$(date -v-1d '+%Y-%m-%d')
+two_days_ago=$(date -v-2d '+%Y-%m-%d')
 SetFile_today=$(date '+%m/%d/%Y')
 current_dir=$(cd "$(dirname "$0")" && pwd)
 date_dir="/Volumes/DevOps/$yesterday"
@@ -204,6 +205,8 @@ EOF
   )
 
   luci_stat_FortiGate50E_log="/Volumes/DevOps/ops/@FortiGate50E_log_summary_${yesterday}.csv"
+  luci_stat_FortiGate50E_old_log="/Volumes/DevOps/ops/@FortiGate50E_log_summary_${two_days_ago}.csv"
+
   awk 'END { print $2, $3, $4, $5, $6 }' "archive_FortiGate50E/disk_metrics_$year-$month.csv" \
     | sed -e 's/^.*,\"/Hostname,FortiGate50E\nUptime,\"/g' -e 's/\",.*/\"/g' > "$luci_stat_FortiGate50E_log"
   if grep ".crit" "archive_FortiGate50E/$yesterday/system.csv" >> "$luci_stat_FortiGate50E_log"; then
@@ -213,7 +216,6 @@ EOF
   fi
   echo -e "\n,\nStatistic,Maximum,Minimum,Average" >> "$luci_stat_FortiGate50E_log"
 
-  echo -e "\033[1;36mFortiGate50E\033[0m"
   for i in "${!luci_stat_FortiGate50E_array[@]}"; do # 配列の「値」ではなく「インデックス番号」をループに回す
     luci_stat_file="${luci_stat_FortiGate50E_array[$i]}"
     luci_stat_title="${luci_stat_FortiGate50E_title_array[$i]}"
@@ -230,7 +232,9 @@ EOF
     fi
   done
 
-  luci_stat_GL_MT3000_log="/Volumes/DevOps/ops/@GL_MT3000_log_summary_${yesterday}.csv"
+  luci_stat_GL_MT3000_log="/Volumes/DevOps/ops/@GL-MT3000_log_summary_${yesterday}.csv"
+  luci_stat_GL_MT3000_old_log="/Volumes/DevOps/ops/@GL-MT3000_log_summary_${two_days_ago}.csv"
+
   awk 'END { print $2, $3, $4, $5, $6 }' "archive_GL-MT3000/disk_metrics_$year-$month.csv" \
     | sed -e 's/^.*,\"/Hostname,GL-MT3000\nUptime,\"/g' -e 's/\",.*/\"/g' > "$luci_stat_GL_MT3000_log"
   if grep ".crit" "archive_GL-MT3000/$yesterday/system.csv" >> "$luci_stat_GL_MT3000_log"; then
@@ -240,7 +244,6 @@ EOF
   fi
   echo -e "\n,\nStatistic,Maximum,Minimum,Average" >> "$luci_stat_GL_MT3000_log"
 
-  echo -e "\033[1;36mGL-MT3000\033[0m"
   for i in "${!luci_stat_GL_MT3000_array[@]}"; do
     luci_stat_file="${luci_stat_GL_MT3000_array[$i]}"
     luci_stat_title="${luci_stat_GL_MT3000_title_array[$i]}"
@@ -256,6 +259,16 @@ EOF
       echo "$luci_stat_title,$max_1 / $max_2,$min_1 / $min_2,$avg_1 / $avg_2" >> "$luci_stat_GL_MT3000_log"
     fi
   done
+
+  sed -i '' "s/Hostname,FortiGate50E/\n,\nDate,$two_days_ago/g" "$luci_stat_FortiGate50E_old_log"
+  if cat "$luci_stat_FortiGate50E_old_log" >> "/Volumes/DevOps/ops/@_FortiGate50E_log_summary_$year-$month.csv"; then
+    rm "$luci_stat_FortiGate50E_old_log"
+  fi
+
+  sed -i '' "s/Hostname,GL-MT3000/\n,\nDate,$two_days_ago/g" "$luci_stat_GL_MT3000_old_log"
+  if cat "$luci_stat_GL_MT3000_old_log" >> "/Volumes/DevOps/ops/@_GL-MT3000_log_summary_$year-$month.csv"; then
+    rm "$luci_stat_GL_MT3000_old_log"
+  fi
 
   # MacTableEntry.csv をベースに Connection Statistics.numbers 用のファイルを作成
   sed -e 's/^.*(): //g' -e 's/"//g' "archive_GL-MT3000/$yesterday/MacTableEntry.csv" | sort -u > "MacTableEntry"
