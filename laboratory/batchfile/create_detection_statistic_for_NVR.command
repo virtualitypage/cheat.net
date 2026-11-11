@@ -29,7 +29,8 @@ esac
 
 main_file="$current_dir/status_count - ${year}_${month}.csv"
 main_file2="$current_dir/status_count - ${year}_${month} dayOfWeek.csv"
-target_date=$(printf "%04d-%02d\n" "$year" "$month")
+# target_date=$(printf "%04d-%02d\n" "$year" "$month")
+target_date=$(printf "%s-%s\n" "$year" "$month")
 # mv /Volumes/Untitled/完了済/$target_date-*.txt /Volumes/Untitled/完了済
 
 function paste_text () {
