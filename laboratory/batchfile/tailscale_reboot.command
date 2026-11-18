@@ -1,8 +1,9 @@
 #!/bin/bash
 
-pgrep -f Tailscale.app | xargs kill "$1"
-open -a Tailscale
+open /Applications/Tailscale.app
 
-# 再起動時はログアウトしているためエラーになる。
-# これを伝える処理を追加せよ
-
+if [ $1 == "up" ]; then
+  /Applications/Tailscale.app/Contents/MacOS/Tailscale up
+elif [ $1 == "down" ]; then
+  /Applications/Tailscale.app/Contents/MacOS/Tailscale down
+fi
